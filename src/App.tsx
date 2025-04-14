@@ -1,17 +1,14 @@
-import { useState } from 'react'
-import { MainHeader } from './components/mainheader'
-import { SidebarMenu } from './components/menupage/SidebarMenu'
-import MainProduct from './components/menupage/mainproductpage'
-import ProductPage from './pages/product.page'
+import { Route, Routes } from 'react-router-dom';
+import ProductPage from './pages/product.page';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-    <ProductPage />
+      <Routes>
+        <Route path="/" element={<ProductPage />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
