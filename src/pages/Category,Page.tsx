@@ -1,12 +1,10 @@
 import MainCategory from "../components/CategoryPage/MainCategory";
 import { MainHeader } from "../components/mainheader";
 import { SidebarMenu } from "../components/menupage/SidebarMenu";
-import MainProduct from "../components/menupage/mainproductpage";
-import MenuList from "../components/menupage/menulist";
 
-const ProductPage = () => {
+const CategoryPage = () => {
   return (
-    <>
+    <div>
       <MainHeader />
       <div className="flex h-screen">
         <SidebarMenu />
@@ -14,8 +12,8 @@ const ProductPage = () => {
           <MainCategory />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default ProductPage;
+export default CategoryPage;

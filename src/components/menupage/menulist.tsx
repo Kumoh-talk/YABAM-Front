@@ -39,7 +39,6 @@ const MenuList = ({image, name, price, description, recommended, soldOut}: Props
                 <Bluetoggle selected={isRecommended} onToggle={() => setIsRecommended(!isRecommended)} />
                 <Greentoggle selected={isSoldOut} onToggle={() => setIsSoldOut(!isSoldOut)} />
             </div>
-
         </div>
     )
 }
