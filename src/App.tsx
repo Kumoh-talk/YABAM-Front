@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { Aside, Header } from '@/components/common';
+import MainPage from './pages/MainPage';
 import ProductPage from './pages/ProductPage';
-import OrderPage from './pages/OrderPage';
 import CategoryPage from './pages/CategoryPage';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
         <Aside />
         <div className="w-0 flex-1">
           <Routes>
-            <Route path="/order" element={<OrderPage />} />
+            <Route path="/" element={<MainPage />} />
             <Route path="/manage/product" element={<ProductPage />} />
             <Route path="/manage/category" element={<CategoryPage />} />
           </Routes>
