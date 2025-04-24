@@ -6,11 +6,13 @@ export type ButtonColor =
   | 'tertiary'
   | 'red'
   | 'black'
+  | 'white'
   | 'primary-transparent'
   | 'secondary-transparent'
   | 'tertiary-transparent'
   | 'red-transparent'
-  | 'black-transparent';
+  | 'black-transparent'
+  | 'white-transparent';
 export interface Props {
   className?: string;
   children?: React.ReactNode;
@@ -31,11 +33,13 @@ export const Button = (props: Props) => {
           'bg-tertiary text-text-dark-primary': color === 'tertiary',
           'bg-red text-text-dark-primary': color === 'red',
           'bg-black text-text-dark-primary': color === 'black',
+          'bg-white text-text-primary': color === 'white',
           'bg-transparent text-primary': color === 'primary-transparent',
           'bg-transparent text-secondary': color === 'secondary-transparent',
           'bg-transparent text-tertiary': color === 'tertiary-transparent',
           'bg-transparent text-red': color === 'red-transparent',
           'bg-transparent text-black': color === 'black-transparent',
+          'bg-transparent text-white': color === 'white-transparent',
         },
       )}
       onClick={props.onClick}
