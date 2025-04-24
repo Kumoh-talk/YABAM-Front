@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import Sidebar from "./sidebar";
+import { useState } from 'react';
+import { AsideItem } from './components';
 
-export const SidebarMenu = () => {
-  const [selectedMenu, setSelectedMenu] = useState("상품");
+export const Aside = () => {
+  const [selectedMenu, setSelectedMenu] = useState('상품');
 
-  const menuList = ["상품", "카테고리"]; // 나중에 더 추가할 수도 있음
+  const menuList = ['상품', '카테고리']; // 나중에 더 추가할 수도 있음
 
   return (
     <div className="flex flex-col w-64 h-full items-start gap-6 px-0 py-8 relative bg-[#eeeeee]">
@@ -13,10 +13,10 @@ export const SidebarMenu = () => {
       </div>
       <div className="flex-col py-0 flex items-center relative self-stretch w-full h-auto flex-[0_0_auto]">
         {menuList.map((menu) => (
-          <Sidebar
+          <AsideItem
             key={menu}
             name={menu}
-            selected={selectedMenu === menu}
+            isSelected={selectedMenu === menu}
             onClick={() => setSelectedMenu(menu)}
           />
         ))}

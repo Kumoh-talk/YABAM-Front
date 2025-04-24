@@ -1,9 +1,9 @@
-import { useState } from "react";
-import Bluetoggle from "../../assets/icon/bluetoggle";
-import { Close } from "@mui/icons-material";
+import { useState } from 'react';
+import { Close } from '@mui/icons-material';
+import { Toggle } from '@/components/common';
 
-const CategoryList = () => {
-  const categories = ["전체", "기본", "메뉴"];
+export const CategoryList = () => {
+  const categories = ['전체', '기본', '메뉴'];
   const [selectedStates, setSelectedStates] = useState<{
     [key: string]: boolean;
   }>(categories.reduce((acc, category) => ({ ...acc, [category]: true }), {}));
@@ -23,8 +23,9 @@ const CategoryList = () => {
       <div className="text-xl">{category}</div>
       <div className="flex gap-8 items-center">
         <div>
-          <Bluetoggle
-            selected={selectedStates[category]}
+          <Toggle
+            color="primary"
+            isSelected={selectedStates[category]}
             onToggle={() => toggleCategory(category)}
           />
         </div>
@@ -35,5 +36,3 @@ const CategoryList = () => {
     </div>
   ));
 };
-
-export default CategoryList;

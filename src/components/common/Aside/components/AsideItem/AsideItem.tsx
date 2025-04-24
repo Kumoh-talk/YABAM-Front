@@ -1,25 +1,23 @@
-import Rightmouse from "../../assets/icon/rightmouse.tsx";
+import { RightMouseIcon } from '@/assets/icon/rightmouse';
 
-type Props = {
+export interface Props {
   name: string;
-  selected: boolean;
+  isSelected: boolean;
   onClick: () => void;
-};
+}
 
-const Sidebar = ({ name, selected, onClick }: Props) => {
+export const AsideItem = ({ name, isSelected, onClick }: Props) => {
   return (
     <div className="w-full flex flex-col items-center px-4">
       <div
         onClick={onClick}
         className={`w-full p-4 flex justify-between items-center gap-2.5 relative font-semibold rounded-2xl cursor-pointer transition-colors ${
-          selected ? "bg-[#393E46] text-white" : "text-black"
+          isSelected ? 'bg-[#393E46] text-white' : 'text-black'
         }`}
       >
         {name}
-        {selected && <Rightmouse />}
+        {isSelected && <RightMouseIcon />}
       </div>
     </div>
   );
 };
-
-export default Sidebar;

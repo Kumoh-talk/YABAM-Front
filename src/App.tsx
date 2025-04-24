@@ -1,13 +1,24 @@
 import { Route, Routes } from 'react-router-dom';
-import ProductPage from './pages/product.page';
+import { Aside, Header } from '@/components/common';
+import ProductPage from './pages/ProductPage';
+import OrderPage from './pages/OrderPage';
+import CategoryPage from './pages/CategoryPage';
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<ProductPage />} />
-      </Routes>
-    </>
+    <div className="flex flex-col w-dvw h-dvh overflow-hidden">
+      <Header />
+      <div className="flex flex-row h-0 flex-1">
+        <Aside />
+        <div className="w-0 flex-1">
+          <Routes>
+            <Route path="/order" element={<OrderPage />} />
+            <Route path="/manage/product" element={<ProductPage />} />
+            <Route path="/manage/category" element={<CategoryPage />} />
+          </Routes>
+        </div>
+      </div>
+    </div>
   );
 }
 
