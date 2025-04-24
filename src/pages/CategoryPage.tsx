@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { WhitePlusIcon } from '@/assets/icon/whiteplusicon';
 import { CategoryList } from '@/components/category';
+import { Button } from '@/components/common';
 
 export const CategoryPage = () => {
   const [categoryName, setCategoryName] = useState('');
@@ -20,9 +21,7 @@ export const CategoryPage = () => {
                   placeholder="카테고리 이름"
                   onChange={(e) => setCategoryName(e.target.value)}
                 />
-                <button className="cursor-pointer gap-2.5 flex items-center p-3 bg-[#0092CA] rounded-xl">
-                  <WhitePlusIcon />
-                </button>
+                <Button>추가</Button>
               </div>
             </div>
             <div className="w-full flex justify-end gap-12 px-3 py-2">

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Close } from '@mui/icons-material';
-import { Toggle } from '@/components/common';
+import { Button, Toggle } from '@/components/common';
 
 export const CategoryList = () => {
   const categories = ['전체', '기본', '메뉴'];
@@ -29,9 +29,9 @@ export const CategoryList = () => {
             onToggle={() => toggleCategory(category)}
           />
         </div>
-        <button className="cursor-pointer text-sm leading-6">
+        <Button color="black-transparent">
           <Close />
-        </button>
+        </Button>
       </div>
     </div>
   ));
