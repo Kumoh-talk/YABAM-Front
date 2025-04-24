@@ -1,26 +1,21 @@
-import { useState } from 'react';
+import { LogoutRounded } from '@mui/icons-material';
 import { AsideItem } from './components';
+import { list } from './constants';
 
 export const Aside = () => {
-  const [selectedMenu, setSelectedMenu] = useState('상품');
-
-  const menuList = ['상품', '카테고리']; // 나중에 더 추가할 수도 있음
+  const storeName = '가게 이름';
 
   return (
-    <div className="flex flex-col w-64 h-full items-start gap-6 px-0 py-8 relative bg-[#eeeeee]">
-      <div className="text-black gap-2.5 px-8 text-xl leading-5 relative w-fit font-semibold whitespace-nowrap">
-        상품 관리
-      </div>
-      <div className="flex-col py-0 flex items-center relative self-stretch w-full h-auto flex-[0_0_auto]">
-        {menuList.map((menu) => (
-          <AsideItem
-            key={menu}
-            name={menu}
-            isSelected={selectedMenu === menu}
-            onClick={() => setSelectedMenu(menu)}
-          />
+    <aside className="flex flex-col w-64 gap-6 py-8 bg-gray-200">
+      <header className="flex flex-row items-center justify-between px-8">
+        <span className="text-xl leading-none font-semibold">{storeName}</span>
+        <LogoutRounded fontSize="medium" />
+      </header>
+      <ul className="flex flex-col px-4 items-center w-full h-0 flex-1 gap-2">
+        {list.map((item, index) => (
+          <AsideItem key={index} {...item} />
         ))}
-      </div>
-    </div>
+      </ul>
+    </aside>
   );
 };
