@@ -30,3 +30,20 @@
     @apply font-sans;
   }
 }
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+input[type='date'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='week'],
+input[type='time'] {
+  @apply text-text-primary px-4 py-2 rounded-lg text-base leading-[1.4] font-medium border border-gray-500;
+  @apply focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent;
+}

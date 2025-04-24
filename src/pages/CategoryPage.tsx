@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { WhitePlusIcon } from '@/assets/icon/whiteplusicon';
 import { CategoryList } from '@/components/category';
 import { Button } from '@/components/common';
 
@@ -17,7 +16,7 @@ export const CategoryPage = () => {
               </div>
               <div className="flex items-center gap-4">
                 <input
-                  className="p-4 rounded-xl bg-[#F6F7F8]"
+                  type="text"
                   placeholder="카테고리 이름"
                   onChange={(e) => setCategoryName(e.target.value)}
                 />
