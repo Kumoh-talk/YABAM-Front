@@ -1,8 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import { Aside, Header } from '@/components/common';
 import MainPage from './pages/MainPage';
-import ProductPage from './pages/ProductPage';
-import CategoryPage from './pages/CategoryPage';
+import StorePage from './pages/manage/StorePage';
+import ProductPage from './pages/manage/ProductPage';
+import CategoryPage from './pages/manage/CategoryPage';
+import TablePage from './pages/manage/TablePage';
+import HistoryPage from './pages/HistoryPage';
+import CouponPage from './pages/CouponPage';
 
 function App() {
   return (
@@ -12,9 +16,13 @@ function App() {
         <Aside />
         <div className="w-0 flex-1">
           <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route path="/manage/store" element={<StorePage />} />
             <Route path="/manage/product" element={<ProductPage />} />
             <Route path="/manage/category" element={<CategoryPage />} />
+            <Route path="/manage/table" element={<TablePage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/coupon" element={<CouponPage />} />
+            <Route path="/" element={<MainPage />} />
           </Routes>
         </div>
       </div>

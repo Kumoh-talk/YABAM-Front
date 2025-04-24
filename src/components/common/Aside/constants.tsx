@@ -37,7 +37,7 @@ export const list: AsideItemProps[] = [
   {
     name: '주문 내역 관리',
     icon: <ReceiptLongRounded />,
-    to: '/log',
+    to: '/history',
   },
   {
     name: '쿠폰 관리',
