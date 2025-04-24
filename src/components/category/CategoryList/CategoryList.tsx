@@ -26,7 +26,7 @@ export const CategoryList = () => {
           <Toggle
             color="primary"
             isSelected={selectedStates[category]}
-            onToggle={() => toggleCategory(category)}
+            onClick={() => toggleCategory(category)}
           />
         </div>
         <Button color="black-transparent">

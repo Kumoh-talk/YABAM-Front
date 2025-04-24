@@ -45,12 +45,12 @@ export const ProductItem = ({
         <Toggle
           color="primary"
           isSelected={isRecommended}
-          onToggle={() => setIsRecommended(!isRecommended)}
+          onClick={() => setIsRecommended(!isRecommended)}
         />
         <Toggle
-          color="secondary"
+          color="primary"
           isSelected={isSoldOut}
-          onToggle={() => setIsSoldOut(!isSoldOut)}
+          onClick={() => setIsSoldOut(!isSoldOut)}
         />
       </div>
     </div>
