@@ -8,7 +8,7 @@ export const AsideToggleButton = () => {
   return (
     <Button
       color="white-transparent"
-      className="w-[3.75rem] h-[3.75rem] justify-center"
+      className="min-w-[3.75rem] w-[3.75rem] h-[3.75rem] justify-center"
       onClick={toggleAsideOpened}
     >
       <MenuRounded />
