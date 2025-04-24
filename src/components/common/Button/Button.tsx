@@ -18,6 +18,7 @@ export interface Props {
   children?: React.ReactNode;
   color?: ButtonColor;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  isNoPadding?: boolean;
 }
 
 export const Button = (props: Props) => {
@@ -25,9 +26,10 @@ export const Button = (props: Props) => {
   return (
     <button
       className={clsx(
-        'flex flex-row items-center rounded-lg px-3 h-10 text-base leading-none font-medium cursor-pointer',
+        'flex flex-row items-center rounded-lg text-base leading-none font-medium cursor-pointer',
         props.className,
         {
+          'px-3 h-10': !props.isNoPadding,
           'bg-primary text-text-dark-primary': color === 'primary',
           'bg-secondary text-text-dark-primary': color === 'secondary',
           'bg-tertiary text-text-dark-primary': color === 'tertiary',
