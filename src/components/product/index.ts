@@ -1,3 +1,3 @@
 export { CategorySelect } from './CategorySelect/CategorySelect';
 export { ProductItem } from './ProductItem/ProductItem';
-export { PlusProduct } from './PlusProduct/PlusProduct';
+export { ProductAddPanel } from './ProductAddPanel/ProductAddPanel';
