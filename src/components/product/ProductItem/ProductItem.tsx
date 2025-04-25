@@ -11,23 +11,16 @@ export interface Props {
   soldOut: boolean;
 }
 
-export const ProductItem = ({
-  image,
-  name,
-  price,
-  description,
-  recommended,
-  soldOut,
-}: Props) => {
-  const [isRecommended, setIsRecommended] = useState(recommended);
-  const [isSoldOut, setIsSoldOut] = useState(soldOut);
+export const ProductItem = (Props: Props) => {
+  const [isRecommended, setIsRecommended] = useState(Props.recommended);
+  const [isSoldOut, setIsSoldOut] = useState(Props.soldOut);
 
   return (
     <div className="w-full h-auto flex justify-between items-center pr-2">
       <div className="w-auto h-auto gap-4 flex items-center justify-center">
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-[#989898]">
-          {image ? (
-            <img src={image} alt={name} />
+          {Props.image ? (
+            <img src={Props.image} alt={Props.name} />
           ) : (
             <div className="flex flex-col gap-1 items-center justify-center">
               <BlackPlusIcon />
@@ -36,10 +29,10 @@ export const ProductItem = ({
           )}
         </div>
         <div className="w-auto h-auto flex flex-col gap-1 justify-baseline">
-          <div className=" text-xl text-[#3B3B3C] leading-5">{name}</div>
-          <div className="leading-6 text-[#0092CA]">{price}</div>
+          <div className=" text-xl text-[#3B3B3C] leading-5">{Props.name}</div>
+          <div className="leading-6 text-[#0092CA]">{Props.price}</div>
         </div>
-        <div className="leading-6 text-[#6C6C6C]">{description}</div>
+        <div className="leading-6 text-[#6C6C6C]">{Props.description}</div>
       </div>
       <div className="flex gap-10">
         <Toggle
@@ -48,7 +41,7 @@ export const ProductItem = ({
           onClick={() => setIsRecommended(!isRecommended)}
         />
         <Toggle
-          color="primary"
+          color="secondary"
           isSelected={isSoldOut}
           onClick={() => setIsSoldOut(!isSoldOut)}
         />

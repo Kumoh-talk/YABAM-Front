@@ -7,6 +7,7 @@ import CategoryPage from './pages/manage/CategoryPage';
 import TablePage from './pages/manage/TablePage';
 import HistoryPage from './pages/HistoryPage';
 import CouponPage from './pages/CouponPage';
+import TestProduct from './pages/TestProduct';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/manage/table" element={<TablePage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/coupon" element={<CouponPage />} />
+            <Route path="/test-product" element={<TestProduct />} />
             <Route path="/" element={<MainPage />} />
           </Routes>
         </div>

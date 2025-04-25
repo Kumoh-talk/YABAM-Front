@@ -3,7 +3,7 @@ import { Close } from '@mui/icons-material';
 import { Button, Toggle } from '@/components/common';
 
 export const CategoryList = () => {
-  const categories = ['전체', '기본', '메뉴'];
+  const categories = ['전체', '기본', '메뉴','gd'];
   const [selectedStates, setSelectedStates] = useState<{
     [key: string]: boolean;
   }>(categories.reduce((acc, category) => ({ ...acc, [category]: true }), {}));
