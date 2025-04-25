@@ -1,25 +1,41 @@
+import { Order, orderStatusList } from '@/types';
 import { OrderItem } from './components';
-import { orderStatusList } from './components/OrderItem/OrderItem';
-import { dummyOrders } from './constants';
 
-export const OrderQueuePanel = () => {
-  const sorted = dummyOrders.sort(
+export interface Props {
+  orders: Order[];
+  currentOrderId: number;
+  onClickOrder?: (id: number) => void;
+}
+
+export const OrderQueuePanel = ({
+  orders,
+  currentOrderId,
+  onClickOrder,
+}: Props) => {
+  const sorted = orders.sort(
     (a, b) => new Date(b.orderAt).getTime() - new Date(a.orderAt).getTime(),
   );
 
-  const orders = Object.fromEntries(
+  const ordersByStatus = Object.fromEntries(
     orderStatusList.map((status) => [
       status,
       sorted.filter((order) => order.status === status),
     ]),
   );
   const orderCount = Object.fromEntries(
-    orderStatusList.map((status) => [status, orders[status].length]),
+    orderStatusList.map((status) => [status, ordersByStatus[status].length]),
   );
   const list = Object.fromEntries(
     orderStatusList.map((status) => [
       status,
-      orders[status].map((order) => <OrderItem key={order.id} {...order} />),
+      ordersByStatus[status].map((order) => (
+        <OrderItem
+          key={order.id}
+          order={order}
+          isOpened={currentOrderId === order.id}
+          onClick={onClickOrder}
+        />
+      )),
     ]),
   );
 

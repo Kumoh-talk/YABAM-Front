@@ -1,14 +1,14 @@
-import { Props as OrderItemProps } from './components/OrderItem/OrderItem';
+import { Order } from '@/types';
 
-export const dummyOrders: OrderItemProps[] = [
+export const dummyOrders: Order[] = [
   {
     id: 1,
     status: 'ready',
     orderAt: '2025-04-25T15:30:00Z',
     tableName: '1번 테이블',
     products: [
-      { id: 1, name: '음료수', price: 2000, quantity: 2 },
-      { id: 2, name: '식사', price: 10000, quantity: 1 },
+      { id: 1, name: '음료수', price: 2000, quantity: 2, isEnded: false },
+      { id: 2, name: '식사', price: 10000, quantity: 1, isEnded: false },
     ],
   },
   {
@@ -17,8 +17,12 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:25:00Z',
     tableName: '2번 테이블',
     products: [
-      { id: 3, name: '디저트', price: 5000, quantity: 1 },
-      { id: 4, name: '음료수', price: 2000, quantity: 3 },
+      { id: 3, name: '디저트', price: 5000, quantity: 1, isEnded: true },
+      { id: 3, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 3, name: '디저트', price: 5000, quantity: 1, isEnded: true },
+      { id: 3, name: '디저트', price: 5000, quantity: 1, isEnded: true },
+      { id: 3, name: '디저트', price: 5000, quantity: 1, isEnded: true },
+      { id: 4, name: '음료수', price: 2000, quantity: 3, isEnded: false },
     ],
   },
   {
@@ -27,8 +31,8 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:20:00Z',
     tableName: '2번 테이블',
     products: [
-      { id: 3, name: '디저트', price: 5000, quantity: 1 },
-      { id: 4, name: '음료수', price: 2000, quantity: 3 },
+      { id: 3, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 4, name: '음료수', price: 2000, quantity: 3, isEnded: false },
     ],
   },
   {
@@ -37,8 +41,8 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:15:00Z',
     tableName: '3번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2 },
-      { id: 6, name: '디저트', price: 5000, quantity: 1 },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
     ],
   },
   {
@@ -47,8 +51,8 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:10:00Z',
     tableName: '3번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2 },
-      { id: 6, name: '디저트', price: 5000, quantity: 1 },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
     ],
   },
   {
@@ -57,8 +61,8 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:05:00Z',
     tableName: '3번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2 },
-      { id: 6, name: '디저트', price: 5000, quantity: 1 },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
     ],
   },
   {
@@ -67,8 +71,8 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:04:00Z',
     tableName: '3번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2 },
-      { id: 6, name: '디저트', price: 5000, quantity: 1 },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
     ],
   },
   {
@@ -77,8 +81,8 @@ export const dummyOrders: OrderItemProps[] = [
     orderAt: '2025-04-25T15:03:00Z',
     tableName: '3번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2 },
-      { id: 6, name: '디저트', price: 5000, quantity: 1 },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
     ],
   },
 ];

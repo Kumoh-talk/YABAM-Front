@@ -1,43 +1,39 @@
 import { Button } from '@/components/common';
 import { formatRelativeTime } from '@/utils/functions';
 import clsx from 'clsx';
+import { Order, OrderStatus } from '@/types';
 
 export interface Props {
-  id: number;
-  status: OrderStatus;
-  orderAt: string;
-  tableName: string;
-  products: {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-  }[];
+  order: Order;
+  isOpened: boolean;
+  onClick?: (id: number) => void;
 }
 
-export const OrderItem = (props: Props) => {
+export const OrderItem = ({ order, isOpened, onClick }: Props) => {
   return (
     <li
       className={clsx(
         'flex flex-col gap-3 p-4 text-sm leading-none border-b border-gray-500 cursor-pointer',
-        { 'opacity-50': props.status === 'completed' },
+        { 'opacity-50': order.status === 'completed' },
+        { 'border-l-4 border-l-primary': isOpened },
       )}
+      onClick={() => onClick?.(order.id)}
     >
       <div className="flex flex-row justify-between items-center font-medium">
         <div className="flex flex-row gap-2 items-center">
-          <StatusTag status={props.status} />
-          <span>{props.tableName}</span>
+          <StatusTag status={order.status} />
+          <span>{order.tableName}</span>
         </div>
-        <span>{formatRelativeTime(props.orderAt)}</span>
+        <span>{formatRelativeTime(order.orderAt)}</span>
       </div>
       <ul className="flex flex-col gap-1">
-        {props.products.map((product) => (
+        {order.products.map((product) => (
           <li key={product.id}>
             {product.name} x {product.quantity}
           </li>
         ))}
       </ul>
-      {props.status === 'ready' && (
+      {order.status === 'ready' && (
         <div className="flex flex-row self-end gap-2">
           <Button color="tertiary">취소</Button>
           <Button color="primary">접수</Button>
@@ -46,13 +42,6 @@ export const OrderItem = (props: Props) => {
     </li>
   );
 };
-
-export type OrderStatus = 'ready' | 'inProgress' | 'completed';
-export const orderStatusList: OrderStatus[] = [
-  'ready',
-  'inProgress',
-  'completed',
-];
 
 const StatusTag = ({ status }: { status: OrderStatus }) => {
   const color = {
