@@ -8,7 +8,7 @@ import { Props as AsideItemProps } from './components/AsideItem/AsideItem';
 
 export const list: AsideItemProps[] = [
   {
-    name: '홈',
+    name: 'POS 메인',
     icon: <HomeRounded />,
     to: '/',
   },
