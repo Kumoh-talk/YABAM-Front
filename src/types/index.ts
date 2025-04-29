@@ -20,3 +20,10 @@ export type Product = {
   quantity: number;
   isEnded: boolean;
 };
+
+export type Call = {
+  id: number;
+  message: string;
+  calledAt: string;
+  isEnded: boolean;
+};

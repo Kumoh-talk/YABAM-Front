@@ -1,10 +1,10 @@
+import { useEffect } from 'react';
 import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
 import { Button } from '@/components/common';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
-import { useEffect } from 'react';
-import { ProductItem } from './components';
+import { ProductItem, CallList } from './components';
 import { Order } from '@/types';
 
 export interface Props {
@@ -36,7 +36,10 @@ export const OrderDetail = ({ order }: Props) => {
         </div>
       </header>
       <div className="flex flex-row gap-8 h-max">
-        <OrderSummary order={order} />
+        <div className="flex flex-col gap-4">
+          <OrderSummary order={order} />
+          <CallList />
+        </div>
         <section className="flex flex-col gap-8 w-0 flex-1">
           <ul className="flex flex-col gap-4">
             {readyProducts.map((product, index) => (
