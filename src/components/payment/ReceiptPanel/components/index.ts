@@ -1,3 +1,3 @@
-export { OrderList } from './OrderList/OrderList';
-export { OrderItem } from './OrderItem/OrderItem';
+export { ProductList } from './ProductList/ProductList';
+export { ProductItem } from './ProductItem/ProductItem';
 export { OrderHeader } from './OrderHeader/OrderHeader';

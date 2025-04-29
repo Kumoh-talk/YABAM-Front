@@ -26,7 +26,7 @@ export const Button = (props: Props) => {
   return (
     <button
       className={clsx(
-        'flex flex-row items-center rounded-lg text-base leading-none font-medium cursor-pointer',
+        'flex flex-row justify-center items-center rounded-lg text-base leading-none font-medium cursor-pointer',
         props.className,
         {
           'px-3 h-10': !props.isNoPadding,
