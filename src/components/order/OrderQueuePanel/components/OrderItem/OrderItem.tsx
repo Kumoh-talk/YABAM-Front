@@ -2,6 +2,7 @@ import { Button } from '@/components/common';
 import { formatRelativeTime } from '@/utils/functions';
 import clsx from 'clsx';
 import { Order, OrderStatus } from '@/types';
+import { CheckRounded, CloseRounded } from '@mui/icons-material';
 
 export interface Props {
   order: Order;
@@ -35,8 +36,12 @@ export const OrderItem = ({ order, isOpened, onClick }: Props) => {
       </ul>
       {order.status === 'ready' && (
         <div className="flex flex-row self-end gap-2">
-          <Button color="tertiary">취소</Button>
-          <Button color="primary">접수</Button>
+          <Button color="tertiary">
+            <CloseRounded />
+          </Button>
+          <Button color="primary">
+            <CheckRounded />
+          </Button>
         </div>
       )}
     </li>
