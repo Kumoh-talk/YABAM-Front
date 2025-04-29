@@ -11,7 +11,7 @@ export const ProductItem = ({ product }: Props) => {
   return (
     <li
       className={clsx(
-        'flex flex-row p-4 justify-between items-center rounded-lg border border-gray-500',
+        'flex flex-row px-4 py-3 justify-between items-center rounded-lg border border-gray-500',
         { 'opacity-50': product.isEnded },
       )}
     >
