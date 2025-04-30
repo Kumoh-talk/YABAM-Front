@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { Aside, Header } from '@/components/common';
+import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import MainPage from './pages/MainPage';
 import StorePage from './pages/manage/StorePage';
@@ -17,6 +18,7 @@ function App() {
         <Aside />
         <div className="w-0 flex-1">
           <Routes>
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/manage/store" element={<StorePage />} />
             <Route path="/manage/product" element={<ProductPage />} />
