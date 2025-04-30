@@ -18,7 +18,7 @@ export const Aside = () => {
       <div className="flex flex-col gap-6 py-8 min-w-64 w-64 h-full bg-gray-200">
         <header className="flex flex-row items-center justify-between px-8">
           <span className="text-xl leading-none font-semibold">야밤</span>
-          <Button isNoPadding color="tertiary-transparent">
+          <Button href="/" isNoPadding color="tertiary-transparent">
             <LogoutRounded fontSize="medium" />
           </Button>
         </header>
