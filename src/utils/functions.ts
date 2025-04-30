@@ -19,3 +19,8 @@ export const formatRelativeTime = (date: string) => {
     return orderDate.toLocaleDateString();
   }
 };
+
+export const isExternalUrl = (url: string) =>
+  url.startsWith('https:') ||
+  url.startsWith('http:') ||
+  url.startsWith('mailto:');
