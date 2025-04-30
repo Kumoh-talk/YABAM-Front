@@ -1,3 +1,22 @@
+export type User = {
+  id: number;
+  name: string;
+  phone: string;
+  department: string;
+};
+export type Store = {
+  id: number;
+  name: string;
+  description: string;
+  logo: string;
+  location: LocationPoint;
+};
+
+export type LocationPoint = {
+  latitude: number;
+  longitude: number;
+};
+
 export type Order = {
   id: number;
   status: OrderStatus;

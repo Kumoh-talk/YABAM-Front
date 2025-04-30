@@ -4,3 +4,5 @@ export { Toggle } from './Toggle/Toggle';
 export { Button } from './Button/Button';
 export { CommonLink } from './CommonLink/CommonLink';
 export { KakaoMapView } from './KakaoMapView/KakaoMapView';
+export { ImageInput } from './ImageInput/ImageInput';
+export { LocationInput } from './LocationInput/LocationInput';
