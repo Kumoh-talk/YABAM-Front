@@ -18,21 +18,17 @@ export const SignupContent = () => {
     <FetchingPage key={2} />,
     <LastPage key={3} />,
   ];
-  return (
-    <div className="relative">
-      <AnimatePresence>{pages[page - 1]}</AnimatePresence>
-    </div>
-  );
+  return <AnimatePresence mode="wait">{pages[page - 1]}</AnimatePresence>;
 };
 
 const ContentContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
-      className="absolute flex flex-col gap-8 w-full"
-      initial={{ opacity: 0, x: 200 }}
-      exit={{ opacity: 0, x: -200 }}
+      className="flex flex-col gap-8 w-full"
+      initial={{ opacity: 0, x: 150 }}
+      exit={{ opacity: 0, x: -150 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 1, ease: [0.62, -0.01, 0.07, 0.99] }}
+      transition={{ duration: 0.5, ease: [0.29, 0, 0.24, 0.99] }}
     >
       {children}
     </motion.div>
