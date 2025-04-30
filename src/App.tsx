@@ -18,15 +18,15 @@ function App() {
         <Aside />
         <div className="w-0 flex-1">
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/main" element={<MainPage />} />
             <Route path="/manage/store" element={<StorePage />} />
             <Route path="/manage/product" element={<ProductPage />} />
             <Route path="/manage/category" element={<CategoryPage />} />
             <Route path="/manage/table" element={<TablePage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/coupon" element={<CouponPage />} />
-            <Route path="/" element={<MainPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/" element={<LoginPage />} />
           </Routes>
         </div>
       </div>

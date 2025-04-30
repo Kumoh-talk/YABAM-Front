@@ -10,7 +10,7 @@ export const list: AsideItemProps[] = [
   {
     name: 'POS 메인',
     icon: <HomeRounded />,
-    to: '/',
+    to: '/main',
   },
   {
     name: '점포 관리',

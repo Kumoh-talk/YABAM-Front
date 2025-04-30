@@ -14,7 +14,7 @@ export const MainPageTabItem = (props: Props) => {
 
   return (
     <Link
-      to={`/?${new URLSearchParams({ tab: props.to }).toString()}`}
+      to={`/main?${new URLSearchParams({ tab: props.to }).toString()}`}
       className={clsx(
         'flex flex-row p-1 rounded-lg text-base leading-none font-semibold w-max px-3 py-2',
         {

@@ -3,7 +3,7 @@ import { MainPageTabItem } from './MainPageTabItem';
 
 export const MainPageTab = () => {
   const location = useLocation();
-  const isMainPage = location.pathname === '/';
+  const isMainPage = location.pathname === '/main';
   if (!isMainPage) return <></>;
 
   return (
