@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LogoutRounded } from '@mui/icons-material';
 import { AsideItem } from './components';
@@ -7,13 +8,16 @@ import { Button } from '../Button/Button';
 
 export const Aside = () => {
   const { isAsideOpened } = useCommonValues();
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.aside
       className="flex flex-row justify-end h-full overflow-hidden"
       animate={{
-        width: isAsideOpened ? '16rem' : 0,
+        width: isHovered || isAsideOpened ? '16rem' : '1px',
       }}
+      onPointerEnter={() => setIsHovered(true)}
+      onPointerLeave={() => setIsHovered(false)}
     >
       <div className="flex flex-col gap-6 py-8 min-w-64 w-64 h-full bg-gray-200">
         <header className="flex flex-row items-center justify-between px-8">
