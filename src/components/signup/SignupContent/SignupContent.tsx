@@ -9,6 +9,7 @@ import {
   useSignupActions,
   useSignupValues,
 } from '@/contexts/signup/SignupContext';
+import { useStoreActions } from '@/contexts/store/StoreContext';
 import { useInputs } from '@/hooks';
 import { Store, User } from '@/types';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -152,7 +153,9 @@ const StoreInfoPage = () => {
 };
 
 const FetchingPage = () => {
+  const { updateStore } = useStoreActions();
   const { nextPage } = useSignupActions();
+  const { store } = useSignupValues();
   const [index, setIndex] = useState(0);
   const ellipsis = ['.', '..', '...'];
 
@@ -168,6 +171,10 @@ const FetchingPage = () => {
       nextPage();
     }, 2000);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    updateStore(store); // fetch store data
   }, []);
 
   return (
