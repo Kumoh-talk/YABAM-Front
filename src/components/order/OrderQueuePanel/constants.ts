@@ -41,8 +41,8 @@ export const dummyOrders: Order[] = [
     orderAt: '2025-05-07T15:15:00Z',
     tableName: '3번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
-      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: true },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: true },
     ],
   },
   {
@@ -51,8 +51,8 @@ export const dummyOrders: Order[] = [
     orderAt: '2025-05-07T15:10:00Z',
     tableName: '4번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
-      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: true },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: true },
     ],
   },
   {
@@ -61,8 +61,8 @@ export const dummyOrders: Order[] = [
     orderAt: '2025-05-07T15:05:00Z',
     tableName: '5번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
-      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: true },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: true },
     ],
   },
   {
@@ -71,8 +71,8 @@ export const dummyOrders: Order[] = [
     orderAt: '2025-05-07T15:04:00Z',
     tableName: '6번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
-      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: true },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: true },
     ],
   },
   {
@@ -81,8 +81,8 @@ export const dummyOrders: Order[] = [
     orderAt: '2025-05-07T15:03:00Z',
     tableName: '7번 테이블',
     products: [
-      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: false },
-      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: false },
+      { id: 5, name: '식사', price: 10000, quantity: 2, isEnded: true },
+      { id: 6, name: '디저트', price: 5000, quantity: 1, isEnded: true },
     ],
   },
 ];
