@@ -6,9 +6,10 @@ import clsx from 'clsx';
 
 export interface Props {
   product: Product;
+  isOrderStarted?: boolean;
 }
 
-export const ProductItem = ({ product }: Props) => {
+export const ProductItem = ({ product, isOrderStarted }: Props) => {
   return (
     <li
       className={clsx(
@@ -25,22 +26,24 @@ export const ProductItem = ({ product }: Props) => {
           {formatNumberWithComma(product.price)}원
         </span>
       </div>
-      <div className="flex flex-row gap-2">
-        {product.isEnded ? (
-          <Button color="tertiary">
-            <ReplayRounded />
-          </Button>
-        ) : (
-          <>
+      {isOrderStarted && (
+        <div className="flex flex-row gap-2">
+          {product.isEnded ? (
             <Button color="tertiary">
-              <CloseRounded />
+              <ReplayRounded />
             </Button>
-            <Button color="primary">
-              <CheckRounded />
-            </Button>
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              <Button color="tertiary">
+                <CloseRounded />
+              </Button>
+              <Button color="primary">
+                <CheckRounded />
+              </Button>
+            </>
+          )}
+        </div>
+      )}
     </li>
   );
 };

@@ -43,7 +43,11 @@ export const OrderDetail = ({ order }: Props) => {
         <section className="flex flex-col gap-8 w-0 flex-1">
           <ul className="flex flex-col gap-4">
             {readyProducts.map((product, index) => (
-              <ProductItem key={index} product={product} />
+              <ProductItem
+                key={index}
+                product={product}
+                isOrderStarted={order.status !== 'ready'}
+              />
             ))}
           </ul>
           <ul className="flex flex-col gap-4">
