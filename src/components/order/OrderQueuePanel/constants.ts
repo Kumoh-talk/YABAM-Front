@@ -46,7 +46,7 @@ export const dummyOrders: Order[] = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     status: 'completed',
     orderAt: '2025-05-07T15:10:00Z',
     tableName: '4번 테이블',
@@ -56,7 +56,7 @@ export const dummyOrders: Order[] = [
     ],
   },
   {
-    id: 4,
+    id: 6,
     status: 'completed',
     orderAt: '2025-05-07T15:05:00Z',
     tableName: '5번 테이블',
@@ -66,7 +66,7 @@ export const dummyOrders: Order[] = [
     ],
   },
   {
-    id: 5,
+    id: 7,
     status: 'completed',
     orderAt: '2025-05-07T15:04:00Z',
     tableName: '6번 테이블',
@@ -76,7 +76,7 @@ export const dummyOrders: Order[] = [
     ],
   },
   {
-    id: 6,
+    id: 8,
     status: 'completed',
     orderAt: '2025-05-07T15:03:00Z',
     tableName: '7번 테이블',
