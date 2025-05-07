@@ -48,3 +48,12 @@ export type Call = {
   calledAt: string;
   isEnded: boolean;
 };
+
+export type Table = {
+  id: number;
+  name: string;
+  pos: {
+    x: number;
+    y: number;
+  };
+};

@@ -6,4 +6,5 @@ export { CommonLink } from './CommonLink/CommonLink';
 export { KakaoMapView } from './KakaoMapView/KakaoMapView';
 export { ImageInput } from './ImageInput/ImageInput';
 export { LocationInput } from './LocationInput/LocationInput';
+export { TableView } from './TableView/TableView';
 export { InputForm } from './InputForm/InputForm';

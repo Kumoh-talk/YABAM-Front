@@ -24,3 +24,16 @@ export const isExternalUrl = (url: string) =>
   url.startsWith('https:') ||
   url.startsWith('http:') ||
   url.startsWith('mailto:');
+
+export const getRelativeSeconds = (date: number | string | Date) => {
+  const result = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  return isNaN(result) ? 0 : result;
+};
+
+export const formatTimeString = (time: number) => {
+  const hours = Math.floor(time / 3600_000);
+  const minutes = Math.floor((time % 3600_000) / 60_000);
+  const seconds = Math.floor((time % 60_000) / 1000);
+
+  return `${hours}:${minutes}:${seconds}`;
+};
