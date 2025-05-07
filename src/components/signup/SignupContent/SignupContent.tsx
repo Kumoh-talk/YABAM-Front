@@ -1,5 +1,5 @@
 import { ProgressActivityIcon } from '@/assets/icon/ProgressActivityIcon';
-import { Button, ImageInput, LocationInput } from '@/components/common';
+import { Button, ImageInput, InputForm, LocationInput } from '@/components/common';
 import {
   useSignupActions,
   useSignupValues,
@@ -32,21 +32,6 @@ const ContentContainer = ({ children }: { children: React.ReactNode }) => {
     >
       {children}
     </motion.div>
-  );
-};
-
-const InputForm = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) => {
-  return (
-    <div className="flex flex-col gap-3 font-medium">
-      <span className="px-4 leading-none">{label}</span>
-      {children}
-    </div>
   );
 };
 
