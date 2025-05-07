@@ -18,15 +18,11 @@ export const StorePage = () => {
     },
   });
 
-  function updateStore(form: Omit<Store, 'id'>): void {
-    throw new Error('Function not implemented.');
-  }
-
   return (
     <section className="flex flex-col gap-8 w-full h-full p-8">
       <header className="w-full flex items-center justify-between">
         <div className="font-semibold text-2xl">점포 정보 수정</div>
-        <Button onClick={() => updateStore(form)}>저장</Button>
+        <Button>저장</Button>
       </header>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col gap-4 w-[40rem]">
