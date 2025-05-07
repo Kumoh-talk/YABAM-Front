@@ -4,25 +4,20 @@ import {
   InputForm,
   LocationInput,
 } from '@/components/common';
+import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
 import { useInputs } from '@/hooks';
 import { Store } from '@/types';
 
 export const StorePage = () => {
-  const [form, onChange] = useInputs<Omit<Store, 'id'>>({
-    name: '',
-    description: '',
-    logo: '',
-    location: {
-      latitude: 36.142043,
-      longitude: 128.394253,
-    },
-  });
+  const { updateStore } = useStoreActions();
+  const { store } = useStoreValues();
+  const [form, onChange] = useInputs<Omit<Store, 'id'>>(store);
 
   return (
     <section className="flex flex-col gap-8 w-full h-full p-8">
       <header className="w-full flex items-center justify-between">
         <div className="font-semibold text-2xl">점포 정보 수정</div>
-        <Button>저장</Button>
+        <Button onClick={() => updateStore(form)}>저장</Button>
       </header>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col gap-4 w-[40rem]">

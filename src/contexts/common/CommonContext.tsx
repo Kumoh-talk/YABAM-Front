@@ -2,13 +2,11 @@ import { createContext, useContext, useState } from 'react';
 
 export type Values = {
   isAsideOpened: boolean;
-  storeName: string;
 };
 
 export type Actions = {
   setIsAsideOpened: (value: boolean) => void;
   toggleAsideOpened: () => void;
-  setStoreName: (value: string) => void;
 };
 
 const CommonValuesContext = createContext<Values | undefined>(undefined);
@@ -20,16 +18,15 @@ export interface Props {
 
 export const CommonProvider = (props: Props) => {
   const [isAsideOpened, setIsAsideOpened] = useState(true);
-  const [storeName, setStoreName] = useState('가게 이름');
 
   const toggleAsideOpened = () => {
     setIsAsideOpened((prev) => !prev);
   };
 
   return (
-    <CommonValuesContext.Provider value={{ isAsideOpened, storeName }}>
+    <CommonValuesContext.Provider value={{ isAsideOpened }}>
       <CommonActionsContext.Provider
-        value={{ setIsAsideOpened, setStoreName, toggleAsideOpened }}
+        value={{ setIsAsideOpened, toggleAsideOpened }}
       >
         {props.children}
       </CommonActionsContext.Provider>
