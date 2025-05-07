@@ -19,6 +19,17 @@ export const OrderDetail = ({ order }: Props) => {
   const readyProducts = order.products.filter((product) => !product.isEnded);
   const completedProducts = order.products.filter((product) => product.isEnded);
 
+  const controls = {
+    ready: (
+      <>
+        <Button color="tertiary">주문 전체 취소</Button>
+        <Button color="primary">주문 접수</Button>
+      </>
+    ),
+    inProgress: <Button color="primary">전체 완료 처리</Button>,
+    completed: <></>,
+  };
+
   return (
     <main className="flex flex-col gap-8 p-8 w-full h-full overflow-y-auto">
       <header className="flex flex-row justify-between">
@@ -30,10 +41,7 @@ export const OrderDetail = ({ order }: Props) => {
             {formatRelativeTime(order.orderAt)} 주문
           </span>
         </div>
-        <div className="flex flex-row gap-2">
-          <Button color="tertiary">주문 전체 취소</Button>
-          <Button color="primary">주문 접수</Button>
-        </div>
+        <div className="flex flex-row gap-2">{controls[order.status]}</div>
       </header>
       <div className="flex flex-row gap-8 h-max">
         <div className="flex flex-col gap-4">
