@@ -35,6 +35,8 @@ export const SignupProvider = (props: Props) => {
       latitude: 36.142043,
       longitude: 128.394253,
     },
+    tableTime: 30,
+    tableCost: 1000,
   });
 
   const nextPage = () => {

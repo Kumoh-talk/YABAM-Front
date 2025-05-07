@@ -1,5 +1,10 @@
 import { ProgressActivityIcon } from '@/assets/icon/ProgressActivityIcon';
-import { Button, ImageInput, InputForm, LocationInput } from '@/components/common';
+import {
+  Button,
+  ImageInput,
+  InputForm,
+  LocationInput,
+} from '@/components/common';
 import {
   useSignupActions,
   useSignupValues,
@@ -94,6 +99,8 @@ const StoreInfoPage = () => {
       latitude: 36.142043,
       longitude: 128.394253,
     },
+    tableTime: 30,
+    tableCost: 1000,
   });
 
   useEffect(() => {

@@ -10,6 +10,8 @@ export type Store = {
   description: string;
   logo: string;
   location: LocationPoint;
+  tableTime: number;
+  tableCost: number;
 };
 
 export type LocationPoint = {
