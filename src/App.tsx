@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { Aside, Header } from '@/components/common';
 import LoginPage from './pages/LoginPage';
+import AuthPage from './pages/AuthPage';
 import SignupPage from './pages/SignupPage';
 import MainPage from './pages/MainPage';
 import StorePage from './pages/manage/StorePage';
@@ -26,6 +27,7 @@ function App() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/coupon" element={<CouponPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/auth/:provider" element={<AuthPage />} />
             <Route path="/" element={<LoginPage />} />
           </Routes>
         </div>
