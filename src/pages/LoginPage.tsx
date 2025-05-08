@@ -1,7 +1,10 @@
 import { Logo } from '@/assets/Logo';
 import { LoginButton } from '@/components/login';
+import { useCheckLogin } from '@/hooks';
 
 export const LoginPage = () => {
+  useCheckLogin(false);
+  
   const kakaoUriParams = new URLSearchParams({
     client_id: import.meta.env.VITE_KAKAO_REST_API_KEY,
     redirect_uri: `${import.meta.env.VITE_BASE_URI}/auth/kakao`,

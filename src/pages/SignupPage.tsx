@@ -1,7 +1,10 @@
 import { SignupContent, SignupHeader } from '@/components/signup';
 import { SignupProvider } from '@/contexts/signup/SignupContext';
+import { useCheckLogin } from '@/hooks';
 
 export const SignupPage = () => {
+  useCheckLogin(true);
+
   return (
     <SignupProvider>
       <section className="flex flex-col w-full h-full items-center overflow-y-auto">

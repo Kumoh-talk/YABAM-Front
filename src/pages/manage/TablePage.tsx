@@ -1,6 +1,9 @@
 import { TableView } from '@/components/common';
+import { useCheckLogin } from '@/hooks';
 
 export const TablePage = () => {
+  useCheckLogin(true);
+
   return (
     <section className="asdf flex flex-col w-full h-full">
       <header className="p-8">

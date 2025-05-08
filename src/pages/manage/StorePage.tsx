@@ -5,10 +5,11 @@ import {
   LocationInput,
 } from '@/components/common';
 import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
-import { useInputs } from '@/hooks';
+import { useCheckLogin, useInputs } from '@/hooks';
 import { Store } from '@/types';
 
 export const StorePage = () => {
+  useCheckLogin(true);
   const { updateStore } = useStoreActions();
   const { store } = useStoreValues();
   const [form, onChange] = useInputs<Omit<Store, 'id'>>(store);

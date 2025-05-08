@@ -1,9 +1,11 @@
 import { TableView } from '@/components/common';
 import { ReceiptPanel } from '@/components/payment';
 import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useCheckLogin } from '@/hooks';
 import { useState } from 'react';
 
 export const PaymentPage = () => {
+  useCheckLogin(true);
   const [selectedTableId, setSelectedTableId] = useState<number>(-1);
   const { orders } = useStoreValues();
 

@@ -1,4 +1,8 @@
+import { useCheckLogin } from '@/hooks';
+
 export const CouponPage = () => {
+  useCheckLogin(true);
+
   return (
     <section className="asdf flex flex-row w-full h-full">
       <header className="p-8">

@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { OrderDetail, OrderQueuePanel } from '@/components/order';
 import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useCheckLogin } from '@/hooks';
 
 export const OrderPage = () => {
+  useCheckLogin(true);
   const { orders } = useStoreValues();
   const [currentOrderId, setCurrentOrderId] = useState<number>(-1);
   const currentOrder = orders.find((order) => order.id === currentOrderId);
