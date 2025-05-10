@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BlackPlusIcon } from '@/assets/icon/BlackPlusCcon';
 import { Toggle } from '../../common';
+import { DragIndicator } from '@mui/icons-material';
 
 export interface Props {
   image: string;
@@ -9,6 +10,7 @@ export interface Props {
   description: string;
   recommended: boolean;
   soldOut: boolean;
+  index: number;
 }
 
 export const ProductItem = (Props: Props) => {
@@ -16,8 +18,9 @@ export const ProductItem = (Props: Props) => {
   const [isSoldOut, setIsSoldOut] = useState(Props.soldOut);
 
   return (
-    <div className="w-full h-auto flex justify-between items-center pr-2">
+    <div className={`w-full h-auto flex justify-between items-center pr-2 ${Props.index % 2 === 0 ? 'bg-white rounded-lg' : 'bg-gray-100 rounded-lg'} z-0`}>
       <div className="w-auto h-auto gap-4 flex items-center justify-center">
+        <DragIndicator />
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-[#989898]">
           {Props.image ? (
             <img src={Props.image} alt={Props.name} />
@@ -35,16 +38,8 @@ export const ProductItem = (Props: Props) => {
         <div className="leading-6 text-[#6C6C6C]">{Props.description}</div>
       </div>
       <div className="flex gap-10">
-        <Toggle
-          color="primary"
-          isSelected={isRecommended}
-          onClick={() => setIsRecommended(!isRecommended)}
-        />
-        <Toggle
-          color="secondary"
-          isSelected={isSoldOut}
-          onClick={() => setIsSoldOut(!isSoldOut)}
-        />
+        <Toggle color="primary" isSelected={isRecommended} onClick={() => setIsRecommended(!isRecommended)} />
+        <Toggle color="secondary" isSelected={isSoldOut} onClick={() => setIsSoldOut(!isSoldOut)} />
       </div>
     </div>
   );
