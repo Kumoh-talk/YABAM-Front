@@ -1,9 +1,13 @@
 import { CategorySelect } from '../CategorySelect/CategorySelect';
 import { Button } from '../../common/Button/Button';
 
-export const ProductAddPanel = () => {
+interface Props {
+  onClose?: () => void;
+}
+
+export const ProductAddPanel = ({ onClose }: Props) => {
   return (
-    <div className="flex flex-col w-2/3 h-2/3 p-8 gap-8 border-2 border-gray-300 rounded-4xl justify-between">
+    <div className="flex flex-col w-full h-full p-8 gap-8 border-2 bg-white border-gray-300 rounded-4xl justify-between">
       <div className="flex flex-col gap-8">
         <h1 className="text-2xl ">상품 추가</h1>
         <div className="flex flex-col gap-4">
@@ -24,13 +28,13 @@ export const ProductAddPanel = () => {
         <div className="flex flex-col gap-4">
           <div className="px-4">설명</div>
           <textarea
-            className="w-full px-4 py-2 border border-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent rounded-md"
+            className="w-full px-4 py-2 border border-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent rounded-md resize-none"
             placeholder="설명입니다"
           />
         </div>
       </div>
       <div className="flex gap-4 justify-end">
-        <Button color="tertiary" className="px-8 py-3 justify-center">
+        <Button color="tertiary" className="px-8 py-3 justify-center" onClick={onClose}>
           취소
         </Button>
         <Button color="primary" className="px-8 py-3 justify-center">
