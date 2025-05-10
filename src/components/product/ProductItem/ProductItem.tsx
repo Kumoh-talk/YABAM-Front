@@ -64,13 +64,13 @@ export const ProductItem = (Props: Props) => {
   return (
     <div
       ref={ref}
-      className={`w-full h-auto flex justify-between items-center pr-2 ${
+      className={`w-full flex justify-between items-center p-2 ${
         Props.index % 2 === 0 ? 'bg-white rounded-lg' : 'bg-gray-100 rounded-lg'
       } z-0 ${isDragging ? 'opacity-50' : 'opacity-100'} transition-all duration-200 ease-in-out`}
     >
-      <div className="w-auto h-auto gap-4 flex items-center justify-center cursor-move">
+      <div className=" gap-4 flex items-center justify-center cursor-move">
         <DragIndicator className="text-gray-400 hover:text-gray-600" />
-        <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-[#989898]">
+        <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
           {Props.image ? (
             <img src={Props.image} alt={Props.name} />
           ) : (
@@ -80,7 +80,7 @@ export const ProductItem = (Props: Props) => {
             </div>
           )}
         </div>
-        <div className="w-auto h-auto flex flex-col gap-1 justify-baseline">
+        <div className="flex flex-col gap-1 justify-baseline">
           <div className="text-xl text-[#3B3B3C] leading-5">{Props.name}</div>
           <div className="leading-6 text-[#0092CA]">{Props.price.toLocaleString()}원</div>
         </div>

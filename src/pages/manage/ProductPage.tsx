@@ -90,6 +90,7 @@ export const ProductPage = () => {
             </div>
           </div>
         </div>
+        <div>
         {filteredProducts.map((product, filteredIndex) => (
           <ProductItem
             key={product.id}
@@ -105,6 +106,7 @@ export const ProductPage = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
     </DndProvider>
   );
