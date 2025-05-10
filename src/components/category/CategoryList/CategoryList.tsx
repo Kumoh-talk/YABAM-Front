@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Close } from '@mui/icons-material';
 import { Button, Toggle } from '@/components/common';
+import { DragIndicator } from '@mui/icons-material';
 
 export const CategoryList = () => {
   const categories = ['전체', '기본', '메뉴','gd'];
@@ -15,12 +16,18 @@ export const CategoryList = () => {
     }));
   };
 
-  return categories.map((category) => (
+  return categories.map((category, index) => (
     <div
       key={category}
-      className="w-full flex justify-between px-3 py-6 border-t border-gray-500"
+      className={`w-full flex justify-between px-2 py-4 ${index % 2 === 0 ? 'bg-gray-100' : ''}`}
     >
-      <div className="text-xl">{category}</div>
+      <div className='gap-4 flex items-center '>
+        <DragIndicator/>
+        <div className='gap-1'>
+          <div className='text-text-primary'>카테고리이름</div>
+          <div className='text-sm text-text-secondary'>메뉴 3개</div>
+        </div>
+      </div>
       <div className="flex gap-8 items-center">
         <div>
           <Toggle
@@ -29,8 +36,8 @@ export const CategoryList = () => {
             onClick={() => toggleCategory(category)}
           />
         </div>
-        <Button color="black-transparent">
-          <Close />
+        <Button color="black-transparent" isNoPadding>
+          <Close className='text-gray-700'/>
         </Button>
       </div>
     </div>
