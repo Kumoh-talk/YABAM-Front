@@ -4,6 +4,59 @@ import { CategorySelect, ProductItem, ProductAddPanel } from '@/components/produ
 
 export const ProductPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('기본');
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      image: "",
+      name: "상품명1",
+      price: 10000,
+      description: "상품 설명1",
+      recommended: false,
+      soldOut: false,
+      category: "기본"
+    },
+    {
+      id: 2,
+      image: "",
+      name: "상품명2",
+      price: 20000,
+      description: "상품 설명2",
+      recommended: false,
+      soldOut: false,
+      category: "기본"
+    },
+    {
+      id: 3,
+      image: "",
+      name: "불고기 버거",
+      price: 8500,
+      description: "맛있는 불고기 버거",
+      recommended: true,
+      soldOut: false,
+      category: "메뉴"
+    },
+    {
+      id: 4,
+      image: "",
+      name: "치킨 버거",
+      price: 9000,
+      description: "바삭한 치킨 버거",
+      recommended: false,
+      soldOut: true,
+      category: "메뉴"
+    },
+    {
+      id: 5,
+      image: "",
+      name: "감자튀김",
+      price: 3500,
+      description: "바삭한 감자튀김",
+      recommended: true,
+      soldOut: false,
+      category: "메뉴"
+    }
+  ]);
 
   return (
     <div className="flex flex-col gap-6 p-8 w-full h-full">

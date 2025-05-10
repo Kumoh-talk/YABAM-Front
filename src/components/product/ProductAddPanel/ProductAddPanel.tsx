@@ -12,7 +12,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
         <h1 className="text-2xl ">상품 추가</h1>
         <div className="flex flex-col gap-4">
           <div className="text-gray-800 px-4">카테고리</div>
-          <CategorySelect />
+          <CategorySelect selected="기본" onSelect={() => {}} />
         </div>
         <div className="flex flex-col gap-4">
           <div className="px-4">이름</div>
