@@ -9,7 +9,7 @@ export const CategorySelect = ({ selected, onSelect }: Props) => {
   const categories = ['기본', '메뉴'];
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-4">
       {categories.map((name) => (
         <div
           key={name}

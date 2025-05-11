@@ -68,6 +68,12 @@ export const ProductPage = () => {
     setProducts(newProducts);
   };
 
+  const handleUpdate = (id: number, field: 'name' | 'price' | 'description', value: string | number) => {
+    setProducts(products.map(product => 
+      product.id === id ? { ...product, [field]: value } : product
+    ));
+  };
+
   const filteredProducts = products.filter(product => product.category === selectedCategory);
   const filteredIndices = products
     .map((product, index) => ({ product, index }))
@@ -87,6 +93,7 @@ export const ProductPage = () => {
             <div className="flex gap-9 px-1">
               <div>사장님추천</div>
               <div>품절표시</div>
+              <div>삭제</div>
             </div>
           </div>
         </div>
@@ -97,6 +104,7 @@ export const ProductPage = () => {
             index={filteredIndices[filteredIndex]}
             {...product}
             moveProduct={moveProduct}
+            onUpdate={handleUpdate}
           />
         ))}
         {isModalOpen && (

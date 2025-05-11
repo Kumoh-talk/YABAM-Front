@@ -1,18 +1,21 @@
 import { CategorySelect } from '../CategorySelect/CategorySelect';
 import { Button } from '../../common/Button/Button';
+import { useState } from 'react';
 
 interface Props {
   onClose?: () => void;
 }
 
 export const ProductAddPanel = ({ onClose }: Props) => {
+  const [selectedCategory, setSelectedCategory] = useState('기본');
+
   return (
-    <div className="flex flex-col w-full h-full p-8 gap-8 border-2 bg-white border-gray-300 rounded-4xl justify-between">
+    <div className="flex flex-col w-[40rem] h-full p-8 gap-8 border-2 bg-white border-gray-300 rounded-4xl justify-between">
       <div className="flex flex-col gap-8">
         <h1 className="text-2xl ">상품 추가</h1>
         <div className="flex flex-col gap-4">
           <div className="text-gray-800 px-4">카테고리</div>
-          <CategorySelect selected="기본" onSelect={() => {}} />
+          <CategorySelect selected={selectedCategory} onSelect={setSelectedCategory} />
         </div>
         <div className="flex flex-col gap-4">
           <div className="px-4">이름</div>

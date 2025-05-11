@@ -3,6 +3,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { BlackPlusIcon } from '@/assets/icon/BlackPlusCcon';
 import { Toggle } from '../../common';
 import { DragIndicator } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 
 export interface Props {
   id: number;
@@ -14,12 +15,35 @@ export interface Props {
   soldOut: boolean;
   index: number;
   moveProduct: (dragIndex: number, hoverIndex: number) => void;
+  onUpdate?: (id: number, field: 'name' | 'price' | 'description', value: string | number) => void;
 }
 
 export const ProductItem = (Props: Props) => {
   const [isRecommended, setIsRecommended] = useState(Props.recommended);
   const [isSoldOut, setIsSoldOut] = useState(Props.soldOut);
+  const [editingField, setEditingField] = useState<'name' | 'price' | 'description' | null>(null);
+  const [editValue, setEditValue] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<HTMLDivElement>(null);
+
+  const handleDoubleClick = (field: 'name' | 'price' | 'description') => {
+    setEditingField(field);
+    setEditValue(field === 'price' ? Props.price.toString() : Props[field]);
+  };
+
+  const handleBlur = () => {
+    if (editingField && Props.onUpdate) {
+      const value = editingField === 'price' ? Number(editValue) : editValue;
+      Props.onUpdate(Props.id, editingField, value);
+    }
+    setEditingField(null);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+    }
+  };
 
   const [{ isDragging }, drag] = useDrag({
     type: 'PRODUCT',
@@ -59,7 +83,8 @@ export const ProductItem = (Props: Props) => {
     },
   });
 
-  drag(drop(ref));
+  drag(dragRef);
+  drop(ref);
 
   return (
     <div
@@ -68,8 +93,10 @@ export const ProductItem = (Props: Props) => {
         Props.index % 2 === 0 ? 'bg-white rounded-lg' : 'bg-gray-100 rounded-lg'
       } z-0 ${isDragging ? 'opacity-50' : 'opacity-100'} transition-all duration-200 ease-in-out`}
     >
-      <div className=" gap-4 flex items-center justify-center cursor-move">
-        <DragIndicator className="text-gray-400 hover:text-gray-600" />
+      <div className="gap-4 flex items-center justify-center">
+        <div ref={dragRef} className="cursor-move">
+          <DragIndicator className="text-gray-400 hover:text-gray-600" />
+        </div>
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
           {Props.image ? (
             <img src={Props.image} alt={Props.name} />
@@ -81,14 +108,57 @@ export const ProductItem = (Props: Props) => {
           )}
         </div>
         <div className="flex flex-col gap-1 justify-baseline">
-          <div className="text-xl text-[#3B3B3C] leading-5">{Props.name}</div>
-          <div className="leading-6 text-[#0092CA]">{Props.price.toLocaleString()}원</div>
+          {editingField === 'name' ? (
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              className="text-xl text-[#3B3B3C] leading-5 border border-gray-300 rounded px-1"
+              autoFocus
+            />
+          ) : (
+            <div className="text-xl text-[#3B3B3C] leading-5" onDoubleClick={() => handleDoubleClick('name')}>
+              {Props.name}
+            </div>
+          )}
+          {editingField === 'price' ? (
+            <input
+              type="number"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              className="leading-6 text-[#0092CA] border border-gray-300 rounded px-1"
+              autoFocus
+            />
+          ) : (
+            <div className="leading-6 text-[#0092CA]" onDoubleClick={() => handleDoubleClick('price')}>
+              {Props.price.toLocaleString()}원
+            </div>
+          )}
         </div>
-        <div className="leading-6 text-[#6C6C6C]">{Props.description}</div>
+        {editingField === 'description' ? (
+          <input
+            type="text"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            className="leading-6 text-[#6C6C6C] border border-gray-300 rounded px-1"
+            autoFocus
+          />
+        ) : (
+          <div className="leading-6 text-[#6C6C6C]" onDoubleClick={() => handleDoubleClick('description')}>
+            {Props.description}
+          </div>
+        )}
       </div>
       <div className="flex gap-10">
         <Toggle color="primary" isSelected={isRecommended} onClick={() => setIsRecommended(!isRecommended)} />
         <Toggle color="secondary" isSelected={isSoldOut} onClick={() => setIsSoldOut(!isSoldOut)} />
+        <Close className="text-gray-700 hover:text-gray-600" />
       </div>
     </div>
   );
