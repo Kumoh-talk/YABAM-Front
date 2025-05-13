@@ -100,6 +100,7 @@ const StoreInfoPage = () => {
       latitude: 36.142043,
       longitude: 128.394253,
     },
+    university: '',
     tableTime: 30,
     tableCost: 1000,
   });
