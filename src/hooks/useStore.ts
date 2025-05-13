@@ -1,5 +1,7 @@
 import { Store } from '@/types';
-import { useState } from 'react';
+import { StoreUpdateDto } from '@/types/backend/store';
+import { getMyStores, updateStore } from '@/utils/api/backend/store';
+import { useEffect, useRef, useState } from 'react';
 
 export const useStore = () => {
   const [store, setStore] = useState<Store>({
@@ -15,8 +17,56 @@ export const useStore = () => {
     tableTime: 30,
     tableCost: 1000,
   });
+  const prevStoreRef = useRef<Store | null>(null);
 
-  const updateStore = (value: Partial<Omit<Store, 'id'>>) => {
+  const refresh = async () => {
+    try {
+      const stores = await getMyStores();
+      if (stores && stores.length > 0) {
+        const store = stores[stores.length - 1];
+        setStore({
+          id: store.storeId,
+          name: store.storeName,
+          description: store.description,
+          logo: store.headImageUrl,
+          location: {
+            latitude: store.latitude,
+            longitude: store.longitude,
+          },
+          university: store.university,
+          tableTime: store.tableTime,
+          tableCost: store.tableCost,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  useEffect(() => {
+    if (
+      store.id !== -1 &&
+      JSON.stringify(store) !== JSON.stringify(prevStoreRef.current)
+    ) {
+      const dto: StoreUpdateDto = {
+        storeName: store.name,
+        latitude: store.location.latitude,
+        longitude: store.location.longitude,
+        description: store.description,
+        headImageUrl: store.logo,
+        university: store.university,
+        tableTime: store.tableTime,
+        tableCost: store.tableCost,
+      };
+      updateStore(store.id, dto);
+    }
+  }, [store]);
+
+  const update = (value: Partial<Omit<Store, 'id'>>) => {
     setStore((prev) => ({
       ...prev,
       ...value,
@@ -25,6 +75,7 @@ export const useStore = () => {
 
   return {
     store,
-    updateStore,
+    update,
+    refresh,
   };
 };

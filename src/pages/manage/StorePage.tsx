@@ -7,12 +7,17 @@ import {
 import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
 import { useCheckLogin, useInputs } from '@/hooks';
 import { Store } from '@/types';
+import { useEffect } from 'react';
 
 export const StorePage = () => {
   useCheckLogin(true);
   const { updateStore } = useStoreActions();
   const { store } = useStoreValues();
-  const [form, onChange] = useInputs<Omit<Store, 'id'>>(store);
+  const [form, onChange, _, update] = useInputs<Omit<Store, 'id'>>(store);
+
+  useEffect(() => {
+    update(store);
+  }, [store]);
 
   return (
     <section className="flex flex-col gap-8 w-full h-full p-8">

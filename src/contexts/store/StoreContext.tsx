@@ -1,6 +1,6 @@
 import { useOrder, useStore, useTable } from '@/hooks';
 import { Order, Store, Table } from '@/types';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 
 export type Values = {
   store: Store;
@@ -21,7 +21,7 @@ export interface Props {
 }
 
 export const StoreProvider = (props: Props) => {
-  const { store, updateStore } = useStore();
+  const { store, update } = useStore();
   const { orders } = useOrder();
   const { tables } = useTable();
 
@@ -31,7 +31,9 @@ export const StoreProvider = (props: Props) => {
 
   return (
     <StoreValuesContext.Provider value={{ orders, tables, store }}>
-      <StoreActionsContext.Provider value={{ updateStore, calcTableCost }}>
+      <StoreActionsContext.Provider
+        value={{ updateStore: update, calcTableCost }}
+      >
         {props.children}
       </StoreActionsContext.Provider>
     </StoreValuesContext.Provider>
