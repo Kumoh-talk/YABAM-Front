@@ -1,5 +1,7 @@
 import { useOrder, useStore, useTable } from '@/hooks';
 import { Order, Store, Table } from '@/types';
+import { StoreCreateDto } from '@/types/backend/store';
+import { createStore } from '@/utils/api/backend/store';
 import { createContext, useContext } from 'react';
 
 export type Values = {
@@ -10,6 +12,7 @@ export type Values = {
 
 export type Actions = {
   updateStore: (value: Partial<Omit<Store, 'id'>>) => void;
+  requestCreateStore: (value: Omit<Store, 'id'>) => Promise<boolean>;
   calcTableCost: (time: number) => number;
 };
 
@@ -21,7 +24,7 @@ export interface Props {
 }
 
 export const StoreProvider = (props: Props) => {
-  const { store, update } = useStore();
+  const { store, update, refresh: refreshStore } = useStore();
   const { orders } = useOrder();
   const { tables } = useTable();
 
@@ -29,10 +32,31 @@ export const StoreProvider = (props: Props) => {
     return Math.ceil(time / store.tableTime / 60) * store.tableCost;
   };
 
+  const requestCreateStore = async (value: Omit<Store, 'id'>) => {
+    try {
+      const dto: StoreCreateDto = {
+        storeName: value.name,
+        description: value.description,
+        latitude: value.location.latitude,
+        longitude: value.location.longitude,
+        headImageUrl: value.logo,
+        university: value.university,
+        tableTime: value.tableTime,
+        tableCost: value.tableCost,
+      };
+      await createStore(dto);
+      await refreshStore();
+      return true;
+    } catch (error) {
+      console.error('점포 생성 실패', error);
+      return false;
+    }
+  };
+
   return (
     <StoreValuesContext.Provider value={{ orders, tables, store }}>
       <StoreActionsContext.Provider
-        value={{ updateStore: update, calcTableCost }}
+        value={{ updateStore: update, requestCreateStore, calcTableCost }}
       >
         {props.children}
       </StoreActionsContext.Provider>

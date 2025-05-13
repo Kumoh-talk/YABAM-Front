@@ -154,8 +154,8 @@ const StoreInfoPage = () => {
 };
 
 const FetchingPage = () => {
-  const { updateStore } = useStoreActions();
-  const { nextPage } = useSignupActions();
+  const { requestCreateStore } = useStoreActions();
+  const { nextPage, prevPage } = useSignupActions();
   const { store } = useSignupValues();
   const [index, setIndex] = useState(0);
   const ellipsis = ['.', '..', '...'];
@@ -168,14 +168,16 @@ const FetchingPage = () => {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const _fetch = async () => {
+      const isStoreCreated = await requestCreateStore(store);
+      if (!isStoreCreated) {
+        alert('점포 생성에 실패했습니다. 다시 시도해주세요.');
+        prevPage();
+        return;
+      }
       nextPage();
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    updateStore(store); // fetch store data
+    };
+    _fetch();
   }, []);
 
   return (
