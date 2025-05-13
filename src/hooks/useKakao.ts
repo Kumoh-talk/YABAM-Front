@@ -11,7 +11,7 @@ export const useKakao = () => {
     'id_token',
   ]);
 
-  const requestLogin = async (code: string): Promise<boolean> => {
+  const login = async (code: string): Promise<boolean> => {
     try {
       const res = await fetchGetTokenKakao(code as string);
       if ('error' in res) {
