@@ -2,7 +2,8 @@ import { useOrder, useStore, useTable } from '@/hooks';
 import { Order, Store, Table } from '@/types';
 import { StoreCreateDto } from '@/types/backend/store';
 import { createStore } from '@/utils/api/backend/store';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 export type Values = {
   store: Store;
@@ -24,6 +25,7 @@ export interface Props {
 }
 
 export const StoreProvider = (props: Props) => {
+  const [cookies] = useCookies(['access_token', 'refresh_token', 'id_token']);
   const { store, update, refresh: refreshStore } = useStore();
   const { orders } = useOrder();
   const { tables } = useTable();
@@ -52,6 +54,12 @@ export const StoreProvider = (props: Props) => {
       return false;
     }
   };
+
+  useEffect(() => {
+    if (cookies.access_token) {
+      refreshStore();
+    }
+  }, [cookies.access_token]);
 
   return (
     <StoreValuesContext.Provider value={{ orders, tables, store }}>
