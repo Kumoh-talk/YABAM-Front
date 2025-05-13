@@ -8,7 +8,7 @@ export type InputChangeHandler<T> = (
 
 export const useInputs = <T = Record<string, any>>(
   initialForm: T,
-): [T, InputChangeHandler<T[keyof T]>, () => void] => {
+): [T, InputChangeHandler<T[keyof T]>, () => void, (value: T) => void] => {
   const [form, setForm] = useState(initialForm);
 
   const onChange: InputChangeHandler<T[keyof T]> = useCallback((e) => {
@@ -26,5 +26,5 @@ export const useInputs = <T = Record<string, any>>(
   }, []);
 
   const reset = useCallback(() => setForm(initialForm), [initialForm]);
-  return [form, onChange, reset];
+  return [form, onChange, reset, setForm];
 };
