@@ -12,3 +12,13 @@ export type KakaoErrorResponse = {
   error_code: string;
   error_description: string;
 };
+
+export type KakaoIdToken = {
+  aud: string;
+  sub: string;
+  auth_time: number;
+  iss: string;
+  exp: number;
+  iat: number;
+  nonce: string;
+};

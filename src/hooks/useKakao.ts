@@ -1,4 +1,7 @@
+import { AccessTokenJwt } from '@/types/backend/auth';
+import { requestLogin } from '@/utils/api/backend/auth';
 import { fetchGetTokenKakao } from '@/utils/api/kakao';
+import { jwtDecode } from 'jwt-decode';
 import { useCookies } from 'react-cookie';
 
 export const useKakao = () => {
@@ -16,15 +19,18 @@ export const useKakao = () => {
         return false;
       }
 
-      setCookies('access_token', res.access_token, {
-        path: '/',
-        expires: new Date(Date.now() + res.expires_in * 1000),
-      });
-      setCookies('refresh_token', res.refresh_token, {
+      const resLogin = await requestLogin('KAKAO', res.id_token as string);
+
+      setCookies('id_token', res.id_token, {
         path: '/',
         expires: new Date(Date.now() + res.refresh_token_expires_in * 1000),
       });
-      setCookies('id_token', res.id_token, {
+      const parsed = jwtDecode<AccessTokenJwt>(resLogin.accessToken);
+      setCookies('access_token', resLogin.accessToken, {
+        path: '/',
+        expires: new Date(parsed.exp * 1000),
+      });
+      setCookies('refresh_token', resLogin.refreshToken, {
         path: '/',
         expires: new Date(Date.now() + res.refresh_token_expires_in * 1000),
       });
@@ -37,6 +43,6 @@ export const useKakao = () => {
   };
 
   return {
-    requestLogin,
+    login,
   };
 };

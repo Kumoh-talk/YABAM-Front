@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export const AuthPage = () => {
   const navigate = useNavigate();
-  const { requestLogin } = useKakao();
+  const { login } = useKakao();
 
   const { provider } = useParams<{ provider: string }>();
   const { search } = useLocation();
@@ -17,10 +17,9 @@ export const AuthPage = () => {
     }
 
     const processLogin = async () => {
-      console.log('code', code);
       if (provider === 'kakao') {
-        const res = await requestLogin(code);
-        if (res) {
+        const isLogined = await login(code);
+        if (isLogined) {
           navigate('/main', { replace: true });
         } else {
           alert('로그인에 실패했습니다.');

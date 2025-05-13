@@ -10,6 +10,7 @@ export const LoginPage = () => {
     redirect_uri: `${import.meta.env.VITE_BASE_URI}/auth/kakao`,
     response_type: 'code',
     scope: 'openid',
+    nonce: Date.now().toString(),
   });
   const kakaoUri = `https://kauth.kakao.com/oauth/authorize?${kakaoUriParams.toString()}`;
 
