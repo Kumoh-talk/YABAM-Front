@@ -1,3 +1,5 @@
+import { getMyStores } from './api/backend/store';
+
 export const formatNumberWithComma = (value: number): string => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
@@ -36,4 +38,15 @@ export const formatTimeString = (time: number) => {
   const seconds = Math.floor((time % 60_000) / 1000);
 
   return `${hours}:${minutes}:${seconds}`;
+};
+
+export const checkHasOwnStore = async () => {
+  try {
+    // 본인 점포가 존재하는지 여부로 가입완료 여부 판단
+    const myStores = await getMyStores();
+    return myStores.length > 0;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
 };

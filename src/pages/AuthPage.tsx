@@ -1,4 +1,5 @@
 import { useKakao } from '@/hooks/useKakao';
+import { checkHasOwnStore } from '@/utils/functions';
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -21,7 +22,16 @@ export const AuthPage = () => {
       if (provider === 'kakao') {
         const isLogined = await login(code);
         if (isLogined) {
-          navigate('/main', { replace: true });
+          try {
+            if (await checkHasOwnStore()) {
+              navigate('/', { replace: true });
+            } else {
+              navigate('/signup', { replace: true });
+            }
+          } catch (e) {
+            console.error(e);
+            navigate('/signup', { replace: true });
+          }
         } else {
           alert('로그인에 실패했습니다.');
         }
