@@ -9,6 +9,7 @@ export type Values = {
 
 export type Actions = {
   nextPage: () => void;
+  prevPage: () => void;
   updateManager: (value: Partial<Values['manager']>) => void;
   updateStore: (value: Partial<Values['store']>) => void;
 };
@@ -47,6 +48,13 @@ export const SignupProvider = (props: Props) => {
     });
   };
 
+  const prevPage = () => {
+    setPage((prev) => {
+      if (prev === 1) return prev;
+      return (prev - 1) as Values['page'];
+    });
+  };
+
   const updateManager = (value: Partial<Omit<User, 'id'>>) => {
     setManager((prev) => ({
       ...prev,
@@ -63,7 +71,7 @@ export const SignupProvider = (props: Props) => {
   return (
     <SignupValuesContext.Provider value={{ page, manager, store }}>
       <SignupActionsContext.Provider
-        value={{ nextPage, updateManager, updateStore }}
+        value={{ nextPage, prevPage, updateManager, updateStore }}
       >
         {props.children}
       </SignupActionsContext.Provider>
