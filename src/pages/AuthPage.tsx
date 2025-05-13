@@ -1,11 +1,12 @@
 import { useKakao } from '@/hooks/useKakao';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export const AuthPage = () => {
   const navigate = useNavigate();
   const { login } = useKakao();
 
+  const isRequestedRef = useRef(false);
   const { provider } = useParams<{ provider: string }>();
   const { search } = useLocation();
   const query = new URLSearchParams(search);
@@ -26,7 +27,10 @@ export const AuthPage = () => {
         }
       }
     };
-    processLogin();
+    if (!isRequestedRef.current) {
+      processLogin();
+      isRequestedRef.current = true;
+    }
   }, [provider, code]);
 
   return <>로그인 중입니다..</>;
