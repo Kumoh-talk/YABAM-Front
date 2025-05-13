@@ -1,9 +1,26 @@
 import { SignupContent, SignupHeader } from '@/components/signup';
 import { SignupProvider } from '@/contexts/signup/SignupContext';
 import { useCheckLogin } from '@/hooks';
+import { checkHasOwnStore } from '@/utils/functions';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const SignupPage = () => {
   useCheckLogin(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkStore = async () => {
+      try {
+        if (await checkHasOwnStore()) {
+          navigate('/main', { replace: true });
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    checkStore();
+  }, []);
 
   return (
     <SignupProvider>
