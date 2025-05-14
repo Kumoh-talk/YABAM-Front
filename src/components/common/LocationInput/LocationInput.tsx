@@ -34,7 +34,9 @@ export const LocationInput = (props: Props) => {
       return;
     }
     const marker = new kakao.maps.Marker({
-      position: kakaoMap.getCenter(),
+      position: props.value
+        ? new kakao.maps.LatLng(props.value.latitude, props.value.longitude)
+        : kakaoMap.getCenter(),
     });
     marker.setMap(kakaoMap);
     pointMarker.current = marker;
@@ -46,6 +48,15 @@ export const LocationInput = (props: Props) => {
       pointMarker.current?.setMap(null);
     };
   }, [kakaoMap]);
+
+  useEffect(() => {
+    if (!pointMarker.current || !props.value || !kakaoMap) {
+      return;
+    }
+    pointMarker.current.setPosition(
+      new kakao.maps.LatLng(props.value.latitude, props.value.longitude),
+    );
+  }, [props.value, kakaoMap]);
 
   return (
     <div
