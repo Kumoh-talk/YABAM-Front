@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import { CommonProvider } from './contexts/common/CommonContext.tsx';
 import { StoreProvider } from './contexts/store/StoreContext.tsx';
+import { CategoryProvider } from './contexts/category/CategoryContext.tsx';
 import App from './App.tsx';
 import './styles.css';
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')!).render(
       <CookiesProvider>
         <CommonProvider>
           <StoreProvider>
-            <App />
+            <CategoryProvider>
+              <App />
+            </CategoryProvider>
           </StoreProvider>
         </CommonProvider>
       </CookiesProvider>
