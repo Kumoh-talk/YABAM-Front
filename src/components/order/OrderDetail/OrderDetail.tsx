@@ -1,20 +1,24 @@
 import { useEffect } from 'react';
 import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Button } from '@/components/common';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { ProductItem, CallList } from './components';
-import { Order } from '@/types';
+import { Order, Table } from '@/types';
 
 export interface Props {
   order: Order;
 }
 
 export const OrderDetail = ({ order }: Props) => {
+  const { tables } = useStoreValues();
   useEffect(() => {
     dayjs.locale('ko');
   }, []);
+
+  const table = tables.find((table) => table.id === order.tableId)!;
 
   const readyProducts = order.products.filter((product) => !product.isEnded);
   const completedProducts = order.products.filter((product) => product.isEnded);
@@ -35,7 +39,7 @@ export const OrderDetail = ({ order }: Props) => {
       <header className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
           <h2 className="text-3xl leading-none font-medium">
-            {order.tableName}
+            {table.number}번 테이블
           </h2>
           <span className="leading-none">
             {formatRelativeTime(order.orderAt)} 주문
@@ -45,7 +49,7 @@ export const OrderDetail = ({ order }: Props) => {
       </header>
       <div className="flex flex-row gap-8 h-max">
         <div className="flex flex-col gap-4">
-          <OrderSummary order={order} />
+          <OrderSummary order={order} table={table} />
           <CallList />
         </div>
         <section className="flex flex-col gap-8 w-0 flex-1">
@@ -70,7 +74,7 @@ export const OrderDetail = ({ order }: Props) => {
   );
 };
 
-const OrderSummary = ({ order }: { order: Order }) => {
+const OrderSummary = ({ order, table }: { order: Order; table: Table }) => {
   return (
     <section className="flex flex-col gap-4 p-6 w-[20rem] rounded-lg border border-gray-500 h-fit">
       <SummaryLine
@@ -81,7 +85,7 @@ const OrderSummary = ({ order }: { order: Order }) => {
         label="총 주문 금액"
         body={`${formatNumberWithComma(43000)}원`}
       />
-      <SummaryLine label="테이블" body={order.tableName} />
+      <SummaryLine label="테이블" body={table.number + ''} />
       <SummaryLine label="쿠폰 사용" body={true ? 'O' : 'X'} />
     </section>
   );

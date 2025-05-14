@@ -5,7 +5,7 @@ import { useCheckLogin } from '@/hooks';
 
 export const OrderPage = () => {
   useCheckLogin(true);
-  const { orders } = useStoreValues();
+  const { orders, tables } = useStoreValues();
   const [currentOrderId, setCurrentOrderId] = useState<number>(-1);
   const currentOrder = orders.find((order) => order.id === currentOrderId);
   return (
@@ -15,6 +15,7 @@ export const OrderPage = () => {
       </section>
       <OrderQueuePanel
         orders={orders}
+        tables={tables}
         currentOrderId={currentOrderId}
         onClickOrder={(id) => setCurrentOrderId(id)}
       />

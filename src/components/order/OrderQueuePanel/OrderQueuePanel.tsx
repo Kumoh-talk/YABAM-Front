@@ -1,14 +1,16 @@
-import { Order, orderStatusList } from '@/types';
+import { Order, orderStatusList, Table } from '@/types';
 import { OrderItem } from './components';
 
 export interface Props {
   orders: Order[];
+  tables: Table[];
   currentOrderId: number;
   onClickOrder?: (id: number) => void;
 }
 
 export const OrderQueuePanel = ({
   orders,
+  tables,
   currentOrderId,
   onClickOrder,
 }: Props) => {
@@ -32,6 +34,7 @@ export const OrderQueuePanel = ({
         <OrderItem
           key={order.id}
           order={order}
+          table={tables.find((table) => table.id === order.tableId)!}
           isOpened={currentOrderId === order.id}
           onClick={onClickOrder}
         />

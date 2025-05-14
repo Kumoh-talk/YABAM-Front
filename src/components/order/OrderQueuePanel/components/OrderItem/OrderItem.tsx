@@ -1,16 +1,17 @@
 import { Button } from '@/components/common';
 import { formatRelativeTime } from '@/utils/functions';
 import clsx from 'clsx';
-import { Order, OrderStatus } from '@/types';
+import { Order, OrderStatus, Table } from '@/types';
 import { CheckRounded, CloseRounded } from '@mui/icons-material';
 
 export interface Props {
   order: Order;
+  table: Table;
   isOpened: boolean;
   onClick?: (id: number) => void;
 }
 
-export const OrderItem = ({ order, isOpened, onClick }: Props) => {
+export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
   return (
     <li
       className={clsx(
@@ -23,7 +24,7 @@ export const OrderItem = ({ order, isOpened, onClick }: Props) => {
       <div className="flex flex-row justify-between items-center font-medium">
         <div className="flex flex-row gap-2 items-center">
           <StatusTag status={order.status} />
-          <span>{order.tableName}</span>
+          <span>{table.number}번 테이블</span>
         </div>
         <span>{formatRelativeTime(order.orderAt)}</span>
       </div>

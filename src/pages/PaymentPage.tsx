@@ -11,7 +11,7 @@ export const PaymentPage = () => {
 
   const selectedTable = orders.find((order) => order.id === selectedTableId);
   const selectedOrder = orders.find(
-    (order) => order.tableName === selectedTable?.tableName,
+    (order) => order.tableId === selectedTable?.id,
   );
   return (
     <section className="asdf flex flex-row w-full h-full">
