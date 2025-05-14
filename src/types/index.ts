@@ -24,7 +24,7 @@ export type Order = {
   id: number;
   status: OrderStatus;
   orderAt: string;
-  tableName: string;
+  tableId: number;
   products: Product[];
 };
 
@@ -52,7 +52,8 @@ export type Call = {
 
 export type Table = {
   id: number;
-  name: string;
+  number: number;
+  isActive: boolean;
   pos: {
     x: number;
     y: number;

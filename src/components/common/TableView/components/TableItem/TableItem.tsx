@@ -14,7 +14,7 @@ export interface Props {
   isSelected?: boolean;
   startedAt?: string;
   price?: number;
-  onClick?: (id: number) => void;
+  onPointerDown?: (id: number, x: number, y: number) => void;
 }
 
 export const TableItem = (props: Props) => {
@@ -36,7 +36,7 @@ export const TableItem = (props: Props) => {
   return (
     <div
       className={clsx(
-        'flex flex-col justify-between p-4 absolute w-[8.75rem] h-28 rounded-lg border border-gray-500 shadow-[0_4px_32px_rgba(0,0,0,.08)] text-text-primary select-none font-medium',
+        'flex flex-col justify-between p-4 absolute w-[120px] h-[112px] rounded-lg border border-gray-500 shadow-[0_4px_32px_rgba(0,0,0,.08)] text-text-primary select-none font-medium',
         { 'bg-gray-50': !props.isSelected },
         { 'bg-[#DEEEFC]': props.isSelected },
       )}
@@ -44,14 +44,23 @@ export const TableItem = (props: Props) => {
         left: props.x,
         top: props.y,
       }}
-      onClick={() => {
-        props.onClick?.(props.table.id);
+      onPointerDown={() => {
+        props.onPointerDown?.(
+          props.table.id,
+          props.table.pos.x,
+          props.table.pos.y,
+        );
       }}
+      onDragStart={(_) => false}
     >
-      <span className="leading-none">{props.table.name}</span>
+      <span className="leading-none font-medium text-xl text-right">
+        {props.table.number}
+      </span>
       <div className="flex flex-col leading-6">
-        <span>{formatTimeString(time)}</span>
-        <span className="font-bold">
+        <span className="text-text-secondary text-right">
+          {formatTimeString(time)}
+        </span>
+        <span className="font-bold text-right">
           {formatNumberWithComma(props.price ?? 0)}원
         </span>
       </div>

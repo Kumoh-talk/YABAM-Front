@@ -78,7 +78,7 @@ export const TableView = (props: Props) => {
 
   const list = tables.map((item) => {
     const targetOrders = orders.filter(
-      (order) => order.tableName === item.name && order.status !== 'completed',
+      (order) => order.tableId === item.id && order.status !== 'completed',
     );
 
     const productPrice = targetOrders.reduce(

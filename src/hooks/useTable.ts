@@ -4,7 +4,8 @@ import { useState } from 'react';
 const dummy: Table[] = [
   {
     id: 1,
-    name: '1번 페이블',
+    number: 1,
+    isActive: true,
     pos: {
       x: 0,
       y: 0,
@@ -12,57 +13,64 @@ const dummy: Table[] = [
   },
   {
     id: 2,
-    name: '2번 테이블',
+    number: 2,
+    isActive: true,
     pos: {
-      x: 150,
+      x: 2,
       y: 0,
     },
   },
   {
     id: 3,
-    name: '3번 테이블',
+    number: 3,
+    isActive: true,
     pos: {
-      x: 300,
+      x: 4,
       y: 0,
     },
   },
   {
     id: 4,
-    name: '4번 테이블',
+    number: 4,
+    isActive: true,
     pos: {
-      x: 450,
+      x: 6,
       y: 0,
     },
   },
   {
     id: 5,
-    name: '5번 테이블',
+    number: 5,
+    isActive: true,
     pos: {
-      x: 600,
+      x: 8,
       y: 0,
     },
   },
   {
     id: 6,
-    name: '6번 테이블',
+    number: 6,
+    isActive: true,
     pos: {
-      x: 750,
+      x: 10,
       y: 0,
     },
   },
   {
     id: 7,
-    name: '7번 테이블',
+    number: 7,
+    isActive: true,
     pos: {
-      x: 900,
+      x: 12,
       y: 0,
     },
   },
   {
     id: 8,
-    name: '8번 테이블',
+    number: 8,
+    isActive: true,
     pos: {
-      x: 1050,
+      x: 14,
       y: 0,
     },
   },
