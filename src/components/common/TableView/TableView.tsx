@@ -1,14 +1,27 @@
 import { useEffect, useState } from 'react';
 import { TableItem } from './components';
-import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
+
+export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 
 export interface Props {
+  isEditable?: boolean;
   onChangeSelectedTable?: (id: number) => void;
 }
 
 export const TableView = (props: Props) => {
+  const tableSize = {
+    w: 120,
+    h: 112,
+  };
+  const tableGap = 10;
+  const tableGrid = {
+    width: (tableSize.w + tableGap) / 2,
+    height: (tableSize.h + tableGap) / 2,
+  };
+
   const { tables, orders } = useStoreValues();
-  const [selectedTableId, setSelectedTableId] = useState<number>(-1);
+  const { createTable, moveTable, removeTable } = useStoreActions();
   const [viewState, setViewState] = useState({
     pos: {
       x: 0,
@@ -17,8 +30,12 @@ export const TableView = (props: Props) => {
     zoom: 1,
   });
   const [pointerState, setPointerState] = useState({
-    isDown: false,
+    mode: 'idle' as PointerMode,
     seletedItem: -1,
+    itemPos: {
+      x: 0,
+      y: 0,
+    },
     startPos: {
       x: 0,
       y: 0,
@@ -26,23 +43,30 @@ export const TableView = (props: Props) => {
   });
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.button === 1) {
-      setPointerState({
-        ...pointerState,
-        isDown: true,
+    if (e.button === 0) {
+      setPointerState((prevState) => ({
+        ...prevState,
         startPos: {
           x: e.clientX,
           y: e.clientY,
         },
-      });
-      console.log('onPointerDown', e.clientX, e.clientY);
+      }));
+    } else if (e.button === 1) {
+      setPointerState((prevState) => ({
+        ...prevState,
+        mode: 'navigate_view',
+        startPos: {
+          x: e.clientX,
+          y: e.clientY,
+        },
+      }));
     }
   };
 
   const onPointerMove = (e: PointerEvent) => {
-    if (pointerState.isDown) {
-      const dx = e.clientX - pointerState.startPos.x;
-      const dy = e.clientY - pointerState.startPos.y;
+    const dx = e.clientX - pointerState.startPos.x;
+    const dy = e.clientY - pointerState.startPos.y;
+    if (pointerState.mode === 'navigate_view') {
       setViewState({
         ...viewState,
         pos: {
@@ -50,21 +74,42 @@ export const TableView = (props: Props) => {
           y: viewState.pos.y - dy,
         },
       });
-      console.log('onPointerMove', dx, dy);
+    } else if (pointerState.mode === 'move_table') {
+      const tx = pointerState.itemPos.x + Math.round(dx / tableGrid.width);
+      const ty = pointerState.itemPos.y + Math.round(dy / tableGrid.height);
+      const targetTable = tables.find(
+        (table) => table.id === pointerState.seletedItem,
+      );
+      if (targetTable) {
+        moveTable(targetTable.id, tx, ty);
+      }
     }
   };
 
   const onPointerUp = () => {
-    setPointerState({
-      ...pointerState,
-      isDown: false,
-    });
-    console.log('onPointerUp');
+    setPointerState((prevState) => ({
+      ...prevState,
+      mode: 'idle',
+    }));
+  };
+
+  const onPointerDownItem = (id: number, x: number, y: number) => {
+    if (pointerState.mode === 'idle') {
+      setPointerState((prevState) => ({
+        ...prevState,
+        ...(props.isEditable ? { mode: 'move_table' } : {}),
+        seletedItem: id,
+        itemPos: {
+          x,
+          y,
+        },
+      }));
+    }
   };
 
   useEffect(() => {
-    props.onChangeSelectedTable?.(selectedTableId);
-  }, [selectedTableId]);
+    props.onChangeSelectedTable?.(pointerState.seletedItem);
+  }, [pointerState]);
 
   useEffect(() => {
     window.addEventListener('pointermove', onPointerMove);
@@ -83,11 +128,7 @@ export const TableView = (props: Props) => {
 
     const productPrice = targetOrders.reduce(
       (acc, order) =>
-        acc +
-        order.products.reduce(
-          (sum, product) => sum + product.price,
-          0,
-        ),
+        acc + order.products.reduce((sum, product) => sum + product.price, 0),
       0,
     );
 
@@ -95,10 +136,15 @@ export const TableView = (props: Props) => {
       <TableItem
         key={item.id}
         table={item}
-        x={(item.pos.x - viewState.pos.x + 32) * viewState.zoom}
-        y={(item.pos.y - viewState.pos.y + 32) * viewState.zoom}
-        onClick={setSelectedTableId}
-        isSelected={selectedTableId === item.id}
+        x={
+          (item.pos.x * tableGrid.width - viewState.pos.x + 16) * viewState.zoom
+        }
+        y={
+          (item.pos.y * tableGrid.height - viewState.pos.y + 16) *
+          viewState.zoom
+        }
+        onPointerDown={onPointerDownItem}
+        isSelected={pointerState.seletedItem === item.id}
         startedAt={targetOrders[0]?.orderAt}
         price={productPrice}
       />

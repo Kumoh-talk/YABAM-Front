@@ -78,7 +78,51 @@ const dummy: Table[] = [
 
 export const useTable = () => {
   const [tables, setTables] = useState<Table[]>(dummy);
+
+  const createTable = (table: Table) => {
+    setTables((prev) => [...prev, table]);
+  };
+
+  const updateTable = (table: Table) => {
+    setTables((prev) => {
+      const index = prev.findIndex((t) => t.id === table.id);
+      if (index === -1) return prev;
+      const newTables = [...prev];
+      newTables[index] = table;
+      return newTables;
+    });
+  };
+
+  const removeTable = (id: number) => {
+    setTables((prev) => {
+      const index = prev.findIndex((t) => t.id === id);
+      if (index === -1) return prev;
+      const newTables = [...prev];
+      newTables.splice(index, 1);
+      return newTables;
+    });
+  };
+
+  const moveTable = (id: number, x: number, y: number) => {
+    setTables((prev) => {
+      const index = prev.findIndex((t) => t.id === id);
+      if (index === -1) return prev;
+      const newTables = [...prev];
+      newTables[index] = {
+        ...newTables[index],
+        pos: {
+          x,
+          y,
+        },
+      };
+      return newTables;
+    });
+  };
   return {
     tables,
+    createTable,
+    updateTable,
+    removeTable,
+    moveTable,
   };
 };

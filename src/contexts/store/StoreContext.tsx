@@ -15,6 +15,10 @@ export type Actions = {
   updateStore: (value: Partial<Omit<Store, 'id'>>) => void;
   requestCreateStore: (value: Omit<Store, 'id'>) => Promise<boolean>;
   calcTableCost: (time: number) => number;
+  createTable: (table: Table) => void;
+  updateTable: (table: Table) => void;
+  removeTable: (id: number) => void;
+  moveTable: (id: number, x: number, y: number) => void;
 };
 
 const StoreValuesContext = createContext<Values | undefined>(undefined);
@@ -28,7 +32,8 @@ export const StoreProvider = (props: Props) => {
   const [cookies] = useCookies(['access_token', 'refresh_token', 'id_token']);
   const { store, update, refresh: refreshStore } = useStore();
   const { orders } = useOrder();
-  const { tables } = useTable();
+  const { tables, createTable, updateTable, removeTable, moveTable } =
+    useTable();
 
   const calcTableCost = (time: number) => {
     return Math.ceil(time / store.tableTime / 60) * store.tableCost;
@@ -64,7 +69,15 @@ export const StoreProvider = (props: Props) => {
   return (
     <StoreValuesContext.Provider value={{ orders, tables, store }}>
       <StoreActionsContext.Provider
-        value={{ updateStore: update, requestCreateStore, calcTableCost }}
+        value={{
+          updateStore: update,
+          requestCreateStore,
+          calcTableCost,
+          createTable,
+          updateTable,
+          removeTable,
+          moveTable,
+        }}
       >
         {props.children}
       </StoreActionsContext.Provider>

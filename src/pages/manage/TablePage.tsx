@@ -9,7 +9,7 @@ export const TablePage = () => {
       <header className="p-8">
         <h2 className="text-2xl font-medium">테이블 관리</h2>
       </header>
-      <TableView />
+      <TableView isEditable />
     </section>
   );
 };
