@@ -168,7 +168,10 @@ const FetchingPage = () => {
 
   useEffect(() => {
     const _fetch = async () => {
-      const isStoreCreated = await requestCreateStore(store);
+      const isStoreCreated = await requestCreateStore({
+        ...store,
+        logo: 'https://fastly.picsum.photos/id/63/5000/2813.jpg?hmac=HvaeSK6WT-G9bYF_CyB2m1ARQirL8UMnygdU9W6PDvM',
+      });
       if (!isStoreCreated) {
         alert('점포 생성에 실패했습니다. 다시 시도해주세요.');
         prevPage();
