@@ -19,7 +19,6 @@ export const SignupContent = () => {
   const { page } = useSignupValues();
 
   const pages = [
-    <UserInfoPage key={0} />,
     <StoreInfoPage key={1} />,
     <FetchingPage key={2} />,
     <LastPage key={3} />,

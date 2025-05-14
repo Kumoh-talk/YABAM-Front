@@ -2,7 +2,7 @@ import { Store, User } from '@/types';
 import { createContext, useContext, useState } from 'react';
 
 export type Values = {
-  page: 1 | 2 | 3 | 4;
+  page: 1 | 2 | 3;
   manager: Omit<User, 'id'>;
   store: Omit<Store, 'id'>;
 };
@@ -43,7 +43,7 @@ export const SignupProvider = (props: Props) => {
 
   const nextPage = () => {
     setPage((prev) => {
-      if (prev === 4) return prev;
+      if (prev === 3) return prev;
       return (prev + 1) as Values['page'];
     });
   };

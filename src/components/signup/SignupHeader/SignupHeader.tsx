@@ -27,12 +27,12 @@ export const SignupHeader = () => {
 };
 
 const HeaderTitle = ({ page }: { page: number }) => {
-  const { manager } = useSignupValues();
+  // const { manager } = useSignupValues();
   const titles = [
     '축제 준비, 지금부터 시작해볼까요?',
-    '잘하고 있어요. 계속해서 입력해 보아요.',
+    // '잘하고 있어요. 계속해서 입력해 보아요.',
     '잠시만 기다려주세요.',
-    `축하드려요, ${manager.name}님! 가입이 완료되었어요.`,
+    `축하드려요, 점주님! 가입이 완료되었어요.`,
   ];
   return (
     <motion.h1
