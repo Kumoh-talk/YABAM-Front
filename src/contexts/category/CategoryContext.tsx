@@ -6,6 +6,7 @@ import { createContext, useContext } from 'react';
 export type Values = {
   categories: Category[];
   category: Category;
+  isRefreshing: boolean;
 };
 
 export type Actions = {
@@ -35,10 +36,11 @@ export const CategoryProvider = (props: Props) => {
     remove,
     refresh,
     update,
+    isRefreshing,
   } = useCategory(store.id);
 
   return (
-    <CategoryValuesContext.Provider value={{ categories, category }}>
+    <CategoryValuesContext.Provider value={{ categories, category, isRefreshing }}>
       <CategoryActionsContext.Provider
         value={{
           createCategory: create,

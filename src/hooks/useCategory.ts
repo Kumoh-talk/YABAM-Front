@@ -21,11 +21,11 @@ export const useCategory = (storeId: number) => {
     name: '',
     order: 0,
   });
-  const prevCategoriesRef = useRef<Category[] | null>(null);
-  const prevCategoryRef = useRef<Category | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refresh = async () => {
     try {
+      setIsRefreshing(true);
       const response = await getCategories(storeId);
       const formattedCategories = response.map((category) => ({
         id: category.menuCategoryId,
@@ -38,12 +38,38 @@ export const useCategory = (storeId: number) => {
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsRefreshing(false);
     }
+  };
+
+  // 카테고리 변경 이벤트 리스너
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'categoryUpdate') {
+        refresh();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [refresh]);
+
+  // 카테고리 변경 시 다른 탭에 알림
+  const notifyCategoryUpdate = () => {
+    localStorage.setItem('categoryUpdate', Date.now().toString());
+    localStorage.removeItem('categoryUpdate');
   };
 
   useEffect(() => {
     refresh();
   }, [storeId]);
+
+  useEffect(() => {
+    if (categories.length > 0 && category.id === -1) {
+      setCategory(categories[0]);
+    }
+  }, [categories, category.id]);
 
   const create = async (name: string, order: number) => {
     try {
@@ -52,6 +78,7 @@ export const useCategory = (storeId: number) => {
         menuCategoryOrder: order,
       });
       await refresh();
+      notifyCategoryUpdate();
     } catch (e) {
       console.error(e);
     } 
@@ -63,6 +90,7 @@ export const useCategory = (storeId: number) => {
         menuCategoryName: name,
       });
       await refresh();
+      notifyCategoryUpdate();
     } catch (e) {
       console.error(e);
     }
@@ -74,6 +102,7 @@ export const useCategory = (storeId: number) => {
         menuCategoryOrder: order,
       });
       await refresh();
+      notifyCategoryUpdate();
     } catch (e) {
       console.error(e);
     }
@@ -83,6 +112,7 @@ export const useCategory = (storeId: number) => {
     try {
       await deleteCategory(storeId, categoryId);
       await refresh();
+      notifyCategoryUpdate();
     } catch (e) {
       console.error(e);
     }
@@ -104,5 +134,6 @@ export const useCategory = (storeId: number) => {
     remove,
     refresh,
     update,
+    isRefreshing,
   };
 };
