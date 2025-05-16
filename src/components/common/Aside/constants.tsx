@@ -3,6 +3,7 @@ import {
   LocalActivityRounded,
   ReceiptLongRounded,
   StoreRounded,
+  QrCode2Rounded
 } from '@mui/icons-material';
 import { Props as AsideItemProps } from './components/AsideItem/AsideItem';
 
@@ -39,6 +40,11 @@ export const list: AsideItemProps[] = [
     icon: <ReceiptLongRounded />,
     to: '/history',
   },
+  {
+    name: '테이블 QR 코드 생성',
+    icon: <QrCode2Rounded />,
+    to: '/qrcode',
+  }
   // {
   //   name: '쿠폰 관리',
   //   icon: <LocalActivityRounded />,

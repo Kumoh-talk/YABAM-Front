@@ -10,6 +10,7 @@ import CategoryPage from './pages/manage/CategoryPage';
 import TablePage from './pages/manage/TablePage';
 import HistoryPage from './pages/HistoryPage';
 import CouponPage from './pages/CouponPage';
+import QrCodeMakorPage from './pages/QrCodeMakorPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/coupon" element={<CouponPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/auth/:provider" element={<AuthPage />} />
+            <Route path="/qrcode" element={<QrCodeMakorPage />} />
             <Route path="/" element={<LoginPage />} />
           </Routes>
         </div>
