@@ -200,6 +200,7 @@ export const TableView = (props: Props) => {
         y={(y * tableGrid.height - viewState.pos.y + 16) * viewState.zoom}
         onPointerDown={onPointerDownItem}
         isSelected={pointerState.seletedItem === item.id}
+        isEditable={props.isEditable}
         startedAt={targetOrders[0]?.orderAt}
         price={productPrice}
       />

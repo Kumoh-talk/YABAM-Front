@@ -14,6 +14,7 @@ export interface Props {
   isSelected?: boolean;
   startedAt?: string;
   price?: number;
+  isEditable?: boolean;
   onPointerDown?: (id: number, x: number, y: number) => void;
 }
 
@@ -57,12 +58,18 @@ export const TableItem = (props: Props) => {
         {props.table.number}
       </span>
       <div className="flex flex-col leading-6">
-        <span className="text-text-secondary text-right">
-          {formatTimeString(time)}
-        </span>
-        <span className="font-bold text-right">
-          {formatNumberWithComma(props.price ?? 0)}원
-        </span>
+        {props.isEditable ? (
+          <>{/* 여기에 qr 출력 버튼 넣어도 좋을듯 */}</>
+        ) : (
+          <>
+            <span className="text-text-secondary text-right">
+              {formatTimeString(time)}
+            </span>
+            <span className="font-bold text-right">
+              {formatNumberWithComma(props.price ?? 0)}원
+            </span>
+          </>
+        )}
       </div>
     </div>
   );
