@@ -1,112 +1,94 @@
+import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Table } from '@/types';
-import { useState } from 'react';
-
-const dummy: Table[] = [
-  {
-    id: 1,
-    number: 1,
-    isActive: true,
-    pos: {
-      x: 0,
-      y: 0,
-    },
-  },
-  {
-    id: 2,
-    number: 2,
-    isActive: true,
-    pos: {
-      x: 2,
-      y: 0,
-    },
-  },
-  {
-    id: 3,
-    number: 3,
-    isActive: true,
-    pos: {
-      x: 4,
-      y: 0,
-    },
-  },
-  {
-    id: 4,
-    number: 4,
-    isActive: true,
-    pos: {
-      x: 6,
-      y: 0,
-    },
-  },
-  {
-    id: 5,
-    number: 5,
-    isActive: true,
-    pos: {
-      x: 8,
-      y: 0,
-    },
-  },
-  {
-    id: 6,
-    number: 6,
-    isActive: true,
-    pos: {
-      x: 10,
-      y: 0,
-    },
-  },
-  {
-    id: 7,
-    number: 7,
-    isActive: true,
-    pos: {
-      x: 12,
-      y: 0,
-    },
-  },
-  {
-    id: 8,
-    number: 8,
-    isActive: true,
-    pos: {
-      x: 14,
-      y: 0,
-    },
-  },
-];
+import {
+  createTable as createTableApi,
+  updateTable as updateTableApi,
+  removeTable as removeTableApi,
+  getTables,
+} from '@/utils/api/backend/table';
+import { useEffect, useState } from 'react';
 
 export const useTable = () => {
-  const [tables, setTables] = useState<Table[]>(dummy);
+  const { store } = useStoreValues();
+  const [tables, setTables] = useState<Table[]>([]);
 
-  const createTable = (table: Table) => {
-    setTables((prev) => [...prev, table]);
+  const refreshTable = async () => {
+    try {
+      if (store.id === -1) return;
+      const tables = await getTables(store.id);
+      setTables(
+        tables.map((table) => ({
+          id: table.tableId,
+          number: table.tableNumber,
+          isActive: table.isActive,
+          pos: {
+            x: table.tableX,
+            y: table.tableY,
+          },
+        })),
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const updateTable = (table: Table) => {
-    setTables((prev) => {
-      const index = prev.findIndex((t) => t.id === table.id);
-      if (index === -1) return prev;
-      const newTables = [...prev];
-      newTables[index] = table;
-      return newTables;
-    });
+  useEffect(() => {
+    refreshTable();
+  }, [store]);
+
+  const createTable = async (table: Omit<Table, 'id'>) => {
+    try {
+      if (store.id === -1) return;
+      await createTableApi({
+        storeId: store.id,
+        tableNumber: table.number,
+        tableX: table.pos.x,
+        tableY: table.pos.y,
+      });
+      await refreshTable();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const removeTable = (id: number) => {
-    setTables((prev) => {
-      const index = prev.findIndex((t) => t.id === id);
-      if (index === -1) return prev;
-      const newTables = [...prev];
-      newTables.splice(index, 1);
-      return newTables;
-    });
+  const updateTable = async (table: Table) => {
+    try {
+      if (store.id === -1) return;
+      await updateTableApi({
+        tableId: table.id,
+        tableNumber: table.number,
+        tableX: table.pos.x,
+        tableY: table.pos.y,
+      });
+      await refreshTable();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const removeTable = async (id: number) => {
+    try {
+      if (store.id === -1) return;
+      setTables((prev) => {
+        const index = prev.findIndex((t) => t.id === id);
+        if (index === -1) return prev;
+        const newTables = [...prev];
+        newTables.splice(index, 1);
+        return newTables;
+      });
+      await removeTableApi(id);
+      await refreshTable();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const moveTable = (id: number, x: number, y: number) => {
+    if (store.id === -1) return;
     setTables((prev) => {
       const index = prev.findIndex((t) => t.id === id);
       if (index === -1) return prev;
+      if (prev[index].pos.x === x && prev[index].pos.y === y) return prev;
       const newTables = [...prev];
       newTables[index] = {
         ...newTables[index],
@@ -115,14 +97,33 @@ export const useTable = () => {
           y,
         },
       };
+      updateTableApi({
+        tableId: newTables[index].id,
+        tableNumber: newTables[index].number,
+        tableX: newTables[index].pos.x,
+        tableY: newTables[index].pos.y,
+      });
       return newTables;
     });
   };
+
+  const getAvailableNum = () => {
+    const maxNum = Math.max(...[{ number: 1 }, ...tables].map((t) => t.number));
+    console.log('maxNum', maxNum);
+    const availableNum = Array.from({ length: maxNum }, (_, i) => i + 1).filter(
+      (num) => !tables.some((t) => t.number === num),
+    );
+    console.log('availableNum', availableNum);
+    console.log(availableNum.length > 0 ? availableNum[0] : maxNum + 1);
+    return availableNum.length > 0 ? availableNum[0] : maxNum + 1;
+  };
+
   return {
     tables,
     createTable,
     updateTable,
     removeTable,
     moveTable,
+    getAvailableNum,
   };
 };

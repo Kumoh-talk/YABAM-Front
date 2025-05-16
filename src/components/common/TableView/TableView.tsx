@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { TableItem } from './components';
-import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
+import { useStoreValues } from '@/contexts/store/StoreContext';
+import { Button } from '..';
+import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 
@@ -20,8 +22,10 @@ export const TableView = (props: Props) => {
     height: (tableSize.h + tableGap) / 2,
   };
 
-  const { tables, orders } = useStoreValues();
-  const { createTable, moveTable, removeTable } = useStoreActions();
+  const { orders } = useStoreValues();
+  const { tables } = useTableValues();
+  const { createTable, moveTable, removeTable, getAvailableNum } =
+    useTableActions();
   const [viewState, setViewState] = useState({
     pos: {
       x: 0,
@@ -133,6 +137,27 @@ export const TableView = (props: Props) => {
     }
   };
 
+  const onClickRemoveButton = () => {
+    removeTable(pointerState.seletedItem);
+    setPointerState((prevState) => ({
+      ...prevState,
+      seletedItem: -1,
+    }));
+  };
+
+  const onClickCreateButton = () => {
+    const newPos = {
+      x: tables.length > 0 ? tables[tables.length - 1].pos.x + 2 : 0,
+      y: tables.length > 0 ? tables[tables.length - 1].pos.y : 0,
+    };
+    const newNumber = getAvailableNum();
+    createTable({
+      number: newNumber,
+      isActive: true,
+      pos: newPos,
+    });
+  };
+
   useEffect(() => {
     props.onChangeSelectedTable?.(pointerState.seletedItem);
   }, [pointerState]);
@@ -182,14 +207,29 @@ export const TableView = (props: Props) => {
   });
 
   return (
-    <div className="overflow-hidden relative w-full h-full">
-      <div
-        className={`absolute size-full touch-none`}
-        onPointerDown={onPointerDown}
-        onDragStart={(_) => false}
-      >
-        {list}
+    <>
+      {props.isEditable && (
+        <header className="flex flex-row items-center justify-between p-8">
+          <h2 className="text-2xl font-medium">테이블 관리</h2>
+          <div className="flex flex-row gap-2">
+            {pointerState.seletedItem !== -1 && (
+              <Button color="red" onClick={onClickRemoveButton}>
+                선택한 테이블 제거
+              </Button>
+            )}
+            <Button onClick={onClickCreateButton}>테이블 추가</Button>
+          </div>
+        </header>
+      )}
+      <div className="overflow-hidden relative w-full h-full">
+        <div
+          className={`absolute size-full touch-none`}
+          onPointerDown={onPointerDown}
+          onDragStart={(_) => false}
+        >
+          {list}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
