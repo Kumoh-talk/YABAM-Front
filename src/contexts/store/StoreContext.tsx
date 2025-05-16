@@ -1,14 +1,15 @@
 import { createContext, useContext, useEffect } from 'react';
 import { useKakao, useOrder, useStore } from '@/hooks';
-import { Order, Store } from '@/types';
+import { Store } from '@/types';
 import { useSale } from '@/hooks/useSale';
 import { SaleDto } from '@/types/backend/sale';
 import { StoreCreateDto } from '@/types/backend/store';
 import { createStore } from '@/utils/api/backend/store';
+import { OrderInfo } from '@/types/backend/order';
 
 export type Values = {
   store: Store;
-  orders: Order[];
+  orders: OrderInfo[];
   sales: SaleDto[];
   sale: SaleDto | null;
 };
@@ -30,8 +31,8 @@ export interface Props {
 export const StoreProvider = (props: Props) => {
   const { accessToken } = useKakao();
   const { store, update, refresh: refreshStore } = useStore();
-  const { orders } = useOrder();
   const { sales, sale, openSale, closeSale } = useSale(store);
+  const { orders } = useOrder(store, sale);
 
   const requestCreateStore = async (value: Omit<Store, 'id'>) => {
     try {

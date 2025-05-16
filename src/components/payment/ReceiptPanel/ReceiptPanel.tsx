@@ -5,28 +5,23 @@ import {
   getRelativeSeconds,
 } from '@/utils/functions';
 import { Button } from '@/components/common';
-import { Order } from '@/types';
+import { OrderInfo } from '@/types/backend/order';
 import { useTableActions } from '@/contexts/table/TableContext';
 import { OrderHeader, ProductList } from './components';
 import { useEffect, useState } from 'react';
 
 export interface Props {
-  order?: Order;
+  order?: OrderInfo;
 }
 
 export const ReceiptPanel = ({ order }: Props) => {
   const { calcTableCost } = useTableActions();
   const [usedTime, setUsedTime] = useState<number>(0);
-  const allPrice =
-    order?.products.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0,
-    ) ?? 0;
-  const discountedPrice = 2000;
+  const allPrice = order?.totalPrice ?? 0;
 
   useEffect(() => {
     const updateTime = () => {
-      const seconds = order ? getRelativeSeconds(order.orderAt) : 0;
+      const seconds = order ? getRelativeSeconds(order.receipt.receiptInfo.startUsageTime!) : 0;
       setUsedTime(seconds);
     };
     const interval = setInterval(updateTime, 1000);
@@ -39,7 +34,7 @@ export const ReceiptPanel = ({ order }: Props) => {
 
   const usedTimeString = formatTimeString(usedTime * 1000);
   const usedTimePrice = calcTableCost(usedTime);
-  const totalPrice = allPrice + usedTimePrice - discountedPrice;
+  const totalPrice = allPrice + usedTimePrice;
   return (
     <section className="flex flex-col w-[22.5rem] border-l border-gray-500">
       <header className="flex flex-row justify-between items-center p-2.5 pl-1.5">
@@ -49,7 +44,7 @@ export const ReceiptPanel = ({ order }: Props) => {
         <span className="text-xl font-medium px-2">주문 내역</span>
       </header>
       <OrderHeader />
-      <ProductList items={order?.products ?? []} />
+      <ProductList items={order?.orderMenus ?? []} />
       {order && (
         <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
           <div className="flex flex-col">
@@ -63,10 +58,6 @@ export const ReceiptPanel = ({ order }: Props) => {
                 <span>{formatNumberWithComma(usedTimePrice)}원</span>
                 <span className="text-text-secondary">{usedTimeString}</span>
               </span>
-            </div>
-            <div className="flex flex-row justify-between px-4 py-2 text-red-500">
-              <span>할인 금액</span>
-              <span>-{formatNumberWithComma(discountedPrice)}원</span>
             </div>
           </div>
           <div className="flex flex-row justify-between p-4 items-center">

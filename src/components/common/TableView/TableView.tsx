@@ -174,12 +174,13 @@ export const TableView = (props: Props) => {
 
   const list = tables.map((item) => {
     const targetOrders = orders.filter(
-      (order) => order.tableId === item.id && order.status !== 'completed',
+      (order) =>
+        order.receipt.tableInfo.tableId === item.id &&
+        order.orderStatus !== 'COMPLETED',
     );
 
     const productPrice = targetOrders.reduce(
-      (acc, order) =>
-        acc + order.products.reduce((sum, product) => sum + product.price, 0),
+      (acc, order) => acc + order.totalPrice,
       0,
     );
 
@@ -201,7 +202,7 @@ export const TableView = (props: Props) => {
         onPointerDown={onPointerDownItem}
         isSelected={pointerState.seletedItem === item.id}
         isEditable={props.isEditable}
-        startedAt={targetOrders[0]?.orderAt}
+        startedAt={targetOrders[0]?.receipt.receiptInfo.startUsageTime!}
         price={productPrice}
       />
     );

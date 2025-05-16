@@ -9,7 +9,7 @@ export const OrderPage = () => {
   const { orders } = useStoreValues();
   const { tables } = useTableValues();
   const [currentOrderId, setCurrentOrderId] = useState<number>(-1);
-  const currentOrder = orders.find((order) => order.id === currentOrderId);
+  const currentOrder = orders.find((order) => order.orderId === currentOrderId);
   return (
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">

@@ -1,3 +1,5 @@
+import { OrderStatus } from './backend/order';
+
 export type User = {
   id: number;
   name: string;
@@ -19,21 +21,6 @@ export type LocationPoint = {
   latitude: number;
   longitude: number;
 };
-
-export type Order = {
-  id: number;
-  status: OrderStatus;
-  orderAt: string;
-  tableId: number;
-  products: Product[];
-};
-
-export type OrderStatus = 'ready' | 'inProgress' | 'completed';
-export const orderStatusList: OrderStatus[] = [
-  'ready',
-  'inProgress',
-  'completed',
-];
 
 export type Product = {
   id: number;
