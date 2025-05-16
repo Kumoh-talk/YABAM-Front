@@ -12,7 +12,7 @@ export const createTable = async (dto: TableCreateDto) => {
     'POST',
     dto,
   );
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('테이블 생성 실패');
@@ -23,7 +23,7 @@ export const getTables = async (storeId: number) => {
     `/yabam/api/v1/table?storeId=${storeId}`,
     'GET',
   );
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data.tableInfoList;
   }
   throw new Error('테이블 목록 조회 실패');
@@ -31,7 +31,7 @@ export const getTables = async (storeId: number) => {
 
 export const updateTable = async (dto: TableUpdateDto) => {
   const res = await api(`/yabam/api/v1/table`, 'PATCH', dto);
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('테이블 수정 실패');
@@ -39,7 +39,7 @@ export const updateTable = async (dto: TableUpdateDto) => {
 
 export const removeTable = async (tableId: number) => {
   const res = await api(`/yabam/api/v1/table?tableId=${tableId}`, 'DELETE');
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('테이블 제거 실패');

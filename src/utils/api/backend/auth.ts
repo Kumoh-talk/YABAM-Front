@@ -14,7 +14,7 @@ export const requestLogin = async (
     oauthId: token.sub,
     nonce: token.nonce,
   });
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('로그인 실패');
@@ -22,7 +22,7 @@ export const requestLogin = async (
 
 export const requestFakeLoginOwner = async () => {
   const res = await api<LoginResponse>('/auth/api/login/fake/owner', 'POST');
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('점포 주인 페이크 로그인 실패');
@@ -36,7 +36,7 @@ export const requestRefreshToken = async (
     accessToken,
     refreshToken,
   });
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('토큰 갱신 실패');

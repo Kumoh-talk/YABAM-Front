@@ -14,7 +14,7 @@ export const createStore = async (dto: StoreCreateDto) => {
     'POST',
     dto,
   );
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('점포 생성 실패');
@@ -22,8 +22,7 @@ export const createStore = async (dto: StoreCreateDto) => {
 
 export const getMyStores = async () => {
   const res = await api<MystoreSelectResponse>(`/yabam/api/v1/mystore`, 'GET');
-  console.log(res);
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data.storeInfoResponses;
   }
   throw new Error('내 점포 조회 실패');
@@ -34,7 +33,7 @@ export const getStore = async (storeId: number) => {
     `/yabam/api/v1/store?storeId=${storeId}`,
     'GET',
   );
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('점포 조회 실패');
@@ -46,7 +45,7 @@ export const updateStore = async (storeId: number, dto: StoreUpdateDto) => {
     'PATCH',
     dto,
   );
-  if ('success' in res && res.success) {
+  if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('점포 수정 실패');

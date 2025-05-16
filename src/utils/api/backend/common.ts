@@ -32,10 +32,9 @@ export const api = async <T>(
       console.error(e);
     }
     return {
-      timestamp: new Date().toISOString(),
-      status: 500,
-      error: 'Internal Server Error',
-      path,
+      success: 'false',
+      code: 'UNKNOWN',
+      msg: '네트워크 오류',
     } as ApiError;
   }
 };
