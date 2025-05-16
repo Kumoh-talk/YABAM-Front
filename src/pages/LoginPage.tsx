@@ -4,7 +4,7 @@ import { useCheckLogin } from '@/hooks';
 
 export const LoginPage = () => {
   useCheckLogin(false);
-  
+
   const kakaoUriParams = new URLSearchParams({
     client_id: import.meta.env.VITE_KAKAO_REST_API_KEY,
     redirect_uri: `${import.meta.env.VITE_BASE_URI}/auth/kakao`,
@@ -24,13 +24,13 @@ export const LoginPage = () => {
         <div className="flex flex-col items-stretch gap-16 w-100 pb-4 z-100">
           <Logo className="w-40 fill-white self-center drop-shadow-[0_2px_4px_rgba(0,0,0,.8)]" />
           <div className="flex flex-col items-stretch gap-4">
-            <LoginButton className="gap-3 bg-gray-300" href="/signup">
+            {/* <LoginButton className="gap-3 bg-gray-300" href="/signup">
               <img src="/images/google.svg" alt="구글" />
               구글로 로그인
-            </LoginButton>
+            </LoginButton> */}
             <LoginButton className="gap-1.5 bg-[#FEE500]" href={kakaoUri}>
               <img src="/images/kakaotalk.svg" alt="카카오톡" />
-              카카오 계정으로 로그인
+              카카오 계정으로 시작
             </LoginButton>
           </div>
         </div>
