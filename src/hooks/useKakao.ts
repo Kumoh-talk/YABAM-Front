@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { AccessTokenJwt } from '@/types/backend/auth';
 import { requestLogin } from '@/utils/api/backend/auth';
 import { fetchGetTokenKakao } from '@/utils/api/kakao';
@@ -37,7 +38,7 @@ export const useKakao = () => {
       return true;
     } catch (e) {
       console.error(e);
-      // TODO: 로그인 에러 창 띄우기
+      toast.error('로그인을 실패했습니다.');
     }
     return false;
   };
