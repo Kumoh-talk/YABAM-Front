@@ -50,6 +50,7 @@ export const useStore = () => {
   useEffect(() => {
     if (
       store.id !== -1 &&
+      prevStoreRef &&
       JSON.stringify(store) !== JSON.stringify(prevStoreRef.current)
     ) {
       const dto: StoreUpdateDto = {
@@ -63,6 +64,7 @@ export const useStore = () => {
         tableCost: store.tableCost,
       };
       updateStore(store.id, dto);
+      prevStoreRef.current = { ...store };
     }
   }, [store]);
 
