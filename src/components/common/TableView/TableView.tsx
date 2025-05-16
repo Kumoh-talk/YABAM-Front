@@ -35,6 +35,8 @@ export const TableView = (props: Props) => {
     itemPos: {
       x: 0,
       y: 0,
+      tx: 0,
+      ty: 0,
     },
     startPos: {
       x: 0,
@@ -81,16 +83,38 @@ export const TableView = (props: Props) => {
         (table) => table.id === pointerState.seletedItem,
       );
       if (targetTable) {
-        moveTable(targetTable.id, tx, ty);
+        setPointerState((prevState) => ({
+          ...prevState,
+          itemPos: {
+            ...prevState.itemPos,
+            tx: tx,
+            ty: ty,
+          },
+        }));
       }
     }
   };
 
   const onPointerUp = () => {
-    setPointerState((prevState) => ({
-      ...prevState,
-      mode: 'idle',
-    }));
+    setPointerState((prevState) => {
+      if (prevState.mode === 'move_table') {
+        const targetTable = tables.find(
+          (table) => table.id === prevState.seletedItem,
+        );
+        if (targetTable) {
+          moveTable(
+            prevState.seletedItem,
+            prevState.itemPos.tx,
+            prevState.itemPos.ty,
+          );
+        }
+      }
+
+      return {
+        ...prevState,
+        mode: 'idle',
+      };
+    });
   };
 
   const onPointerDownItem = (id: number, x: number, y: number) => {
@@ -102,6 +126,8 @@ export const TableView = (props: Props) => {
         itemPos: {
           x,
           y,
+          tx: x,
+          ty: y,
         },
       }));
     }
@@ -132,17 +158,21 @@ export const TableView = (props: Props) => {
       0,
     );
 
+    const x =
+      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id
+        ? pointerState.itemPos.tx
+        : item.pos.x;
+    const y =
+      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id
+        ? pointerState.itemPos.ty
+        : item.pos.y;
+
     return (
       <TableItem
         key={item.id}
         table={item}
-        x={
-          (item.pos.x * tableGrid.width - viewState.pos.x + 16) * viewState.zoom
-        }
-        y={
-          (item.pos.y * tableGrid.height - viewState.pos.y + 16) *
-          viewState.zoom
-        }
+        x={(x * tableGrid.width - viewState.pos.x + 16) * viewState.zoom}
+        y={(y * tableGrid.height - viewState.pos.y + 16) * viewState.zoom}
         onPointerDown={onPointerDownItem}
         isSelected={pointerState.seletedItem === item.id}
         startedAt={targetOrders[0]?.orderAt}
