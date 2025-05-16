@@ -32,6 +32,14 @@ export const getRelativeSeconds = (date: number | string | Date) => {
   return isNaN(result) ? 0 : result;
 };
 
+export const formarDateString = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}. ${month}. ${day}.`;
+};
+
 export const formatTimeString = (time: number) => {
   const hours = Math.floor(time / 3600_000);
   const minutes = Math.floor((time % 3600_000) / 60_000)
