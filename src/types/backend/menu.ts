@@ -63,7 +63,13 @@ export type MenuUpdateResponse = MenuUpdateDetailDto;
 export type MenuDetailResponse = MenuInfo;
 
 export type MenuByCategoryResponse = {
-  categoryId: number;
-  categoryName: string;
-  menus: MenuInfo[];
-}; 
+  menuId: number;
+  menuName: string;
+  menuPrice: number;
+  menuDescription: string;
+  menuImageUrl: string;
+  menuIsSoldOut: boolean;
+  menuIsRecommended: boolean;
+  menuCategoryId: number;
+  menuOrder: number;
+}[]; 

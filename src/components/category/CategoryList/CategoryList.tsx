@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Close } from '@mui/icons-material';
 import { Button, Toggle } from '@/components/common';
 import { DragIndicator } from '@mui/icons-material';
 import { useCategoryActions } from '@/contexts/category/CategoryContext';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Category } from '@/hooks/useCategory';
+import { getMenusByCategory } from '@/utils/api/backend/menu';
 
 interface CategoryListProps {
   category: Category;
@@ -15,7 +17,23 @@ interface CategoryListProps {
 export const CategoryList = ({ category, isSelected, onToggle, onRemove }: CategoryListProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(category.name);
+  const [menuCount, setMenuCount] = useState(0);
   const { updateCategoryName } = useCategoryActions();
+  const { store } = useStoreValues();
+
+  useEffect(() => {
+    const fetchMenuCount = async () => {
+      try {
+        const menus = await getMenusByCategory(store.id, category.id);
+        setMenuCount(menus.length);
+      } catch (error) {
+        console.error('메뉴 개수 조회 실패:', error);
+        setMenuCount(0);
+      }
+    };
+
+    fetchMenuCount();
+  }, [store.id, category.id]);
 
   const handleDoubleClick = () => {
     setIsEditing(true);
@@ -60,7 +78,7 @@ export const CategoryList = ({ category, isSelected, onToggle, onRemove }: Categ
               {category.name}
             </div>
           )}
-          <div className="text-sm text-text-secondary">메뉴 3개</div>
+          <div className="text-sm text-text-secondary">메뉴 {menuCount}개</div>
         </div>
       </div>
       <div className="flex gap-8 items-center">

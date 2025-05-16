@@ -75,8 +75,8 @@ export const deleteMenu = async (storeId: number, menuId: number) => {
   throw new Error('메뉴 삭제 실패');
 };
 
-export const getMenusByCategory = async (storeId: number, categoryId: number) => {
-  const res = await api<MenuByCategoryResponse>(`/yabam/api/v1/stores/${storeId}/categories/${categoryId}/menus`, 'GET');
+export const getMenusByCategory = async (storeId: number, menuCategoryId: number) => {
+  const res = await api<MenuByCategoryResponse>(`/yabam/api/v1/stores/${storeId}/menu-category/${menuCategoryId}/menus`, 'GET');
   if ('success' in res && res.success) {
     return res.data;
   }
