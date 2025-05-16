@@ -1,26 +1,26 @@
-import { useState } from 'react';
+import { useCategoryValues } from '@/contexts/category/CategoryContext';
 
 interface Props {
-  selected: string;
-  onSelect: (category: string) => void;
+  selected: number;
+  onSelect: (categoryId: number) => void;
 }
 
 export const CategorySelect = ({ selected, onSelect }: Props) => {
-  const categories = ['기본', '메뉴'];
+  const { categories } = useCategoryValues();
 
   return (
     <div className="flex flex-wrap gap-4">
-      {categories.map((name) => (
+      {categories.map((category) => (
         <div
-          key={name}
-          onClick={() => onSelect(name)}
+          key={category.id}
+          onClick={() => onSelect(category.id)}
           className={`cursor-pointer w-auto h-10 flex items-center justify-center gap-2.5 px-8 py-3 rounded-lg transition-colors ${
-            selected === name
+            selected === category.id
               ? 'bg-[#0092CA] text-white'
               : 'bg-[#E5E8EB] text-black'
           }`}
         >
-          {name}
+          {category.name}
         </div>
       ))}
     </div>

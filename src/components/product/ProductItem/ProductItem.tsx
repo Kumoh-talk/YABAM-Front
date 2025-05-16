@@ -1,40 +1,59 @@
-import { useState, useRef } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
+import { useState } from 'react';
 import { BlackPlusIcon } from '@/assets/icon/BlackPlusCcon';
 import { Toggle } from '../../common';
 import { DragIndicator } from '@mui/icons-material';
 import { Close } from '@mui/icons-material';
+import { MenuInfo } from '@/types/backend/menu';
 
-export interface Props {
+export interface ProductItemProps {
   id: number;
-  image: string;
+  image?: string;
   name: string;
   price: number;
   description: string;
   recommended: boolean;
-  soldOut: boolean;
-  index: number;
-  moveProduct: (dragIndex: number, hoverIndex: number) => void;
-  onUpdate?: (id: number, field: 'name' | 'price' | 'description', value: string | number) => void;
+  isSoldOut: boolean;
+  moveProduct: (dragIndex: number, hoverIndex: number) => Promise<void>;
+  onUpdate: (menuId: number, field: 'name' | 'price' | 'description', value: string | number) => Promise<void>;
+  onSoldOut: (menuId: number, isSoldOut: boolean) => Promise<void>;
+  onRemove: (menuId: number) => Promise<void>;
 }
 
-export const ProductItem = (Props: Props) => {
-  const [isRecommended, setIsRecommended] = useState(Props.recommended);
-  const [isSoldOut, setIsSoldOut] = useState(Props.soldOut);
+export const ProductItem = ({
+  id,
+  image,
+  name,
+  price,
+  description,
+  recommended,
+  isSoldOut,
+  moveProduct,
+  onUpdate,
+  onSoldOut,
+  onRemove,
+}: ProductItemProps) => {
   const [editingField, setEditingField] = useState<'name' | 'price' | 'description' | null>(null);
   const [editValue, setEditValue] = useState('');
-  const ref = useRef<HTMLDivElement>(null);
-  const dragRef = useRef<HTMLDivElement>(null);
 
   const handleDoubleClick = (field: 'name' | 'price' | 'description') => {
     setEditingField(field);
-    setEditValue(field === 'price' ? Props.price.toString() : Props[field]);
+    switch (field) {
+      case 'name':
+        setEditValue(name);
+        break;
+      case 'price':
+        setEditValue(price.toString());
+        break;
+      case 'description':
+        setEditValue(description);
+        break;
+    }
   };
 
-  const handleBlur = () => {
-    if (editingField && Props.onUpdate) {
+  const handleBlur = async () => {
+    if (editingField) {
       const value = editingField === 'price' ? Number(editValue) : editValue;
-      Props.onUpdate(Props.id, editingField, value);
+      onUpdate(id, editingField, value);
     }
     setEditingField(null);
   };
@@ -45,61 +64,17 @@ export const ProductItem = (Props: Props) => {
     }
   };
 
-  const [{ isDragging }, drag] = useDrag({
-    type: 'PRODUCT',
-    item: { index: Props.index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: 'PRODUCT',
-    hover: (item: { index: number }, monitor) => {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = Props.index;
-
-      if (dragIndex === hoverIndex) {
-        return;
-      }
-
-      const hoverBoundingRect = ref.current.getBoundingClientRect();
-      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
-
-      Props.moveProduct(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
-
-  drag(dragRef);
-  drop(ref);
-
   return (
     <div
-      ref={ref}
-      className={`w-full flex justify-between items-center p-2 ${
-        Props.index % 2 === 0 ? 'bg-white rounded-lg' : 'bg-gray-100 rounded-lg'
-      } z-0 ${isDragging ? 'opacity-50' : 'opacity-100'} transition-all duration-200 ease-in-out`}
+      className="w-full flex justify-between items-center p-2 bg-white rounded-lg z-0 transition-all duration-200 ease-in-out"
     >
       <div className="gap-4 flex items-center justify-center">
-        <div ref={dragRef} className="cursor-move">
+        <div className="cursor-move">
           <DragIndicator className="text-gray-400 hover:text-gray-600" />
         </div>
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
-          {Props.image ? (
-            <img src={Props.image} alt={Props.name} />
+          {image ? (
+            <img src={image} alt={name} />
           ) : (
             <div className="flex flex-col gap-1 items-center justify-center">
               <BlackPlusIcon />
@@ -120,7 +95,7 @@ export const ProductItem = (Props: Props) => {
             />
           ) : (
             <div className="text-xl text-[#3B3B3C] leading-5" onDoubleClick={() => handleDoubleClick('name')}>
-              {Props.name}
+              {name}
             </div>
           )}
           {editingField === 'price' ? (
@@ -135,7 +110,7 @@ export const ProductItem = (Props: Props) => {
             />
           ) : (
             <div className="leading-6 text-[#0092CA]" onDoubleClick={() => handleDoubleClick('price')}>
-              {Props.price.toLocaleString()}원
+              {price.toLocaleString()}원
             </div>
           )}
         </div>
@@ -151,14 +126,14 @@ export const ProductItem = (Props: Props) => {
           />
         ) : (
           <div className="leading-6 text-[#6C6C6C]" onDoubleClick={() => handleDoubleClick('description')}>
-            {Props.description}
+            {description}
           </div>
         )}
       </div>
       <div className="flex gap-10">
-        <Toggle color="primary" isSelected={isRecommended} onClick={() => setIsRecommended(!isRecommended)} />
-        <Toggle color="secondary" isSelected={isSoldOut} onClick={() => setIsSoldOut(!isSoldOut)} />
-        <Close className="text-gray-700 hover:text-gray-600" />
+        <Toggle color="primary" isSelected={recommended} onClick={() => {}} />
+        <Toggle color="secondary" isSelected={isSoldOut} onClick={() => onSoldOut(id, !isSoldOut)} />
+        <Close className="text-gray-700 hover:text-gray-600 cursor-pointer" onClick={() => onRemove(id)} />
       </div>
     </div>
   );
