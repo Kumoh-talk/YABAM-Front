@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   Button,
   ImageInput,
@@ -5,10 +6,10 @@ import {
   LocationInput,
   Toggle,
 } from '@/components/common';
+import { StoreImageItem } from '@/components/store';
 import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
 import { useCheckLogin, useInputs } from '@/hooks';
 import { Store } from '@/types';
-import { useEffect } from 'react';
 
 export const StorePage = () => {
   useCheckLogin(true);
@@ -21,7 +22,7 @@ export const StorePage = () => {
   }, [store]);
 
   return (
-    <section className="flex flex-col gap-8 w-full h-full p-8">
+    <section className="flex flex-col gap-8 w-full h-full p-8 overflow-y-auto">
       <header className="w-full flex items-center justify-between">
         <div className="font-semibold text-2xl">점포 정보 수정</div>
         <div className="flex flex-row items-center gap-4">
@@ -92,6 +93,14 @@ export const StorePage = () => {
           value={form.location}
           onChange={onChange}
         />
+      </InputForm>
+      <InputForm label="소개 이미지">
+        <ul className="flex flex-row gap-2">
+          <StoreImageItem src="" />
+          <StoreImageItem src="" />
+          <StoreImageItem src="" />
+          <ImageInput className="w-32 h-48" />
+        </ul>
       </InputForm>
     </section>
   );
