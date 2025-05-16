@@ -3,6 +3,7 @@ import {
   ImageInput,
   InputForm,
   LocationInput,
+  Toggle,
 } from '@/components/common';
 import { useStoreActions, useStoreValues } from '@/contexts/store/StoreContext';
 import { useCheckLogin, useInputs } from '@/hooks';
@@ -11,8 +12,8 @@ import { useEffect } from 'react';
 
 export const StorePage = () => {
   useCheckLogin(true);
-  const { updateStore } = useStoreActions();
-  const { store } = useStoreValues();
+  const { updateStore, openSale, closeSale } = useStoreActions();
+  const { store, sale } = useStoreValues();
   const [form, onChange, _, update] = useInputs<Omit<Store, 'id'>>(store);
 
   useEffect(() => {
@@ -23,7 +24,18 @@ export const StorePage = () => {
     <section className="flex flex-col gap-8 w-full h-full p-8">
       <header className="w-full flex items-center justify-between">
         <div className="font-semibold text-2xl">점포 정보 수정</div>
-        <Button onClick={() => updateStore(form)}>저장</Button>
+        <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-row items-center gap-4">
+            <span className="font-medium">영업 시작</span>
+            <Toggle
+              color="primary"
+              size="small"
+              isSelected={!!sale}
+              onClick={() => (sale ? closeSale() : openSale())}
+            />
+          </div>
+          <Button onClick={() => updateStore(form)}>저장</Button>
+        </div>
       </header>
       <div className="flex flex-row gap-4">
         <div className="flex flex-col gap-4 w-[40rem]">

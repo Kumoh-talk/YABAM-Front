@@ -1,17 +1,23 @@
+import { createContext, useContext, useEffect } from 'react';
 import { useKakao, useOrder, useStore } from '@/hooks';
-import { Order, Store, Table } from '@/types';
+import { Order, Store } from '@/types';
+import { useSale } from '@/hooks/useSale';
+import { SaleDto } from '@/types/backend/sale';
 import { StoreCreateDto } from '@/types/backend/store';
 import { createStore } from '@/utils/api/backend/store';
-import { createContext, useContext, useEffect } from 'react';
 
 export type Values = {
   store: Store;
   orders: Order[];
+  sales: SaleDto[];
+  sale: SaleDto | null;
 };
 
 export type Actions = {
   updateStore: (value: Partial<Omit<Store, 'id'>>) => void;
   requestCreateStore: (value: Omit<Store, 'id'>) => Promise<boolean>;
+  openSale: () => Promise<void>;
+  closeSale: () => Promise<void>;
 };
 
 const StoreValuesContext = createContext<Values | undefined>(undefined);
@@ -25,6 +31,7 @@ export const StoreProvider = (props: Props) => {
   const { accessToken } = useKakao();
   const { store, update, refresh: refreshStore } = useStore();
   const { orders } = useOrder();
+  const { sales, sale, openSale, closeSale } = useSale(store);
 
   const requestCreateStore = async (value: Omit<Store, 'id'>) => {
     try {
@@ -54,11 +61,13 @@ export const StoreProvider = (props: Props) => {
   }, [accessToken]);
 
   return (
-    <StoreValuesContext.Provider value={{ orders, store }}>
+    <StoreValuesContext.Provider value={{ orders, store, sales, sale }}>
       <StoreActionsContext.Provider
         value={{
           updateStore: update,
           requestCreateStore,
+          openSale,
+          closeSale,
         }}
       >
         {props.children}
