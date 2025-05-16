@@ -1,5 +1,6 @@
 import { ApiError, ApiResponse } from '@/types/backend';
 import { Cookies } from 'react-cookie';
+import { toast } from 'react-toastify';
 
 const cookies = new Cookies();
 
@@ -26,7 +27,12 @@ export const api = async <T>(
       headers: getHeaders(),
       body: JSON.stringify(body),
     });
-    return (await res.json()) as ApiResponse<T> | ApiError;
+
+    const data = (await res.json()) as ApiResponse<T> | ApiError;
+    if (data.success === 'false') {
+      toast.error(data.msg);
+    }
+    return data;
   } catch (e) {
     if (e instanceof Error) {
       console.error(e);
