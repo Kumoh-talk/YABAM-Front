@@ -1,8 +1,8 @@
-import { Product } from '@/types';
+import { OrderMenuInfo } from '@/types/backend/order';
 import { ProductItem } from '../ProductItem/ProductItem';
 
 export interface Props {
-  items: Product[];
+  items: OrderMenuInfo[];
 }
 
 export const ProductList = (props: Props) => {

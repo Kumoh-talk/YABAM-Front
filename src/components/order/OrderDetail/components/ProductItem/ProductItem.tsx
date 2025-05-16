@@ -1,34 +1,35 @@
 import { Button } from '@/components/common';
-import { Product } from '@/types';
+import { OrderMenuInfo } from '@/types/backend/order';
 import { formatNumberWithComma } from '@/utils/functions';
 import { CheckRounded, CloseRounded, ReplayRounded } from '@mui/icons-material';
 import clsx from 'clsx';
 
 export interface Props {
-  product: Product;
+  item: OrderMenuInfo;
   isOrderStarted?: boolean;
 }
 
-export const ProductItem = ({ product, isOrderStarted }: Props) => {
+export const ProductItem = ({ item, isOrderStarted }: Props) => {
   return (
     <li
       className={clsx(
         'flex flex-row px-4 py-3 justify-between items-center rounded-lg border border-gray-500',
-        { 'opacity-50': product.isEnded },
+        { 'opacity-50': item.orderMenuStatus === 'CANCELED' },
+        { 'opacity-50': item.orderMenuStatus === 'COMPLETED' },
       )}
     >
       <div className="flex flex-col gap-2 font-medium">
         <span className="flex flex-row gap-4 text-xl leading-none">
-          <span>{product.name}</span>
-          <span className="font-normal">{product.quantity}개</span>
+          <span>{item.menuInfo.menuName}</span>
+          <span className="font-normal">{item.quantity}개</span>
         </span>
         <span className="text-base leading-none">
-          {formatNumberWithComma(product.price)}원
+          {formatNumberWithComma(item.menuInfo.menuPrice)}원
         </span>
       </div>
       {isOrderStarted && (
         <div className="flex flex-row gap-2">
-          {product.isEnded ? (
+          {['CANCELED', 'COMPLETED'].includes(item.orderMenuStatus) ? (
             <Button color="tertiary">
               <ReplayRounded />
             </Button>

@@ -6,10 +6,11 @@ import { Button } from '@/components/common';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { ProductItem, CallList } from './components';
-import { Order, Table } from '@/types';
+import { Table } from '@/types';
+import { OrderInfo } from '@/types/backend/order';
 
 export interface Props {
-  order: Order;
+  order: OrderInfo;
 }
 
 export const OrderDetail = ({ order }: Props) => {
@@ -18,20 +19,27 @@ export const OrderDetail = ({ order }: Props) => {
     dayjs.locale('ko');
   }, []);
 
-  const table = tables.find((table) => table.id === order.tableId)!;
+  const table = tables.find(
+    (table) => table.id === order.receipt.tableInfo.tableId,
+  )!;
 
-  const readyProducts = order.products.filter((product) => !product.isEnded);
-  const completedProducts = order.products.filter((product) => product.isEnded);
+  const readyOrderMenus = order.orderMenus.filter((product) =>
+    ['ORDERED', 'COOKING'].includes(product.orderMenuStatus),
+  );
+  const completedOrderMenus = order.orderMenus.filter((product) =>
+    ['CANCELED', 'COMPLETED'].includes(product.orderMenuStatus),
+  );
 
   const controls = {
-    ready: (
+    ORDERED: (
       <>
         <Button color="tertiary">주문 전체 취소</Button>
         <Button color="primary">주문 접수</Button>
       </>
     ),
-    inProgress: <Button color="primary">전체 완료 처리</Button>,
-    completed: <></>,
+    RECEIVED: <Button color="primary">전체 완료 처리</Button>,
+    COMPLETED: <></>,
+    CANCELED: <></>,
   };
 
   return (
@@ -42,10 +50,10 @@ export const OrderDetail = ({ order }: Props) => {
             {table.number}번 테이블
           </h2>
           <span className="leading-none">
-            {formatRelativeTime(order.orderAt)} 주문
+            {formatRelativeTime(order.receipt.receiptInfo.startUsageTime!)} 주문
           </span>
         </div>
-        <div className="flex flex-row gap-2">{controls[order.status]}</div>
+        <div className="flex flex-row gap-2">{controls[order.orderStatus]}</div>
       </header>
       <div className="flex flex-row gap-8 h-max">
         <div className="flex flex-col gap-4">
@@ -54,18 +62,18 @@ export const OrderDetail = ({ order }: Props) => {
         </div>
         <section className="flex flex-col gap-8 w-0 flex-1">
           <ul className="flex flex-col gap-4">
-            {readyProducts.map((product, index) => (
+            {readyOrderMenus.map((orderMenu, index) => (
               <ProductItem
                 key={index}
-                product={product}
-                isOrderStarted={order.status !== 'ready'}
+                item={orderMenu}
+                isOrderStarted={order.orderStatus !== 'ORDERED'}
               />
             ))}
           </ul>
           <ul className="flex flex-col gap-4">
             <span className="px-4 font-medium">완료됨</span>
-            {completedProducts.map((product, index) => (
-              <ProductItem key={index} product={product} />
+            {completedOrderMenus.map((product, index) => (
+              <ProductItem key={index} item={product} />
             ))}
           </ul>
         </section>
@@ -74,12 +82,14 @@ export const OrderDetail = ({ order }: Props) => {
   );
 };
 
-const OrderSummary = ({ order, table }: { order: Order; table: Table }) => {
+const OrderSummary = ({ order, table }: { order: OrderInfo; table: Table }) => {
   return (
     <section className="flex flex-col gap-4 p-6 w-[20rem] rounded-lg border border-gray-500 h-fit">
       <SummaryLine
         label="주문 일시"
-        body={dayjs(order.orderAt).format('YYYY. M. D. H:mm:ss')}
+        body={dayjs(order.receipt.receiptInfo.startUsageTime!).format(
+          'YYYY. M. D. H:mm:ss',
+        )}
       />
       <SummaryLine
         label="총 주문 금액"

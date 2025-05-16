@@ -1,8 +1,9 @@
-import { Order, orderStatusList, Table } from '@/types';
+import { Table } from '@/types';
 import { OrderItem } from './components';
+import { OrderInfo, orderStatusList } from '@/types/backend/order';
 
 export interface Props {
-  orders: Order[];
+  orders: OrderInfo[];
   tables: Table[];
   currentOrderId: number;
   onClickOrder?: (id: number) => void;
@@ -15,13 +16,13 @@ export const OrderQueuePanel = ({
   onClickOrder,
 }: Props) => {
   const sorted = orders.sort(
-    (a, b) => new Date(b.orderAt).getTime() - new Date(a.orderAt).getTime(),
+    (a, b) => new Date(b.receipt.receiptInfo.startUsageTime!).getTime() - new Date(a.receipt.receiptInfo.startUsageTime!).getTime(),
   );
 
   const ordersByStatus = Object.fromEntries(
     orderStatusList.map((status) => [
       status,
-      sorted.filter((order) => order.status === status),
+      sorted.filter((order) => order.orderStatus === status),
     ]),
   );
   const orderCount = Object.fromEntries(
@@ -31,16 +32,16 @@ export const OrderQueuePanel = ({
     orderStatusList.map((status) => [
       status,
       ordersByStatus[status].map((order) => {
-        const table = tables.find((table) => table.id === order.tableId);
+        const table = tables.find((table) => table.id === order.receipt.tableInfo.tableId);
         if (!table) {
           return null;
         }
         return (
           <OrderItem
-            key={order.id}
+            key={order.orderId}
             order={order}
             table={table}
-            isOpened={currentOrderId === order.id}
+            isOpened={currentOrderId === order.orderId}
             onClick={onClickOrder}
           />
         );

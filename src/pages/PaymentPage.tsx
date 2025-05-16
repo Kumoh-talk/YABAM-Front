@@ -9,9 +9,9 @@ export const PaymentPage = () => {
   const [selectedTableId, setSelectedTableId] = useState<number>(-1);
   const { orders } = useStoreValues();
 
-  const selectedTable = orders.find((order) => order.id === selectedTableId);
+  // const selectedTable = orders.find((order) => order.receipt.tableInfo.tableId === selectedTableId);
   const selectedOrder = orders.find(
-    (order) => order.tableId === selectedTable?.id,
+    (order) => order.receipt.tableInfo.tableId === selectedTableId,
   );
   return (
     <section className="asdf flex flex-row w-full h-full">
