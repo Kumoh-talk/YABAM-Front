@@ -2,11 +2,9 @@ import { toast } from 'react-toastify';
 import { AccessTokenJwt } from '@/types/backend/auth';
 import { requestLogin } from '@/utils/api/backend/auth';
 import { fetchGetTokenKakao } from '@/utils/api/kakao';
-import { jwtDecode } from 'jwt-decode';
-import { useCookies } from 'react-cookie';
 
 export const useKakao = () => {
-  const [_, setCookies] = useCookies([
+  const [cookies, setCookies] = useCookies([
     'access_token',
     'refresh_token',
     'id_token',
@@ -45,5 +43,7 @@ export const useKakao = () => {
 
   return {
     login,
+    accessToken: cookies.access_token,
+    refreshToken: cookies.refresh_token,
   };
 };
