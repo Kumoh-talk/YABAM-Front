@@ -10,10 +10,10 @@ export type TableCreateResponse = {
 };
 
 export type TableSelectResponse = {
-  tableInfoList: TableDto[];
+  tableInfoList: TableInfo[];
 };
 
-export type TableDto = {
+export type TableInfo = {
   tableId: number;
   tableNumber: number;
   isActive: boolean;
