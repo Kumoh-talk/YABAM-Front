@@ -23,4 +23,4 @@ export type CategoryUpdateNameDto = {
   menuCategoryName: string;
 };
 
-export type CategoryUpdateResponse = CategoryCreateResponse; 
+export type CategoryUpdateResponse = CategoryCreateResponse;

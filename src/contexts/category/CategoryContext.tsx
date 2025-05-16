@@ -27,17 +27,8 @@ export interface Props {
 
 export const CategoryProvider = (props: Props) => {
   const { store } = useStoreValues();
-  const {
-    categories,
-    category,
-    create,
-    updateName,
-    updateOrder,
-    remove,
-    refresh,
-    update,
-    isRefreshing,
-  } = useCategory(store.id);
+  const { categories, category, create, updateName, updateOrder, remove, refresh, update, isRefreshing } =
+    useCategory();
 
   return (
     <CategoryValuesContext.Provider value={{ categories, category, isRefreshing }}>

@@ -7,6 +7,7 @@ import {
   updateCategoryOrder,
 } from '@/utils/api/backend/category';
 import { useEffect, useRef, useState } from 'react';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
 export type Category = {
   id: number;
@@ -14,7 +15,7 @@ export type Category = {
   order: number;
 };
 
-export const useCategory = (storeId: number) => {
+export const useCategory = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState<Category>({
     id: -1,
@@ -22,11 +23,14 @@ export const useCategory = (storeId: number) => {
     order: 0,
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { store } = useStoreValues();
 
   const refresh = async () => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
       setIsRefreshing(true);
-      const response = await getCategories(storeId);
+      const response = await getCategories(store.id);
       const formattedCategories = response.map((category) => ({
         id: category.menuCategoryId,
         name: category.menuCategoryName,
@@ -43,27 +47,9 @@ export const useCategory = (storeId: number) => {
     }
   };
 
-  // 카테고리 변경 이벤트 리스너
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'categoryUpdate') {
-        refresh();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [refresh]);
-
-  // 카테고리 변경 시 다른 탭에 알림
-  const notifyCategoryUpdate = () => {
-    localStorage.setItem('categoryUpdate', Date.now().toString());
-    localStorage.removeItem('categoryUpdate');
-  };
-
   useEffect(() => {
     refresh();
-  }, [storeId]);
+  }, [store?.id]);
 
   useEffect(() => {
     if (categories.length > 0 && category.id === -1) {
@@ -72,8 +58,10 @@ export const useCategory = (storeId: number) => {
   }, [categories, category.id]);
 
   const create = async (name: string, order: number) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await createCategory(storeId, {
+      await createCategory(store.id, {
         menuCategoryName: name,
         menuCategoryOrder: order,
       });
@@ -85,8 +73,10 @@ export const useCategory = (storeId: number) => {
   };
 
   const updateName = async (categoryId: number, name: string) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await updateCategoryName(storeId, categoryId, {
+      await updateCategoryName(store.id, categoryId, {
         menuCategoryName: name,
       });
       await refresh();
@@ -97,8 +87,10 @@ export const useCategory = (storeId: number) => {
   };
 
   const updateOrder = async (categoryId: number, order: number) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await updateCategoryOrder(storeId, categoryId, {
+      await updateCategoryOrder(store.id, categoryId, {
         menuCategoryOrder: order,
       });
       await refresh();
@@ -109,8 +101,10 @@ export const useCategory = (storeId: number) => {
   };
 
   const remove = async (categoryId: number) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await deleteCategory(storeId, categoryId);
+      await deleteCategory(store.id, categoryId);
       await refresh();
       notifyCategoryUpdate();
     } catch (e) {
@@ -123,6 +117,24 @@ export const useCategory = (storeId: number) => {
       ...prev,
       ...value,
     }));
+  };
+
+  // 카테고리 변경 이벤트 리스너
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'categoryUpdate') {
+        refresh();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // 카테고리 변경 시 다른 탭에 알림
+  const notifyCategoryUpdate = () => {
+    localStorage.setItem('categoryUpdate', Date.now().toString());
+    localStorage.removeItem('categoryUpdate');
   };
 
   return {

@@ -9,6 +9,7 @@ import {
 } from '@/utils/api/backend/menu';
 import { useEffect, useState } from 'react';
 import { MenuUpdateDetailDto } from '@/types/backend/menu';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
 export type Menu = {
   // menuInfo
@@ -26,7 +27,7 @@ export type Menu = {
   menuCategoryOrder: number;
 };
 
-export const useMenu = (storeId: number) => {
+export const useMenu = () => {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [menu, setMenu] = useState<Menu>({
     menuId: -1,
@@ -42,13 +43,26 @@ export const useMenu = (storeId: number) => {
     menuCategoryOrder: 0,
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { store } = useStoreValues();
 
   const refresh = async () => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
       setIsRefreshing(true);
-      const response = await getMenus(storeId, 200);
-      const formattedMenus = response.map((item) => ({
-        ...item
+      const response = await getMenus(store.id);
+      const formattedMenus = response.map((menu) => ({
+        menuId: menu.menuId,
+        menuOrder: menu.menuOrder,
+        menuName: menu.menuName,
+        menuPrice: menu.menuPrice,
+        menuDescription: menu.menuDescription,
+        menuImageUrl: menu.menuImageUrl,
+        menuIsSoldOut: menu.menuIsSoldOut,
+        menuIsRecommended: menu.menuIsRecommended,
+        menuCategoryId: menu.menuCategoryId,
+        menuCategoryName: menu.menuCategoryName,
+        menuCategoryOrder: menu.menuCategoryOrder,
       }));
       setMenus(formattedMenus);
       if (formattedMenus.length > 0) {
@@ -61,27 +75,9 @@ export const useMenu = (storeId: number) => {
     }
   };
 
-  // 메뉴 변경 이벤트 리스너
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'menuUpdate') {
-        refresh();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [refresh]);
-
-  // 메뉴 변경 시 다른 탭에 알림
-  const notifyMenuUpdate = () => {
-    localStorage.setItem('menuUpdate', Date.now().toString());
-    localStorage.removeItem('menuUpdate');
-  };
-
   useEffect(() => {
     refresh();
-  }, [storeId]);
+  }, [store?.id]);
 
   useEffect(() => {
     if (menus.length > 0 && menu.menuId === -1) {
@@ -89,61 +85,56 @@ export const useMenu = (storeId: number) => {
     }
   }, [menus, menu.menuId]);
 
-  const create = async (data: Omit<Menu, 'menuId' | 'menuCategoryName' | 'menuCategoryOrder'>) => {
+  const create = async (menuData: any) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await createMenu(storeId, {
-        menuName: data.menuName,
-        menuPrice: data.menuPrice,
-        menuDescription: data.menuDescription,
-        menuImageUrl: data.menuImageUrl,
-        menuIsRecommended: data.menuIsRecommended,
-        menuCategoryId: data.menuCategoryId,
-        menuIsSoldOut: false,
-      });
+      await createMenu(store.id, menuData);
       await refresh();
-      notifyMenuUpdate();
     } catch (e) {
       console.error(e);
     }
   };
 
-  const updateDetail = async (menuId: number, data: Omit<Menu, 'menuId' | 'menuOrder' | 'menuCategoryId' | 'menuCategoryName' | 'menuCategoryOrder'>) => {
+  const updateSoldOut = async (menuId: number, isSoldOut: boolean) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await updateMenuDetail(storeId, menuId, data);
+      await updateMenuSoldOut(store.id, menuId, isSoldOut);
       await refresh();
-      notifyMenuUpdate();
     } catch (e) {
       console.error(e);
     }
   };
 
-  const updateOrder = async (menuId: number, menuOrder: number) => {
+  const updateOrder = async (menuId: number, order: number) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await updateMenuOrder(storeId, menuId, {
-        menuOrder,
-      });
+      await updateMenuOrder(store.id, menuId, { menuOrder: order });
       await refresh();
-      notifyMenuUpdate();
     } catch (e) {
       console.error(e);
     }
   };
 
-  const updateSoldOut = async (menuId: number, menuIsSoldOut: boolean) => {
+  const updateDetail = async (menuId: number, detail: any) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await updateMenuSoldOut(storeId, menuId, menuIsSoldOut);
+      await updateMenuDetail(store.id, menuId, detail);
       await refresh();
-      notifyMenuUpdate();
     } catch (e) {
       console.error(e);
     }
   };
 
   const remove = async (menuId: number) => {
+    if (!store?.id || store.id <= 0) return;
+
     try {
-      await deleteMenu(storeId, menuId);
+      await deleteMenu(store.id, menuId);
       await refresh();
-      notifyMenuUpdate();
     } catch (e) {
       console.error(e);
     }

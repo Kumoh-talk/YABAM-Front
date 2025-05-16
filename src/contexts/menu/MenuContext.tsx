@@ -11,7 +11,10 @@ export type Values = {
 
 export type Actions = {
   createMenu: (data: Omit<Menu, 'menuId' | 'menuCategoryName' | 'menuCategoryOrder'>) => Promise<void>;
-  updateMenuDetail: (menuId: number, data: Omit<Menu, 'menuId' | 'menuOrder' | 'menuCategoryId' | 'menuCategoryName' | 'menuCategoryOrder'>) => Promise<void>;
+  updateMenuDetail: (
+    menuId: number,
+    data: Omit<Menu, 'menuId' | 'menuOrder' | 'menuCategoryId' | 'menuCategoryName' | 'menuCategoryOrder'>
+  ) => Promise<void>;
   updateMenuOrder: (menuId: number, menuOrder: number) => Promise<void>;
   updateMenuSoldOut: (menuId: number, menuIsSoldOut: boolean) => Promise<void>;
   removeMenu: (menuId: number) => Promise<void>;
@@ -29,7 +32,7 @@ export interface Props {
 export const MenuProvider = (props: Props) => {
   const { store } = useStoreValues();
   const { menus, menu, create, updateDetail, updateOrder, updateSoldOut, remove, refresh, update, isRefreshing } =
-    useMenu(store.id);
+    useMenu();
 
   return (
     <MenuValuesContext.Provider value={{ menus, menu, isRefreshing }}>
