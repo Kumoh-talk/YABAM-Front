@@ -27,3 +27,17 @@ export const requestFakeLoginOwner = async () => {
   }
   throw new Error('점포 주인 페이크 로그인 실패');
 };
+
+export const requestRefreshToken = async (
+  accessToken: string,
+  refreshToken: string,
+) => {
+  const res = await api<LoginResponse>('/gateway/api/v1/refresh', 'POST', {
+    accessToken,
+    refreshToken,
+  });
+  if ('success' in res && res.success) {
+    return res.data;
+  }
+  throw new Error('토큰 갱신 실패');
+};

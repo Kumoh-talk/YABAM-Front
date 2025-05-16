@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 import { AccessTokenJwt } from '@/types/backend/auth';
-import { requestLogin } from '@/utils/api/backend/auth';
+import { requestLogin, requestRefreshToken } from '@/utils/api/backend/auth';
 import { fetchGetTokenKakao } from '@/utils/api/kakao';
 
 export const useKakao = () => {
@@ -40,6 +43,52 @@ export const useKakao = () => {
     }
     return false;
   };
+
+  const _refreshToken = async () => {
+    try {
+      if (!cookies.access_token || !cookies.refresh_token) {
+        return;
+      }
+      const res = await requestRefreshToken(
+        cookies.access_token,
+        cookies.refresh_token,
+      );
+      const parsed = jwtDecode<AccessTokenJwt>(res.accessToken);
+      setCookies('access_token', res.accessToken, {
+        path: '/',
+        expires: new Date(parsed.exp * 1000),
+      });
+      setCookies('refresh_token', res.refreshToken, {
+        path: '/',
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error('토큰 갱신을 실패했습니다.');
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!cookies.access_token || !cookies.refresh_token) {
+        return;
+      }
+
+      const parsed = jwtDecode<AccessTokenJwt>(cookies.access_token);
+      const exp = parsed.exp * 1000;
+      const remainedTime = exp - Date.now();
+
+      if (remainedTime < 5 * 60 * 1000) {
+        // 5분 남았을 때
+        _refreshToken();
+        return;
+      }
+    }, 5 * 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [cookies.access_token, cookies.refresh_token]);
 
   return {
     login,
