@@ -39,9 +39,9 @@ export const list: AsideItemProps[] = [
     icon: <ReceiptLongRounded />,
     to: '/history',
   },
-  {
-    name: '쿠폰 관리',
-    icon: <LocalActivityRounded />,
-    to: '/coupon',
-  },
+  // {
+  //   name: '쿠폰 관리',
+  //   icon: <LocalActivityRounded />,
+  //   to: '/coupon',
+  // },
 ];
