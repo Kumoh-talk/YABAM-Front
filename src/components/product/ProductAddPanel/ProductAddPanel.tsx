@@ -3,8 +3,7 @@ import { Button } from '../../common/Button/Button';
 import { useState } from 'react';
 import { useCategoryValues } from '@/contexts/category/CategoryContext';
 import { useStoreValues } from '@/contexts/store/StoreContext';
-import { useMenuActions } from '@/contexts/menu/MenuContext';
-import { createMenu } from '@/utils/api/backend/menu';
+import { useMenuActions, useMenuValues } from '@/contexts/menu/MenuContext';
 import { MenuCreateDto } from '@/types/backend/menu';
 
 interface Props {
@@ -20,7 +19,8 @@ interface MenuForm {
 export const ProductAddPanel = ({ onClose }: Props) => {
   const { categories } = useCategoryValues();
   const { store } = useStoreValues();
-  const { refreshMenus } = useMenuActions();
+  const { createMenu } = useMenuActions();
+  const { menus } = useMenuValues();
   const [selectedCategoryId, setSelectedCategoryId] = useState(categories[0]?.id ?? 0);
   const [form, setForm] = useState<MenuForm>({
     name: '',
@@ -54,9 +54,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
         menuIsRecommended: false,
         menuCategoryId: selectedCategoryId,
       };
-      
-      await createMenu(store.id, menuData);
-      await refreshMenus();
+      await createMenu(menuData);
       onClose?.();
     } catch (error) {
       console.error('메뉴 추가 실패:', error);

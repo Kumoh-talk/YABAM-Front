@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { BlackPlusIcon } from '@/assets/icon/BlackPlusCcon';
 import { Toggle } from '../../common';
-import { DragIndicator } from '@mui/icons-material';
 import { Close } from '@mui/icons-material';
 import { MenuInfo } from '@/types/backend/menu';
+import { useMenuValues, useMenuActions } from '@/contexts/menu/MenuContext';
 
 export interface ProductItemProps {
   id: number;
@@ -13,13 +13,9 @@ export interface ProductItemProps {
   description: string;
   recommended: boolean;
   isSoldOut: boolean;
-  moveProduct: (dragIndex: number, hoverIndex: number) => Promise<void>;
-  onUpdate: (menuId: number, field: 'name' | 'price' | 'description', value: string | number) => Promise<void>;
-  onSoldOut: (menuId: number, isSoldOut: boolean) => Promise<void>;
-  onRemove: (menuId: number) => Promise<void>;
 }
 
-export const ProductItem = ({
+export const ProductItem = memo(({
   id,
   image,
   name,
@@ -27,11 +23,9 @@ export const ProductItem = ({
   description,
   recommended,
   isSoldOut,
-  moveProduct,
-  onUpdate,
-  onSoldOut,
-  onRemove,
 }: ProductItemProps) => {
+  const { menus } = useMenuValues();
+  const { updateMenuDetail, updateMenuSoldOut, removeMenu } = useMenuActions();
   const [editingField, setEditingField] = useState<'name' | 'price' | 'description' | null>(null);
   const [editValue, setEditValue] = useState('');
 
@@ -52,8 +46,18 @@ export const ProductItem = ({
 
   const handleBlur = async () => {
     if (editingField) {
+      const menu = menus.find(m => m.menuId === id);
+      if (!menu) return;
+      
       const value = editingField === 'price' ? Number(editValue) : editValue;
-      onUpdate(id, editingField, value);
+      await updateMenuDetail(id, {
+        menuName: editingField === 'name' ? value as string : menu.menuName,
+        menuPrice: editingField === 'price' ? value as number : menu.menuPrice,
+        menuDescription: editingField === 'description' ? value as string : menu.menuDescription,
+        menuImageUrl: menu.menuImageUrl,
+        menuIsRecommended: menu.menuIsRecommended,
+        menuIsSoldOut: menu.menuIsSoldOut,
+      });
     }
     setEditingField(null);
   };
@@ -62,6 +66,27 @@ export const ProductItem = ({
     if (e.key === 'Enter') {
       handleBlur();
     }
+  };
+
+  const handleSoldOut = async () => {
+    await updateMenuSoldOut(id, !isSoldOut);
+  };
+
+  const handleRemove = async () => {
+    await removeMenu(id);
+  };
+
+  const handleRecommended = async () => {
+    const menu = menus.find(m => m.menuId === id);
+    if (!menu) return;
+    await updateMenuDetail(id, {
+      menuName: menu.menuName,
+      menuPrice: menu.menuPrice,
+      menuDescription: menu.menuDescription,
+      menuImageUrl: menu.menuImageUrl,
+      menuIsRecommended: !recommended,
+      menuIsSoldOut: menu.menuIsSoldOut,
+    });
   };
 
   return (
@@ -128,10 +153,12 @@ export const ProductItem = ({
         )}
       </div>
       <div className="flex gap-10">
-        <Toggle color="primary" isSelected={recommended} onClick={() => {}} />
-        <Toggle color="secondary" isSelected={isSoldOut} onClick={() => onSoldOut(id, !isSoldOut)} />
-        <Close className="text-gray-700 hover:text-gray-600 cursor-pointer" onClick={() => onRemove(id)} />
+        <Toggle color="primary" isSelected={recommended} onClick={handleRecommended} />
+        <Toggle color="secondary" isSelected={isSoldOut} onClick={handleSoldOut} />
+        <Close className="text-gray-700 hover:text-gray-600 cursor-pointer" onClick={handleRemove} />
       </div>
     </div>
   );
-};
+});
+
+ProductItem.displayName = 'ProductItem';

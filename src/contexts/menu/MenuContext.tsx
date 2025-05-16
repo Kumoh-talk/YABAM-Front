@@ -2,6 +2,7 @@ import { useMenu } from '@/hooks/useMenu';
 import { Menu } from '@/hooks/useMenu';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { createContext, useContext } from 'react';
+import { MenuCreateDto } from '@/types/backend/menu';
 
 export type Values = {
   menus: Menu[];
@@ -10,7 +11,7 @@ export type Values = {
 };
 
 export type Actions = {
-  createMenu: (data: Omit<Menu, 'menuId' | 'menuCategoryName' | 'menuCategoryOrder'>) => Promise<void>;
+  createMenu: (data: MenuCreateDto) => Promise<void>;
   updateMenuDetail: (
     menuId: number,
     data: Omit<Menu, 'menuId' | 'menuOrder' | 'menuCategoryId' | 'menuCategoryName' | 'menuCategoryOrder'>

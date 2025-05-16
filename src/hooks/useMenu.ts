@@ -8,7 +8,7 @@ import {
   updateMenuSoldOut,
 } from '@/utils/api/backend/menu';
 import { useEffect, useState } from 'react';
-import { MenuUpdateDetailDto } from '@/types/backend/menu';
+import { MenuUpdateDetailDto, MenuCreateDto } from '@/types/backend/menu';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 
 export type Menu = {
@@ -85,7 +85,7 @@ export const useMenu = () => {
     }
   }, [menus, menu.menuId]);
 
-  const create = async (menuData: any) => {
+  const create = async (menuData: MenuCreateDto) => {
     if (!store?.id || store.id <= 0) return;
 
     try {
@@ -101,7 +101,11 @@ export const useMenu = () => {
 
     try {
       await updateMenuSoldOut(store.id, menuId, isSoldOut);
-      await refresh();
+      setMenus(prev =>
+        prev.map(menu =>
+          menu.menuId === menuId ? { ...menu, menuIsSoldOut: isSoldOut } : menu
+        )
+      );
     } catch (e) {
       console.error(e);
     }
@@ -123,7 +127,11 @@ export const useMenu = () => {
 
     try {
       await updateMenuDetail(store.id, menuId, detail);
-      await refresh();
+      setMenus(prev =>
+        prev.map(menu =>
+          menu.menuId === menuId ? { ...menu, ...detail } : menu
+        )
+      );
     } catch (e) {
       console.error(e);
     }
@@ -134,7 +142,7 @@ export const useMenu = () => {
 
     try {
       await deleteMenu(store.id, menuId);
-      await refresh();
+      setMenus(prev => prev.filter(menu => menu.menuId !== menuId));
     } catch (e) {
       console.error(e);
     }
