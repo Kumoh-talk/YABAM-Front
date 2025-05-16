@@ -14,7 +14,7 @@ export const CategorySelect = ({ selected, onSelect }: Props) => {
         <div
           key={category.id}
           onClick={() => onSelect(category.id)}
-          className={`cursor-pointer w-auto h-10 flex items-center justify-center gap-2.5 px-8 py-3 rounded-lg transition-colors ${
+          className={`cursor-pointer w-auto h-10 flex items-center justify-center gap-2.5 px-8 py-3 rounded-lg font-medium transition-colors ${
             selected === category.id
               ? 'bg-[#0092CA] text-white'
               : 'bg-[#E5E8EB] text-black'

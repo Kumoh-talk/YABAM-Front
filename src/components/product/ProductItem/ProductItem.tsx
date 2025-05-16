@@ -116,7 +116,7 @@ export const ProductItem = memo(({
               autoFocus
             />
           ) : (
-            <div className="text-xl text-[#3B3B3C] leading-5" onDoubleClick={() => handleDoubleClick('name')}>
+            <div className="text-xl text-[#3B3B3C] leading-5 font-medium" onDoubleClick={() => handleDoubleClick('name')}>
               {name}
             </div>
           )}
@@ -131,7 +131,7 @@ export const ProductItem = memo(({
               autoFocus
             />
           ) : (
-            <div className="leading-6 text-[#0092CA]" onDoubleClick={() => handleDoubleClick('price')}>
+            <div className="leading-6 text-[#0092CA] font-medium" onDoubleClick={() => handleDoubleClick('price')}>
               {price.toLocaleString()}원
             </div>
           )}
@@ -147,7 +147,7 @@ export const ProductItem = memo(({
             autoFocus
           />
         ) : (
-          <div className="leading-6 text-[#6C6C6C]" onDoubleClick={() => handleDoubleClick('description')}>
+          <div className="leading-6 text-[#6C6C6C] font-medium" onDoubleClick={() => handleDoubleClick('description')}>
             {description}
           </div>
         )}

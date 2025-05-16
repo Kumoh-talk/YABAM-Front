@@ -14,7 +14,7 @@ interface CategoryListProps {
   onRemove: (categoryId: number) => void;
 }
 
-export const CategoryList = ({ category, isSelected, onToggle, onRemove }: CategoryListProps) => {
+export const CategoryList = ({ category, onRemove }: CategoryListProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(category.name);
   const [menuCount, setMenuCount] = useState(0);
@@ -74,11 +74,11 @@ export const CategoryList = ({ category, isSelected, onToggle, onRemove }: Categ
               autoFocus
             />
           ) : (
-            <div className="text-text-primary cursor-pointer" onDoubleClick={handleDoubleClick}>
+            <div className="text-text-primary cursor-pointer font-medium" onDoubleClick={handleDoubleClick}>
               {category.name}
             </div>
           )}
-          <div className="text-sm text-text-secondary">메뉴 {menuCount}개</div>
+          <div className="text-sm text-text-secondary font-medium">메뉴 {menuCount}개</div>
         </div>
       </div>
       <div className="flex gap-8 items-center">
