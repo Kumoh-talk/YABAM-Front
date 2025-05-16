@@ -25,7 +25,7 @@ export const openSale = async (storeId: number) => {
 
 export const closeSale = async (saleId: number) => {
   const res = await api<SaleCloseResponse>(
-    `/yabam/api/v1/sale/close?storeId=${saleId}`,
+    `/yabam/api/v1/sale/close?saleId=${saleId}`,
     'PATCH',
   );
   if ('success' in res && res.success === 'true') {
