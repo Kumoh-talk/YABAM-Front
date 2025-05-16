@@ -44,7 +44,6 @@ export const CategoryList = ({ category, isSelected, onToggle, onRemove }: Categ
   return (
     <div className="w-full flex justify-between px-2 py-4">
       <div className="gap-4 flex items-center ">
-        <DragIndicator />
         <div className="gap-1">
           {isEditing ? (
             <input

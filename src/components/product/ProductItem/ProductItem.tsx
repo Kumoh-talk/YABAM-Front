@@ -69,9 +69,6 @@ export const ProductItem = ({
       className="w-full flex justify-between items-center p-2 bg-white rounded-lg z-0 transition-all duration-200 ease-in-out"
     >
       <div className="gap-4 flex items-center justify-center">
-        <div className="cursor-move">
-          <DragIndicator className="text-gray-400 hover:text-gray-600" />
-        </div>
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
           {image ? (
             <img src={image} alt={name} />
