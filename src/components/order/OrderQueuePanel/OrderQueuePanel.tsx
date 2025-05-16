@@ -30,15 +30,21 @@ export const OrderQueuePanel = ({
   const list = Object.fromEntries(
     orderStatusList.map((status) => [
       status,
-      ordersByStatus[status].map((order) => (
-        <OrderItem
-          key={order.id}
-          order={order}
-          table={tables.find((table) => table.id === order.tableId)!}
-          isOpened={currentOrderId === order.id}
-          onClick={onClickOrder}
-        />
-      )),
+      ordersByStatus[status].map((order) => {
+        const table = tables.find((table) => table.id === order.tableId);
+        if (!table) {
+          return null;
+        }
+        return (
+          <OrderItem
+            key={order.id}
+            order={order}
+            table={table}
+            isOpened={currentOrderId === order.id}
+            onClick={onClickOrder}
+          />
+        );
+      }),
     ]),
   );
 
