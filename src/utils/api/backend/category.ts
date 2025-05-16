@@ -10,20 +10,14 @@ import { api } from './common';
 
 export const getCategories = async (storeId: number) => {
   const res = await api<CategoryListResponse>(`/yabam/api/v1/stores/${storeId}/menu-categories`, 'GET');
-  console.log('전체 응답:', res);
   if ('success' in res && res.success) {
-    console.log('응답 데이터:', res.data);
     return res.data;
   }
   throw new Error('카테고리 목록 조회 실패');
 };
 
 export const createCategory = async (storeId: number, dto: CategoryCreateDto) => {
-  const res = await api<CategoryCreateResponse>(
-    `/yabam/api/v1/stores/${storeId}/menu-categories`,
-    'POST',
-    dto,
-  );
+  const res = await api<CategoryCreateResponse>(`/yabam/api/v1/stores/${storeId}/menu-categories`, 'POST', dto);
   if ('success' in res && res.success) {
     return res.data;
   }
@@ -34,7 +28,7 @@ export const updateCategoryOrder = async (storeId: number, menuCategoryId: numbe
   const res = await api<CategoryUpdateResponse>(
     `/yabam/api/v1/stores/${storeId}/menu-categories/${menuCategoryId}/order`,
     'PATCH',
-    dto,
+    dto
   );
   if ('success' in res && res.success) {
     return res.data;
@@ -46,7 +40,7 @@ export const updateCategoryName = async (storeId: number, menuCategoryId: number
   const res = await api<CategoryUpdateResponse>(
     `/yabam/api/v1/stores/${storeId}/menu-categories/${menuCategoryId}/info`,
     'PATCH',
-    dto,
+    dto
   );
   if ('success' in res && res.success) {
     return res.data;
@@ -55,12 +49,9 @@ export const updateCategoryName = async (storeId: number, menuCategoryId: number
 };
 
 export const deleteCategory = async (storeId: number, menuCategoryId: number) => {
-  const res = await api<void>(
-    `/yabam/api/v1/stores/${storeId}/menu-categories/${menuCategoryId}`,
-    'DELETE',
-  );
+  const res = await api<void>(`/yabam/api/v1/stores/${storeId}/menu-categories/${menuCategoryId}`, 'DELETE');
   if ('success' in res && res.success) {
     return;
   }
   throw new Error('카테고리 삭제 실패');
-}; 
+};

@@ -81,7 +81,7 @@ export const useCategory = (storeId: number) => {
       notifyCategoryUpdate();
     } catch (e) {
       console.error(e);
-    } 
+    }
   };
 
   const updateName = async (categoryId: number, name: string) => {

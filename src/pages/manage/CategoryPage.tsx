@@ -45,9 +45,7 @@ export const CategoryPage = () => {
   return (
     <div className="flex flex-col h-screen w-full gap-4 p-8 ">
       <div className="w-full flex items-center justify-between">
-        <div className="leading-6 font-semibold text-2xl text-center">
-          카테고리
-        </div>
+        <div className="leading-6 font-semibold text-2xl text-center">카테고리</div>
         <div className="flex items-center gap-4">
           <input
             type="text"
