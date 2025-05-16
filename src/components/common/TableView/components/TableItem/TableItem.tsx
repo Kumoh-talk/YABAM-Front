@@ -37,7 +37,9 @@ export const TableItem = (props: Props) => {
   return (
     <div
       className={clsx(
-        'flex flex-col justify-between p-4 absolute w-[120px] h-[112px] rounded-lg border border-gray-500 shadow-[0_4px_32px_rgba(0,0,0,.08)] text-text-primary select-none font-medium',
+        'flex flex-col justify-between absolute w-[120px] h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] text-text-primary select-none font-medium',
+        { 'border border-gray-500 p-4': !props.table.isActive },
+        { 'border-2 border-primary p-3.5': props.table.isActive },
         { 'bg-gray-50': !props.isSelected },
         { 'bg-[#DEEEFC]': props.isSelected },
       )}
