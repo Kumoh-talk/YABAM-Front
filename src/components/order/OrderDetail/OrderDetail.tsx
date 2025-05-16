@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
-import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useTableValues } from '@/contexts/table/TableContext';
 import { Button } from '@/components/common';
 
 import dayjs from 'dayjs';
@@ -13,7 +13,7 @@ export interface Props {
 }
 
 export const OrderDetail = ({ order }: Props) => {
-  const { tables } = useStoreValues();
+  const { tables } = useTableValues();
   useEffect(() => {
     dayjs.locale('ko');
   }, []);

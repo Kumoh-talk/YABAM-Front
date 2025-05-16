@@ -6,7 +6,7 @@ import {
 } from '@/utils/functions';
 import { Button } from '@/components/common';
 import { Order } from '@/types';
-import { useStoreActions } from '@/contexts/store/StoreContext';
+import { useTableActions } from '@/contexts/table/TableContext';
 import { OrderHeader, ProductList } from './components';
 import { useEffect, useState } from 'react';
 
@@ -15,7 +15,7 @@ export interface Props {
 }
 
 export const ReceiptPanel = ({ order }: Props) => {
-  const { calcTableCost } = useStoreActions();
+  const { calcTableCost } = useTableActions();
   const [usedTime, setUsedTime] = useState<number>(0);
   const allPrice =
     order?.products.reduce(
