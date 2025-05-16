@@ -9,7 +9,6 @@ export const CategoryPage = () => {
   const [selectedStates, setSelectedStates] = useState<{
     [key: number]: boolean;
   }>({});
-  const { store } = useStoreValues();
   const { createCategory, removeCategory, refreshCategories } = useCategoryActions();
   const { categories } = useCategoryValues();
 
@@ -59,7 +58,6 @@ export const CategoryPage = () => {
         </div>
       </div>
       <div className="w-full flex justify-end p-2 gap-11">
-        <div className="text-sm leading-6">표시</div>
         <div className="text-sm leading-6">삭제</div>
       </div>
       <div className="flex flex-col">

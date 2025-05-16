@@ -82,9 +82,6 @@ export const CategoryList = ({ category, isSelected, onToggle, onRemove }: Categ
         </div>
       </div>
       <div className="flex gap-8 items-center">
-        <div>
-          <Toggle color="primary" isSelected={isSelected} onClick={() => onToggle(category.id)} />
-        </div>
         <Button color="black-transparent" isNoPadding onClick={() => onRemove(category.id)}>
           <Close className="text-gray-700" />
         </Button>
