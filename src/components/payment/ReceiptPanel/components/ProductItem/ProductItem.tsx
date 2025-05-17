@@ -20,9 +20,7 @@ export const ProductItem = ({ item }: Props) => {
           <AddOutlined fontSize="small" />
         </Button>
       </div>
-      <span className="w-20 text-right">
-        {formatNumberWithComma(item.menuInfo.menuPrice)}
-      </span>
+      <span className="w-20 text-right">{formatNumberWithComma(item.menuInfo.menuPrice * item.quantity)}</span>
     </li>
   );
 };
