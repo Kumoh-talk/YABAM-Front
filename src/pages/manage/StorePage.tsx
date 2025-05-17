@@ -64,28 +64,6 @@ export const StorePage = () => {
           <ImageInput name="logo" value={form.logo} onChange={onChange} />
         </InputForm>
       </div>
-      <InputForm label="테이블 사용료">
-        <div className="flex flex-row gap-3 items-center leading-none font-medium">
-          <input
-            type="text"
-            name="tableTime"
-            value={form.tableTime}
-            onChange={onChange}
-            placeholder="30"
-            className="w-16"
-          />
-          분마다
-          <input
-            type="number"
-            name="tableCost"
-            value={form.tableCost}
-            onChange={onChange}
-            placeholder="1000"
-            className="w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          원
-        </div>
-      </InputForm>
       <InputForm label="위치">
         <LocationInput
           className="w-[36rem] h-60"
