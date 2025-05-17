@@ -8,6 +8,7 @@ import { StoreProvider } from './contexts/store/StoreContext.tsx';
 import { TableProvider } from './contexts/table/TableContext.tsx';
 import { CategoryProvider } from './contexts/category/CategoryContext.tsx';
 import { MenuProvider } from './contexts/menu/MenuContext.tsx';
+import { OrderProvider } from './contexts/order/OrderContext.tsx';
 import App from './App.tsx';
 import './styles.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,14 +22,16 @@ createRoot(document.getElementById('root')!).render(
             <TableProvider>
               <CategoryProvider>
                 <MenuProvider>
-                  <App />
-                  <ToastContainer
-                    position="bottom-right"
-                    limit={5}
-                    closeButton={false}
-                    autoClose={4000}
-                    hideProgressBar
-                  />
+                  <OrderProvider>
+                    <App />
+                    <ToastContainer
+                      position="bottom-right"
+                      limit={5}
+                      closeButton={false}
+                      autoClose={4000}
+                      hideProgressBar
+                    />
+                  </OrderProvider>
                 </MenuProvider>
               </CategoryProvider>
             </TableProvider>
@@ -36,5 +39,5 @@ createRoot(document.getElementById('root')!).render(
         </CommonProvider>
       </CookiesProvider>
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 );

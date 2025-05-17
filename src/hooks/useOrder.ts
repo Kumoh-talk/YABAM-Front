@@ -7,17 +7,10 @@ import { SaleDto } from '@/types/backend/sale';
 export const useOrder = (store: Store, sale: SaleDto | null) => {
   const [orders, setOrders] = useState<OrderInfo[]>([]);
 
-  console.log(store, sale, 'useOrder')
-
   const refreshOrder = async () => {
     try {
       if (store.id === -1 || !sale) return;
-      const orders = await getOrders(sale.saleId, 999, [
-        'ORDERED',
-        'RECEIVED',
-        'COMPLETED',
-        'CANCELED',
-      ]);
+      const orders = await getOrders(sale.saleId, 999, ['ORDERED', 'RECEIVED', 'COMPLETED', 'CANCELED']);
       setOrders(orders.pageContents);
     } catch (e) {
       console.error(e);
@@ -27,7 +20,9 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
   useEffect(() => {
     refreshOrder();
   }, [store, sale]);
+
   return {
     orders,
+    refreshOrder,
   };
 };
