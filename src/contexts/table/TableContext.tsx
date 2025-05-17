@@ -9,10 +9,10 @@ export type Values = {
 
 export type Actions = {
   calcTableCost: (time: number) => number;
-  createTable: (table: Omit<Table, 'id'>) => void;
+  createTable: (table: Omit<Table, 'id'> & { capacity: number }) => void;
   updateTable: (table: Table) => void;
-  removeTable: (id: number) => void;
-  moveTable: (id: number, x: number, y: number) => void;
+  removeTable: (id: string) => void;
+  moveTable: (id: string, x: number, y: number) => void;
   getAvailableNum: () => number;
 };
 
@@ -24,7 +24,7 @@ export interface Props {
 }
 
 export const TableProvider = (props: Props) => {
-  const {store} = useStoreValues();
+  const { store } = useStoreValues();
   const {
     tables,
     createTable,

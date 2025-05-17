@@ -21,6 +21,7 @@ export const useTable = () => {
           id: table.tableId,
           number: table.tableNumber,
           isActive: table.isActive,
+          capacity: table.tableCapacity,
           pos: {
             x: table.tableX,
             y: table.tableY,
@@ -36,7 +37,7 @@ export const useTable = () => {
     refreshTable();
   }, [store]);
 
-  const createTable = async (table: Omit<Table, 'id'>) => {
+  const createTable = async (table: Omit<Table, 'id'> & { capacity: number }) => {
     try {
       if (store.id === -1) return;
       await createTableApi({
@@ -44,6 +45,7 @@ export const useTable = () => {
         tableNumber: table.number,
         tableX: table.pos.x,
         tableY: table.pos.y,
+        tableCapacity: table.capacity,
       });
       await refreshTable();
     } catch (e) {
@@ -66,7 +68,7 @@ export const useTable = () => {
     }
   };
 
-  const removeTable = async (id: number) => {
+  const removeTable = async (id: string) => {
     try {
       if (store.id === -1) return;
       setTables((prev) => {
@@ -83,7 +85,7 @@ export const useTable = () => {
     }
   };
 
-  const moveTable = (id: number, x: number, y: number) => {
+  const moveTable = (id: string, x: number, y: number) => {
     if (store.id === -1) return;
     setTables((prev) => {
       const index = prev.findIndex((t) => t.id === id);
@@ -109,12 +111,9 @@ export const useTable = () => {
 
   const getAvailableNum = () => {
     const maxNum = Math.max(...[{ number: 1 }, ...tables].map((t) => t.number));
-    console.log('maxNum', maxNum);
     const availableNum = Array.from({ length: maxNum }, (_, i) => i + 1).filter(
       (num) => !tables.some((t) => t.number === num),
     );
-    console.log('availableNum', availableNum);
-    console.log(availableNum.length > 0 ? availableNum[0] : maxNum + 1);
     return availableNum.length > 0 ? availableNum[0] : maxNum + 1;
   };
 

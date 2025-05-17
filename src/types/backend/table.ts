@@ -3,10 +3,11 @@ export type TableCreateDto = {
   tableX: number;
   tableY: number;
   tableNumber: number;
+  tableCapacity: number;
 };
 
 export type TableCreateResponse = {
-  tableId: number;
+  tableId: string;
 };
 
 export type TableSelectResponse = {
@@ -14,15 +15,16 @@ export type TableSelectResponse = {
 };
 
 export type TableInfo = {
-  tableId: number;
+  tableId: string;
   tableNumber: number;
   isActive: boolean;
   tableX: number;
   tableY: number;
+  tableCapacity: number;
 };
 
 export type TableUpdateDto = {
-  tableId: number;
+  tableId: string;
   tableNumber: number;
   tableX: number;
   tableY: number;

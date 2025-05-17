@@ -37,7 +37,7 @@ export const updateTable = async (dto: TableUpdateDto) => {
   throw new Error('테이블 수정 실패');
 };
 
-export const removeTable = async (tableId: number) => {
+export const removeTable = async (tableId: string) => {
   const res = await api(`/yabam/api/v1/table?tableId=${tableId}`, 'DELETE');
   if ('success' in res && res.success === 'true') {
     return res.data;

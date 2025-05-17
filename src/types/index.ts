@@ -38,9 +38,10 @@ export type Call = {
 };
 
 export type Table = {
-  id: number;
+  id: string;
   number: number;
   isActive: boolean;
+  capacity: number;
   pos: {
     x: number;
     y: number;

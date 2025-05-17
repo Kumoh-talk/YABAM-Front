@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export const PaymentPage = () => {
   useCheckLogin(true);
-  const [selectedTableId, setSelectedTableId] = useState<number>(-1);
+  const [selectedTableId, setSelectedTableId] = useState<string>('');
   const { orders } = useStoreValues();
 
   // const selectedTable = orders.find((order) => order.receipt.tableInfo.tableId === selectedTableId);

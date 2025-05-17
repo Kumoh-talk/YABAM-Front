@@ -15,7 +15,7 @@ export interface Props {
   startedAt?: string;
   price?: number;
   isEditable?: boolean;
-  onPointerDown?: (id: number, x: number, y: number) => void;
+  onPointerDown?: (id: string, x: number, y: number) => void;
 }
 
 export const TableItem = (props: Props) => {
@@ -46,6 +46,7 @@ export const TableItem = (props: Props) => {
       style={{
         left: props.x,
         top: props.y,
+        width: props.table.capacity === 6 ? '150px' : '120px',
       }}
       onPointerDown={() => {
         props.onPointerDown?.(

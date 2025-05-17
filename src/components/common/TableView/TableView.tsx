@@ -8,7 +8,7 @@ export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 
 export interface Props {
   isEditable?: boolean;
-  onChangeSelectedTable?: (id: number) => void;
+  onChangeSelectedTable?: (id: string) => void;
 }
 
 export const TableView = (props: Props) => {
@@ -35,7 +35,7 @@ export const TableView = (props: Props) => {
   });
   const [pointerState, setPointerState] = useState({
     mode: 'idle' as PointerMode,
-    seletedItem: -1,
+    seletedItem: '' as string,
     itemPos: {
       x: 0,
       y: 0,
@@ -121,7 +121,7 @@ export const TableView = (props: Props) => {
     });
   };
 
-  const onPointerDownItem = (id: number, x: number, y: number) => {
+  const onPointerDownItem = (id: string, x: number, y: number) => {
     if (pointerState.mode === 'idle') {
       setPointerState((prevState) => ({
         ...prevState,
@@ -138,14 +138,14 @@ export const TableView = (props: Props) => {
   };
 
   const onClickRemoveButton = () => {
-    removeTable(pointerState.seletedItem);
+    removeTable(pointerState.seletedItem); // string으로 처리
     setPointerState((prevState) => ({
       ...prevState,
-      seletedItem: -1,
+      seletedItem: '', // 초기화
     }));
   };
 
-  const onClickCreateButton = () => {
+  const onClickCreateButton = (capacity: number) => {
     const newPos = {
       x: tables.length > 0 ? tables[tables.length - 1].pos.x + 2 : 0,
       y: tables.length > 0 ? tables[tables.length - 1].pos.y : 0,
@@ -155,6 +155,7 @@ export const TableView = (props: Props) => {
       number: newNumber,
       isActive: true,
       pos: newPos,
+      capacity,
     });
   };
 
@@ -173,23 +174,12 @@ export const TableView = (props: Props) => {
   }, [pointerState]);
 
   const list = tables.map((item) => {
-    const targetOrders = orders.filter(
-      (order) =>
-        order.receipt.tableInfo.tableId === item.id &&
-        order.orderStatus !== 'COMPLETED',
-    );
-
-    const productPrice = targetOrders.reduce(
-      (acc, order) => acc + order.totalPrice,
-      0,
-    );
-
     const x =
-      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id
+      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id // string 비교
         ? pointerState.itemPos.tx
         : item.pos.x;
     const y =
-      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id
+      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id // string 비교
         ? pointerState.itemPos.ty
         : item.pos.y;
 
@@ -200,10 +190,8 @@ export const TableView = (props: Props) => {
         x={(x * tableGrid.width - viewState.pos.x + 16) * viewState.zoom}
         y={(y * tableGrid.height - viewState.pos.y + 16) * viewState.zoom}
         onPointerDown={onPointerDownItem}
-        isSelected={pointerState.seletedItem === item.id}
+        isSelected={pointerState.seletedItem === item.id} // string 비교
         isEditable={props.isEditable}
-        startedAt={targetOrders[0]?.receipt.receiptInfo.startUsageTime!}
-        price={productPrice}
       />
     );
   });
@@ -214,12 +202,17 @@ export const TableView = (props: Props) => {
         <header className="flex flex-row items-center justify-between p-8">
           <h2 className="text-2xl font-medium">테이블 관리</h2>
           <div className="flex flex-row gap-2">
-            {pointerState.seletedItem !== -1 && (
+            {pointerState.seletedItem !== '' && (
               <Button color="red" onClick={onClickRemoveButton}>
                 선택한 테이블 제거
               </Button>
             )}
-            <Button onClick={onClickCreateButton}>테이블 추가</Button>
+            <Button color="primary" onClick={() => onClickCreateButton(4)}>
+              4인 테이블 추가
+            </Button>
+            <Button color="red" onClick={() => onClickCreateButton(6)}>
+              6인 테이블 추가
+            </Button>
           </div>
         </header>
       )}
