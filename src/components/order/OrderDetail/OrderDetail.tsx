@@ -11,9 +11,10 @@ import { OrderInfo } from '@/types/backend/order';
 
 export interface Props {
   order: OrderInfo;
+  onStatusChange?: () => void;
 }
 
-export const OrderDetail = ({ order }: Props) => {
+export const OrderDetail = ({ order, onStatusChange }: Props) => {
   const { tables } = useTableValues();
   useEffect(() => {
     dayjs.locale('ko');
@@ -67,13 +68,21 @@ export const OrderDetail = ({ order }: Props) => {
                 key={index}
                 item={orderMenu}
                 isOrderStarted={order.orderStatus !== 'ORDERED'}
+                orderId={order.orderId}
+                onStatusChange={onStatusChange}
               />
             ))}
           </ul>
           <ul className="flex flex-col gap-4">
             <span className="px-4 font-medium">완료됨</span>
             {completedOrderMenus.map((product, index) => (
-              <ProductItem key={index} item={product} />
+              <ProductItem 
+                key={index} 
+                item={product} 
+                orderId={order.orderId}
+                isOrderStarted={order.orderStatus !== 'ORDERED'}
+                onStatusChange={onStatusChange}
+              />
             ))}
           </ul>
         </section>
@@ -93,10 +102,9 @@ const OrderSummary = ({ order, table }: { order: OrderInfo; table: Table }) => {
       />
       <SummaryLine
         label="총 주문 금액"
-        body={`${formatNumberWithComma(43000)}원`}
+        body={`${formatNumberWithComma(order.totalPrice)}원`}
       />
       <SummaryLine label="테이블" body={table.number + ''} />
-      <SummaryLine label="쿠폰 사용" body={true ? 'O' : 'X'} />
     </section>
   );
 };

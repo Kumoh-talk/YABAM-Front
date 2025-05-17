@@ -4,15 +4,34 @@ import clsx from 'clsx';
 import { Table } from '@/types';
 import { OrderInfo, OrderStatus } from '@/types/backend/order';
 import { CheckRounded, CloseRounded } from '@mui/icons-material';
+import { updateOrderMenuStatus } from '@/utils/api/backend/order';
 
 export interface Props {
   order: OrderInfo;
   table: Table;
   isOpened: boolean;
   onClick?: (id: number) => void;
+  onStatusChange?: () => void;
 }
 
-export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
+export const OrderItem = ({ order, table, isOpened, onClick, onStatusChange }: Props) => {
+  const handleCancel = async () => {
+    try {
+      await updateOrderMenuStatus(order.orderId, 'CANCELED' as OrderStatus);
+      onStatusChange?.();
+    } catch (error) {
+      console.error('주문 취소 실패:', error);
+    }
+  };
+
+  const handleComplete = async () => {
+    try {
+      await updateOrderMenuStatus(order.orderId, 'RECEIVED' as OrderStatus);
+      onStatusChange?.();
+    } catch (error) {
+      console.error('주문 완료 처리 실패:', error);
+    }
+  };
   return (
     <li
       className={clsx(
@@ -39,11 +58,11 @@ export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
         ))}
       </ul>
       {order.orderStatus === 'ORDERED' && (
-        <div className="flex flex-row self-end gap-2">
-          <Button color="tertiary">
+        <div className="flex flex-row self-end gap-2" onClick={(e) => e.stopPropagation()}>
+          <Button color="tertiary" onClick={handleCancel}>
             <CloseRounded />
           </Button>
-          <Button color="primary">
+          <Button color="primary" onClick={handleComplete}>
             <CheckRounded />
           </Button>
         </div>

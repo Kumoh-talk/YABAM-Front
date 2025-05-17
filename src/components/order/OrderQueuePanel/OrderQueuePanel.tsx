@@ -7,47 +7,20 @@ export interface Props {
   tables: Table[];
   currentOrderId: number;
   onClickOrder?: (id: number) => void;
+  onStatusChange?: () => void;
 }
 
-export const OrderQueuePanel = ({
-  orders,
-  tables,
-  currentOrderId,
-  onClickOrder,
-}: Props) => {
+export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, onStatusChange }: Props) => {
   const sorted = orders.sort(
-    (a, b) => new Date(b.receipt.receiptInfo.startUsageTime!).getTime() - new Date(a.receipt.receiptInfo.startUsageTime!).getTime(),
+    (a, b) =>
+      new Date(b.receipt.receiptInfo.startUsageTime!).getTime() -
+      new Date(a.receipt.receiptInfo.startUsageTime!).getTime()
   );
 
   const ordersByStatus = Object.fromEntries(
-    orderStatusList.map((status) => [
-      status,
-      sorted.filter((order) => order.orderStatus === status),
-    ]),
+    orderStatusList.map((status) => [status, sorted.filter((order) => order.orderStatus === status)])
   );
-  const orderCount = Object.fromEntries(
-    orderStatusList.map((status) => [status, ordersByStatus[status].length]),
-  );
-  const list = Object.fromEntries(
-    orderStatusList.map((status) => [
-      status,
-      ordersByStatus[status].map((order) => {
-        const table = tables.find((table) => table.id === order.receipt.tableInfo.tableId);
-        if (!table) {
-          return null;
-        }
-        return (
-          <OrderItem
-            key={order.orderId}
-            order={order}
-            table={table}
-            isOpened={currentOrderId === order.orderId}
-            onClick={onClickOrder}
-          />
-        );
-      }),
-    ]),
-  );
+  const orderCount = Object.fromEntries(orderStatusList.map((status) => [status, ordersByStatus[status].length]));
 
   return (
     <section className="flex flex-col w-[25rem] h-full border-l border-l-gray-500">
@@ -60,9 +33,20 @@ export const OrderQueuePanel = ({
         </span>
       </header>
       <ul className="overflow-y-scroll">
-        {list.inProgress}
-        {list.ready}
-        {list.completed}
+        {sorted.map((order) => {
+          const table = tables.find((table) => table.id === order.receipt.tableInfo.tableId);
+          if (!table) return null;
+          return (
+            <OrderItem
+              key={order.orderId}
+              order={order}
+              table={table}
+              isOpened={currentOrderId === order.orderId}
+              onClick={onClickOrder}
+              onStatusChange={onStatusChange}
+            />
+          );
+        })}
       </ul>
     </section>
   );

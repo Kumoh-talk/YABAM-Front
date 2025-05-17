@@ -1,15 +1,50 @@
 import { Button } from '@/components/common';
-import { OrderMenuInfo } from '@/types/backend/order';
+import { OrderMenuInfo, OrderMenuStatus } from '@/types/backend/order';
 import { formatNumberWithComma } from '@/utils/functions';
 import { CheckRounded, CloseRounded, ReplayRounded } from '@mui/icons-material';
 import clsx from 'clsx';
+import { updateOrderMenuItemStatus } from '@/utils/api/backend/order';
+
 
 export interface Props {
   item: OrderMenuInfo;
   isOrderStarted?: boolean;
+  orderId: number;
+  onStatusChange?: () => void;
 }
 
-export const ProductItem = ({ item, isOrderStarted }: Props) => {
+export const ProductItem = ({ item, isOrderStarted, onStatusChange }: Props) => {
+  const handleCancel = async () => {
+    try {
+      await updateOrderMenuItemStatus(item.orderMenuId, 'CANCELED' as OrderMenuStatus);
+      onStatusChange?.();
+    } catch (error) {
+      console.error('주문 메뉴 취소 실패:', error);
+    }
+  };
+
+  const handleComplete = async () => {
+    try {
+      await updateOrderMenuItemStatus(item.orderMenuId, 'COMPLETED' as OrderMenuStatus);
+      onStatusChange?.();
+    } catch (error) {
+      console.error('주문 메뉴 완료 처리 실패:', error);
+    }
+  };
+
+  const handleReplay = async () => {
+    try {
+      await updateOrderMenuItemStatus(item.orderMenuId, 'COOKING' as OrderMenuStatus);
+      onStatusChange?.();
+    } catch (error) {
+      console.error('주문 메뉴 재시작 실패:', error);
+    }
+  };
+
+  console.log(item.orderMenuId);
+  console.log(item.orderMenuStatus);
+  console.log(item.menuInfo.menuPrice);
+
   return (
     <li
       className={clsx(
@@ -28,17 +63,17 @@ export const ProductItem = ({ item, isOrderStarted }: Props) => {
         </span>
       </div>
       {isOrderStarted && (
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2" onClick={(e) => e.stopPropagation()}>
           {['CANCELED', 'COMPLETED'].includes(item.orderMenuStatus) ? (
-            <Button color="tertiary">
+            <Button color="tertiary" onClick={handleReplay}>
               <ReplayRounded />
             </Button>
           ) : (
             <>
-              <Button color="tertiary">
+              <Button color="tertiary" onClick={handleCancel}>
                 <CloseRounded />
               </Button>
-              <Button color="primary">
+              <Button color="primary" onClick={handleComplete}>
                 <CheckRounded />
               </Button>
             </>
