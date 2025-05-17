@@ -16,6 +16,7 @@ export interface Props {
   price?: number;
   isEditable?: boolean;
   onPointerDown?: (id: string, x: number, y: number) => void;
+  onDoubleClick?: (id: string) => void;
 }
 
 export const TableItem = (props: Props) => {
@@ -55,6 +56,7 @@ export const TableItem = (props: Props) => {
           props.table.pos.y,
         );
       }}
+      onDoubleClick={() => props.onDoubleClick?.(props.table.id)}
       onDragStart={(_) => false}
     >
       <span className="leading-none font-medium text-xl text-right">

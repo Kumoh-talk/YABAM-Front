@@ -9,6 +9,7 @@ export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 export interface Props {
   isEditable?: boolean;
   onChangeSelectedTable?: (id: string) => void;
+  onTableDoubleClick?: (id: string) => void;
 }
 
 export const TableView = (props: Props) => {
@@ -137,6 +138,12 @@ export const TableView = (props: Props) => {
     }
   };
 
+  const handleDoubleClick = (id: string) => {
+    if (pointerState.mode === 'idle') {
+      props.onTableDoubleClick?.(id);
+    }
+  };
+
   const onClickRemoveButton = () => {
     removeTable(pointerState.seletedItem); // string으로 처리
     setPointerState((prevState) => ({
@@ -190,6 +197,7 @@ export const TableView = (props: Props) => {
         x={(x * tableGrid.width - viewState.pos.x + 16) * viewState.zoom}
         y={(y * tableGrid.height - viewState.pos.y + 16) * viewState.zoom}
         onPointerDown={onPointerDownItem}
+        onDoubleClick={handleDoubleClick}
         isSelected={pointerState.seletedItem === item.id} // string 비교
         isEditable={props.isEditable}
       />
