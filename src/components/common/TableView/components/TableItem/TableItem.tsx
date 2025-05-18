@@ -50,7 +50,7 @@ export const TableItem = (props: Props) => {
       style={{
         left: props.x,
         top: props.y,
-        width: props.table.capacity === 6 ? '150px' : '120px',
+        width: props.table.capacity === 6 ? '120px' : '100px',
         backgroundColor: tableColor,
         color: textColor,
       }}

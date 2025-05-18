@@ -28,4 +28,5 @@ export type TableUpdateDto = {
   tableNumber: number;
   tableX: number;
   tableY: number;
+  tableCapacity: number;
 };

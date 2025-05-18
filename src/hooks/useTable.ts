@@ -61,6 +61,7 @@ export const useTable = () => {
         tableNumber: table.number,
         tableX: table.pos.x,
         tableY: table.pos.y,
+        tableCapacity: table.capacity,
       });
       await refreshTable();
     } catch (e) {
@@ -104,6 +105,7 @@ export const useTable = () => {
         tableNumber: newTables[index].number,
         tableX: newTables[index].pos.x,
         tableY: newTables[index].pos.y,
+        tableCapacity: newTables[index].capacity,
       });
       return newTables;
     });

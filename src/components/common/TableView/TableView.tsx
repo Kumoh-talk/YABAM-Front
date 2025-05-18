@@ -14,8 +14,8 @@ export interface Props {
 
 export const TableView = (props: Props) => {
   const tableSize = {
-    w: 80,
-    h: 62,
+    w: 120,
+    h: 92,
   };
   const tableGap = 10;
   const tableGrid = {
@@ -152,9 +152,9 @@ export const TableView = (props: Props) => {
     }));
   };
 
-  const onClickCreateButton = (capacity: number, color: string) => {
+  const onClickCreateButton = (capacity: number) => {
     const newPos = {
-      x: tables.length > 0 ? tables[tables.length - 1].pos.x + 2 : 0,
+      x: tables.length > 0 ? tables[tables.length - 1].pos.x + 4 : 0,
       y: tables.length > 0 ? tables[tables.length - 1].pos.y : 0,
     };
     const newNumber = getAvailableNum();
@@ -215,26 +215,22 @@ export const TableView = (props: Props) => {
                 선택한 테이블 제거
               </Button>
             )}
-            <Button
-              color="primary"
-              onClick={() => onClickCreateButton(4, '#007bff')}
-            >
+            <Button color="primary" onClick={() => onClickCreateButton(4)}>
               4인 테이블 추가
             </Button>
-            <Button
-              color="red"
-              onClick={() => onClickCreateButton(6, '#dc3545')}
-            >
+            <Button color="red" onClick={() => onClickCreateButton(6)}>
               6인 테이블 추가
             </Button>
           </div>
         </header>
       )}
-      <div className="overflow-hidden relative w-full h-full">
+      <div
+        className="overflow-x-auto overflow-y-hidden relative w-full h-full" // 가로 스크롤 활성화
+      >
         <div
-          className={`absolute size-full touch-none`}
+          className="absolute size-full touch-none"
           onPointerDown={onPointerDown}
-          onDragStart={(_) => false}
+          onDragStart={(e) => e.preventDefault()}
         >
           {list}
         </div>
