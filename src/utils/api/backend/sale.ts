@@ -18,6 +18,7 @@ export const openSale = async (storeId: number) => {
     'POST',
   );
   if ('success' in res && res.success === 'true') {
+    console.log(res.data);
     return res.data;
   }
   throw new Error('영업 시작 실패');

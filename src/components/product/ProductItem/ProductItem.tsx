@@ -9,10 +9,13 @@ export interface Props {
   item: MenuInfo;
 }
 
-export const ProductItem = memo(({item}: Props) => {
+export const ProductItem = memo(({ item }: Props) => {
   const { menus } = useMenuValues();
-  const { updateMenuDetail, updateMenuSoldOut, removeMenu } = useMenuActions();
-  const [editingField, setEditingField] = useState<'name' | 'price' | 'description' | null>(null);
+  const { updateMenuDetail, updateMenuSoldOut, removeMenu, refreshMenus } =
+    useMenuActions();
+  const [editingField, setEditingField] = useState<
+    'name' | 'price' | 'description' | null
+  >(null);
   const [editValue, setEditValue] = useState('');
 
   const handleDoubleClick = (field: 'name' | 'price' | 'description') => {
@@ -32,18 +35,25 @@ export const ProductItem = memo(({item}: Props) => {
 
   const handleBlur = async () => {
     if (editingField) {
-      const menu = menus.find(({menuInfo}) => menuInfo.menuId === item.menuId)?.menuInfo;
+      const menu = menus.find(
+        ({ menuInfo }) => menuInfo.menuId === item.menuId,
+      )?.menuInfo;
       if (!menu) return;
-      
+
       const value = editingField === 'price' ? Number(editValue) : editValue;
       await updateMenuDetail(menu.menuId, {
-        menuName: editingField === 'name' ? value as string : menu.menuName,
-        menuPrice: editingField === 'price' ? value as number : menu.menuPrice,
-        menuDescription: editingField === 'description' ? value as string : menu.menuDescription,
+        menuName: editingField === 'name' ? (value as string) : menu.menuName,
+        menuPrice:
+          editingField === 'price' ? (value as number) : menu.menuPrice,
+        menuDescription:
+          editingField === 'description'
+            ? (value as string)
+            : menu.menuDescription,
         menuImageUrl: menu.menuImageUrl, // 이미지 URL 유지
         menuIsRecommended: menu.menuIsRecommended,
         menuIsSoldOut: menu.menuIsSoldOut,
       });
+      await refreshMenus();
     }
     setEditingField(null);
   };
@@ -56,6 +66,7 @@ export const ProductItem = memo(({item}: Props) => {
 
   const handleSoldOut = async () => {
     await updateMenuSoldOut(item.menuId, !item.menuIsSoldOut);
+    await refreshMenus();
   };
 
   const handleRemove = async () => {
@@ -63,7 +74,9 @@ export const ProductItem = memo(({item}: Props) => {
   };
 
   const handleRecommended = async () => {
-    const menu = menus.find(({menuInfo}) => menuInfo.menuId === item.menuId)?.menuInfo;
+    const menu = menus.find(
+      ({ menuInfo }) => menuInfo.menuId === item.menuId,
+    )?.menuInfo;
     if (!menu) return;
     await updateMenuDetail(item.menuId, {
       menuName: menu.menuName,
@@ -73,16 +86,19 @@ export const ProductItem = memo(({item}: Props) => {
       menuIsRecommended: !menu.menuIsRecommended,
       menuIsSoldOut: menu.menuIsSoldOut,
     });
+    await refreshMenus();
   };
 
   return (
-    <div
-      className="w-full flex justify-between items-center p-2 bg-white rounded-lg z-0 transition-all duration-200 ease-in-out"
-    >
+    <div className="w-full flex justify-between items-center p-2 bg-white rounded-lg z-0 transition-all duration-200 ease-in-out">
       <div className="gap-4 flex items-center justify-center">
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
           {item.menuImageUrl ? (
-            <img src={item.menuImageUrl} alt={item.menuName} className="w-full h-full object-cover" />
+            <img
+              src={item.menuImageUrl}
+              alt={item.menuName}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <div className="flex flex-col gap-1 items-center justify-center">
               <BlackPlusIcon />
@@ -102,7 +118,10 @@ export const ProductItem = memo(({item}: Props) => {
               autoFocus
             />
           ) : (
-            <div className="text-xl text-[#3B3B3C] leading-5 font-medium" onDoubleClick={() => handleDoubleClick('name')}>
+            <div
+              className="text-xl text-[#3B3B3C] leading-5 font-medium"
+              onDoubleClick={() => handleDoubleClick('name')}
+            >
               {item.menuName}
             </div>
           )}
@@ -117,7 +136,10 @@ export const ProductItem = memo(({item}: Props) => {
               autoFocus
             />
           ) : (
-            <div className="leading-6 text-[#0092CA] font-medium" onDoubleClick={() => handleDoubleClick('price')}>
+            <div
+              className="leading-6 text-[#0092CA] font-medium"
+              onDoubleClick={() => handleDoubleClick('price')}
+            >
               {item.menuPrice.toLocaleString()}원
             </div>
           )}
@@ -133,15 +155,29 @@ export const ProductItem = memo(({item}: Props) => {
             autoFocus
           />
         ) : (
-          <div className="leading-6 text-[#6C6C6C] font-medium" onDoubleClick={() => handleDoubleClick('description')}>
+          <div
+            className="leading-6 text-[#6C6C6C] font-medium"
+            onDoubleClick={() => handleDoubleClick('description')}
+          >
             {item.menuDescription}
           </div>
         )}
       </div>
       <div className="flex gap-10">
-        <Toggle color="primary" isSelected={item.menuIsRecommended} onClick={handleRecommended} />
-        <Toggle color="secondary" isSelected={item.menuIsSoldOut} onClick={handleSoldOut} />
-        <Close className="text-gray-700 hover:text-gray-600 cursor-pointer" onClick={handleRemove} />
+        <Toggle
+          color="primary"
+          isSelected={item.menuIsRecommended}
+          onClick={handleRecommended}
+        />
+        <Toggle
+          color="secondary"
+          isSelected={item.menuIsSoldOut}
+          onClick={handleSoldOut}
+        />
+        <Close
+          className="text-gray-700 hover:text-gray-600 cursor-pointer"
+          onClick={handleRemove}
+        />
       </div>
     </div>
   );
