@@ -3,8 +3,8 @@ import { OrderMenuInfo, OrderMenuStatus } from '@/types/backend/order';
 import { formatNumberWithComma } from '@/utils/functions';
 import { CheckRounded, CloseRounded, ReplayRounded } from '@mui/icons-material';
 import clsx from 'clsx';
-import { useOrderMenuActions } from '@/hooks/useOrder';
-
+import { useOrder } from '@/hooks/useOrder';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
 export interface Props {
   item: OrderMenuInfo;
@@ -14,7 +14,8 @@ export interface Props {
 }
 
 export const ProductItem = ({ item, isOrderStarted, onStatusChange }: Props) => {
-  const { handleCancel, handleComplete, handleReplay } = useOrderMenuActions(onStatusChange);
+  const { store } = useStoreValues();
+  const { handleCancel, handleComplete, handleReplay } = useOrder(store, null, onStatusChange);
 
   return (
     <li
