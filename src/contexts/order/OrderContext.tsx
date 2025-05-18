@@ -9,10 +9,7 @@ interface OrderContextType {
   refreshOrders: () => Promise<void>;
 }
 
-const OrderContext = createContext<OrderContextType>({
-  orders: [],
-  refreshOrders: async () => {},
-});
+const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { store, sale } = useStoreValues();
@@ -51,4 +48,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-export const useOrderContext = () => useContext(OrderContext); 
+export const useOrderContext = () => {
+  const value = useContext(OrderContext);
+  if (!value) {
+    throw new Error('useOrderContext should be used within OrderContext');
+  }
+  return value;
+};;
