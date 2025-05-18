@@ -65,3 +65,15 @@ export const uploadStoreImage = async (storeId: number, detailImageUrl: string) 
   }
   throw new Error('가게 상세 이미지 업로드 실패');
 };
+
+export const deleteStoreImage = async (storeId: number, detailImageUrl: string) => {
+  const res = await api(
+    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(detailImageUrl)}`,
+    'DELETE',
+  );
+
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('가게 상세 이미지 삭제 실패');
+};
