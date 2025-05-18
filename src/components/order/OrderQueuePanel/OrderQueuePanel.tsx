@@ -24,7 +24,8 @@ export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, 
   const readyOrders = sorted.filter(order => order.orderStatus === 'ORDERED');
   const inProgressOrders = sorted.filter(order => order.orderStatus === 'RECEIVED');
   const completedOrders = sorted.filter(order => order.orderStatus === 'COMPLETED');
-  const displayOrders = [...inProgressOrders, ...readyOrders, ...completedOrders];
+  const canceledOrders = sorted.filter(order => order.orderStatus === 'CANCELED');
+  const displayOrders = [...inProgressOrders, ...readyOrders, ...completedOrders, ...canceledOrders];
 
   return (
     <section className="flex flex-col w-[25rem] h-full border-l border-l-gray-500">
