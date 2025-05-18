@@ -53,7 +53,6 @@ export const ProductItem = memo(({ item }: Props) => {
         menuIsRecommended: menu.menuIsRecommended,
         menuIsSoldOut: menu.menuIsSoldOut,
       });
-      await refreshMenus();
     }
     setEditingField(null);
   };

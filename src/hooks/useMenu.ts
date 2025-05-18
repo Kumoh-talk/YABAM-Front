@@ -19,7 +19,9 @@ export const useMenu = () => {
     if (!store?.id || store.id <= 0) return;
 
     try {
-      setIsRefreshing(true);
+      if (menus.length === 0) {
+        setIsRefreshing(true);
+      }
       const res = await getMenus(store.id);
       setMenus(res);
     } catch (e) {
@@ -80,6 +82,7 @@ export const useMenu = () => {
           menu.menuInfo.menuId === menuId ? { ...menu, ...detail } : menu
         )
       );
+      await refresh();
     } catch (e) {
       console.error(e);
     }
