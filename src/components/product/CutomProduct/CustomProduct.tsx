@@ -9,10 +9,7 @@ interface CustomProductProps {
 export const CustomProduct = ({ item, onClick }: CustomProductProps) => {
   return (
     <div
-      className={`w-[16.5rem] p-4 gap-4 flex flex-col rounded-lg border border-neutral-300 ${
-        item.menuIsSoldOut ? 'opacity-50' : ''
-      }`}
-      onClick={() => item.menuIsSoldOut && onClick?.(item.menuId)}
+      onClick={() => !item.menuIsSoldOut && onClick?.(item.menuId)}
       style={{ cursor: item.menuIsSoldOut ? 'not-allowed' : 'pointer' }}
     >
       <div className="flex flex-col gap-2 h-full">
