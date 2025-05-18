@@ -10,22 +10,45 @@ export interface Props {
   onStatusChange?: () => void;
 }
 
-export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, onStatusChange }: Props) => {
+export const OrderQueuePanel = ({
+  orders,
+  tables,
+  currentOrderId,
+  onClickOrder,
+  onStatusChange,
+}: Props) => {
   const sorted = orders.sort(
     (a, b) =>
       new Date(b.receipt.receiptInfo.startUsageTime!).getTime() -
-      new Date(a.receipt.receiptInfo.startUsageTime!).getTime()
+      new Date(a.receipt.receiptInfo.startUsageTime!).getTime(),
   );
 
-  const readyCount = sorted.filter(order => order.orderStatus === 'ORDERED').length;
-  const inProgressCount = sorted.filter(order => order.orderStatus === 'RECEIVED').length;
-  const completedCount = sorted.filter(order => order.orderStatus === 'COMPLETED').length;
+  const readyCount = sorted.filter(
+    (order) => order.orderStatus === 'ORDERED',
+  ).length;
+  const inProgressCount = sorted.filter(
+    (order) => order.orderStatus === 'RECEIVED',
+  ).length;
+  const completedCount = sorted.filter(
+    (order) => order.orderStatus === 'COMPLETED',
+  ).length;
 
-  const readyOrders = sorted.filter(order => order.orderStatus === 'ORDERED');
-  const inProgressOrders = sorted.filter(order => order.orderStatus === 'RECEIVED');
-  const completedOrders = sorted.filter(order => order.orderStatus === 'COMPLETED');
-  const canceledOrders = sorted.filter(order => order.orderStatus === 'CANCELED');
-  const displayOrders = [...inProgressOrders, ...readyOrders, ...completedOrders, ...canceledOrders];
+  const readyOrders = sorted.filter((order) => order.orderStatus === 'ORDERED');
+  const inProgressOrders = sorted.filter(
+    (order) => order.orderStatus === 'RECEIVED',
+  );
+  const completedOrders = sorted.filter(
+    (order) => order.orderStatus === 'COMPLETED',
+  );
+  const canceledOrders = sorted.filter(
+    (order) => order.orderStatus === 'CANCELED',
+  );
+  const displayOrders = [
+    ...inProgressOrders,
+    ...readyOrders,
+    ...completedOrders,
+    ...canceledOrders,
+  ];
 
   return (
     <section className="flex flex-col w-[25rem] h-full border-l border-l-gray-500">
@@ -39,7 +62,9 @@ export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, 
       </header>
       <ul className="overflow-y-scroll">
         {displayOrders.map((order) => {
-          const table = tables.find((table) => table.id === order.receipt.tableInfo.tableId);
+          const table = tables.find(
+            (table) => table.id === order.receipt.tableInfo.tableId,
+          );
           if (!table) return null;
           return (
             <OrderItem
