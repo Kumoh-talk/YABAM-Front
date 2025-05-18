@@ -17,19 +17,18 @@ export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, 
       new Date(a.receipt.receiptInfo.startUsageTime!).getTime()
   );
 
-  const ordersByStatus = Object.fromEntries(
-    orderStatusList.map((status) => [status, sorted.filter((order) => order.orderStatus === status)])
-  );
-  const orderCount = Object.fromEntries(orderStatusList.map((status) => [status, ordersByStatus[status].length]));
+  const readyCount = sorted.filter(order => order.orderStatus === 'ORDERED').length;
+  const inProgressCount = sorted.filter(order => order.orderStatus === 'RECEIVED').length;
+  const completedCount = sorted.filter(order => order.orderStatus === 'COMPLETED').length;
 
   return (
     <section className="flex flex-col w-[25rem] h-full border-l border-l-gray-500">
       <header className="flex flex-row justify-between px-4 py-3 bg-gray-200 text-sm leading-none font-medium">
         <span>주문 현황</span>
         <span className="flex flex-row gap-4">
-          <span className="text-secondary">대기 {orderCount.ready}</span>
-          <span className="text-primary">진행중 {orderCount.inProgress}</span>
-          <span>완료 {orderCount.completed}</span>
+          <span className="text-secondary">대기 {readyCount}</span>
+          <span className="text-primary">진행중 {inProgressCount}</span>
+          <span>완료 {completedCount}</span>
         </span>
       </header>
       <ul className="overflow-y-scroll">
