@@ -29,8 +29,6 @@ export const ReceiptPanel = ({ order }: Props) => {
       const firstOrder = order?.[0];
       const startTime = firstOrder?.receipt?.receiptInfo?.startUsageTime;
       if (startTime) {
-        console.log('Server Time:', startTime);
-        console.log('Parsed Time:', dayjs.utc(startTime).tz('Asia/Seoul').format());
       }
       const seconds = startTime ? getRelativeSeconds(startTime) : 0;
       setUsedTime(seconds);
