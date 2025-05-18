@@ -80,9 +80,9 @@ export const StorePage = () => {
       </InputForm>
       <InputForm label="소개 이미지">
         <ul className="flex flex-row gap-2">
-          <StoreImageItem src="" />
-          <StoreImageItem src="" />
-          <StoreImageItem src="" />
+          {store.detailImageUrls.map((url, index) => (
+            <StoreImageItem key={index} src={url} />
+          ))}
           <ImageInput
             className="w-32 h-48"
             storeId={store.id}

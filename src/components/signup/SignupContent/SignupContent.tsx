@@ -11,6 +11,7 @@ import {
 } from '@/contexts/signup/SignupContext';
 import { useStoreActions } from '@/contexts/store/StoreContext';
 import { useInputs } from '@/hooks';
+import { useStore } from '@/hooks/useStore';
 import { Store, User } from '@/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -103,7 +104,9 @@ const StoreInfoPage = () => {
     tableTime: 30,
     tableCost: 1000,
     headImageUrl: '',
+    detailImageUrls: [],
   });
+  const { store } = useStore();
 
   useEffect(() => {
     updateStore(form);
@@ -114,7 +117,13 @@ const StoreInfoPage = () => {
       <h3 className="text-xl px-4 font-medium">점포에 대해 알려주세요.</h3>
       <div className="flex flex-row gap-4">
         <InputForm label="점포 로고">
-          <ImageInput name="logo" value={form.logo} onChange={onChange} />
+          <ImageInput
+            name="logo"
+            value={form.logo}
+            onChange={onChange}
+            storeId={store.id}
+            imageProperty="STORE_HEAD"
+          />
         </InputForm>
         <div className="flex flex-col gap-4 w-0 flex-1">
           <InputForm label="점포 이름">

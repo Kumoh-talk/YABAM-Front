@@ -1,6 +1,7 @@
 import { ImageRounded } from '@mui/icons-material';
 import { InputChangeHandler } from '@/hooks/useInputs';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/api/backend/aws';
+import { uploadStoreImage } from '@/utils/api/backend/store'; // 추가
 import clsx from 'clsx';
 
 export interface Props {
@@ -15,19 +16,26 @@ export interface Props {
 export const ImageInput = (props: Props) => {
   const loadImage = async (file: File) => {
     try {
-      console.log('업로드할 파일:', file);
-      console.log('프리사인 유알엘 요청요청');
+      // Presigned URL 요청
       const presignedUrlData = await getPresignedUrl({
         storeId: props.storeId,
         imageProperty: props.imageProperty,
       });
 
-      console.log('Presigned URL 받아온 결과:', presignedUrlData.presignedUrl);
-
+      // S3에 이미지 업로드
       await uploadImageToS3(presignedUrlData.presignedUrl, file);
 
+      // 업로드된 이미지 URL
+      const uploadedImageUrl = presignedUrlData.presignedUrl.split('?')[0];
+
+      // 가게 상세 이미지 업로드 API 호출 (STORE_DETAIL일 경우만)
+      if (props.imageProperty === 'STORE_DETAIL') {
+        await uploadStoreImage(props.storeId, uploadedImageUrl);
+      }
+
+      // onChange로 업로드된 이미지 URL 전달
       props.onChange?.({
-        target: { name: props.name ?? '', value: presignedUrlData.presignedUrl.split('?')[0] },
+        target: { name: props.name ?? '', value: uploadedImageUrl },
       });
     } catch (err) {
       console.error('이미지 업로드 중 오류 발생:', err);

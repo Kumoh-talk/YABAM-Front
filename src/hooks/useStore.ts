@@ -17,6 +17,7 @@ export const useStore = () => {
     tableTime: 30,
     tableCost: 1000,
     headImageUrl: '',
+    detailImageUrls: [],
   });
   const prevStoreRef = useRef<Store | null>(null);
 
@@ -38,6 +39,7 @@ export const useStore = () => {
           tableTime: store.tableTime,
           tableCost: store.tableCost,
           headImageUrl: store.headImageUrl,
+          detailImageUrls: store.detailImageUrls,
         });
       }
     } catch (e) {

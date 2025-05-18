@@ -16,6 +16,7 @@ export type Store = {
   tableTime: number;
   tableCost: number;
   headImageUrl: string;
+  detailImageUrls: string[];
 };
 
 export type LocationPoint = {

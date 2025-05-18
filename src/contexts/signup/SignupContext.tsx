@@ -40,6 +40,7 @@ export const SignupProvider = (props: Props) => {
     tableTime: 30,
     tableCost: 1000,
     headImageUrl: '',
+    detailImageUrls: [],
   });
 
   const nextPage = () => {
