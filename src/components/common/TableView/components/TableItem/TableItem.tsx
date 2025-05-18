@@ -3,7 +3,6 @@ import {
   formatNumberWithComma,
   formatTimeString,
   getRelativeSeconds,
-  getTableMenuTotal,
 } from '@/utils/functions';
 import clsx from 'clsx';
 import { useEffect, useState, useMemo } from 'react';
@@ -37,8 +36,6 @@ export const TableItem = (props: Props) => {
       clearInterval(interval);
     };
   }, [props.startedAt]);
-
-  const totalPrice = (props.price ?? 0) + getTableMenuTotal(props.orderMenus);
 
   return (
     <div
@@ -75,7 +72,7 @@ export const TableItem = (props: Props) => {
           <>
             <span className="text-lg text-right">{formatTimeString(time)}</span>
             <span className="font-bold text-right">
-              {formatNumberWithComma(totalPrice)}원
+              {formatNumberWithComma(props.price ?? 0)}원
             </span>
           </>
         )}

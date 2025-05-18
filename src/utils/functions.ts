@@ -64,10 +64,10 @@ export const checkHasOwnStore = async () => {
   }
 };
 
-export function getTableOrderMenusAndPrice(
+export function getTableTotalPrice(
   table: Table,
   orders: OrderInfo[],
-  calcTableCost: (time: number, tableCapacity: number) => number
+  calcTableCost: (time: number, tableCapacity: number) => number,
 ): {
   orderMenus: OrderMenuInfo[];
   price: number;
@@ -77,34 +77,37 @@ export function getTableOrderMenusAndPrice(
     (order) =>
       order.receipt.tableInfo.tableId === table.id &&
       order.receipt.receiptInfo.isAdjustment === false &&
-      (order.orderStatus === 'COMPLETED' || order.orderStatus === 'RECEIVED')
+      (order.orderStatus === 'COMPLETED' || order.orderStatus === 'RECEIVED'),
   );
   const orderMenus = tableOrders.flatMap((order) => order.orderMenus ?? []);
   const activeOrder = tableOrders[0];
   const startTime =
     activeOrder?.receipt.receiptInfo.startUsageTime || undefined;
-  const price = startTime
+  const menuPrice = getTotalMenuPrice(orderMenus);
+  const tableCost = startTime
     ? calcTableCost(getRelativeSeconds(startTime), table.capacity)
     : 0;
-  return { orderMenus, price, startTime };
+  return { orderMenus, price: menuPrice + tableCost, startTime };
 }
 
-export function getTableMenuTotal(orderMenus: OrderMenuInfo[] = []): number {
+export function getTotalMenuPrice(orderMenus: OrderMenuInfo[] = []): number {
   return orderMenus
-    ? orderMenus.reduce(
-        (sum, menu) =>
-          sum + (menu.menuInfo.menuPrice ?? 0) * (menu.quantity ?? 1),
-        0
-      )
+    ? orderMenus
+        .filter((menu) => menu.orderMenuStatus !== 'CANCELED')
+        .reduce(
+          (sum, menu) =>
+            sum + (menu.menuInfo.menuPrice ?? 0) * (menu.quantity ?? 1),
+          0,
+        )
     : 0;
 }
 
 export function getTableOrdersByTableId(
   orders: OrderInfo[],
-  tableId: string
+  tableId: string,
 ): OrderInfo[] {
   const filteredOrders = orders.filter(
-    (order) => order.receipt.tableInfo.tableId === tableId
+    (order) => order.receipt.tableInfo.tableId === tableId,
   );
   return filteredOrders;
 }

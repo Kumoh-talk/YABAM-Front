@@ -3,7 +3,7 @@ import { TableItem } from './components';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Button } from '..';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { getTableOrderMenusAndPrice } from '@/utils/functions';
+import { getTableTotalPrice } from '@/utils/functions';
 import { OrderInfo } from '@/types/backend/order';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
@@ -206,7 +206,7 @@ export const TableView = (props: Props) => {
         ? pointerState.itemPos.ty
         : item.pos.y;
 
-    const { orderMenus, price, startTime } = getTableOrderMenusAndPrice(
+    const { orderMenus, price, startTime } = getTableTotalPrice(
       item,
       orders,
       calcTableCost,
