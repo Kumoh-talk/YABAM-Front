@@ -19,6 +19,7 @@ export interface Props {
   href?: string;
   children?: React.ReactNode;
   color?: ButtonColor;
+  isDisabled?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isNoPadding?: boolean;
 }
@@ -31,6 +32,7 @@ export const Button = (props: Props) => {
     props.className,
     {
       'px-3 h-10': !props.isNoPadding,
+      'opacity-50 cursor-not-allowed': props.isDisabled,
       'bg-primary text-text-dark-primary': color === 'primary',
       'bg-secondary text-text-dark-primary': color === 'secondary',
       'bg-tertiary text-text-dark-primary': color === 'tertiary',
@@ -55,7 +57,11 @@ export const Button = (props: Props) => {
   }
 
   return (
-    <button className={className} onClick={props.onClick}>
+    <button
+      className={className}
+      onClick={(e) => !props.isDisabled && props.onClick?.(e)}
+      disabled={props.isDisabled}
+    >
       {props.children}
     </button>
   );
