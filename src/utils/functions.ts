@@ -85,7 +85,8 @@ export function getTableOrderMenusAndPrice(
   const tableOrders = orders.filter(
     (order) =>
       order.receipt.tableInfo.tableId === table.id &&
-      order.receipt.receiptInfo.isAdjustment === false
+      order.receipt.receiptInfo.isAdjustment === false &&
+      (order.orderStatus === 'COMPLETED' || order.orderStatus === 'RECEIVED')
   );
   const orderMenus = tableOrders.flatMap((order) => order.orderMenus ?? []);
   const activeOrder = tableOrders[0];

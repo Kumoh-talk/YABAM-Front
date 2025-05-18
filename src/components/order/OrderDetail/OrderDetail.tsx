@@ -30,7 +30,10 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
     ['ORDERED', 'COOKING'].includes(product.orderMenuStatus),
   );
   const completedOrderMenus = order.orderMenus.filter((product) =>
-    ['CANCELED', 'COMPLETED'].includes(product.orderMenuStatus),
+    product.orderMenuStatus === 'COMPLETED',
+  );
+  const canceledOrderMenus = order.orderMenus.filter((product) =>
+    product.orderMenuStatus === 'CANCELED',
   );
 
   const controls = {
@@ -83,6 +86,18 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
           <ul className="flex flex-col gap-4">
             <span className="px-4 font-medium">완료됨</span>
             {completedOrderMenus.map((product, index) => (
+              <ProductItem
+                key={index}
+                item={product}
+                orderId={order.orderId}
+                isOrderStarted={order.orderStatus !== 'ORDERED'}
+                onStatusChange={onStatusChange}
+              />
+            ))}
+          </ul>
+          <ul className="flex flex-col gap-4">
+            <span className="px-4 font-medium">취소됨</span>
+            {canceledOrderMenus.map((product, index) => (
               <ProductItem
                 key={index}
                 item={product}

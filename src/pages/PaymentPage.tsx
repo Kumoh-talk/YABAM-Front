@@ -23,7 +23,7 @@ export const PaymentPage = () => {
       .map((order) => ({
         ...order,
         orderMenus: order.orderMenus.filter(
-          (menu) => menu.orderMenuStatus === 'COMPLETED',
+          (menu) => menu.orderMenuStatus === 'COMPLETED' || menu.orderMenuStatus === 'COOKING',
         ),
       }))
       .filter((order) => order.orderMenus.length > 0);
