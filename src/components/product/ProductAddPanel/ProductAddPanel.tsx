@@ -60,7 +60,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
         menuName: form.name,
         menuPrice: Number(form.price),
         menuDescription: form.description,
-        menuImageUrl: form.imageUrl || 'https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250519_004258791.png',
+        menuImageUrl: form.imageUrl || 'https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/Frame_16_1.png',
         menuIsSoldOut: false,
         menuIsRecommended: false,
         menuCategoryId: selectedCategoryId,
