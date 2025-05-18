@@ -22,7 +22,11 @@ export const OrderPage = () => {
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">
         {isOrderDetailVisible && currentOrder && (
-          <OrderDetail order={currentOrder} onStatusChange={handleStatusChange} />
+          <OrderDetail
+            order={currentOrder}
+            onStatusChange={handleStatusChange}
+            onClose={() => setCurrentOrderId(-1)}
+          />
         )}
       </section>
       <OrderQueuePanel
