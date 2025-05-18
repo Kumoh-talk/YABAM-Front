@@ -11,11 +11,13 @@ export interface Props {
   name: string;
   to?: string;
   subItems?: AsideSubItemProps[];
+  onClick?: () => void;
 }
 
 export const AsideItem = (props: Props) => {
   const location = useLocation();
   const isSelected = location.pathname === props.to;
+
   if (props.subItems) {
     return (
       <div className="flex flex-col w-full">
@@ -33,6 +35,21 @@ export const AsideItem = (props: Props) => {
       </div>
     );
   }
+
+  if (props.onClick) {
+    return (
+      <button
+        onClick={props.onClick}
+        className={clsx(
+          'w-full flex flex-row items-center gap-3 px-3 py-2 text-base font-medium leading-none rounded-lg select-none hover:bg-gray-400',
+        )}
+      >
+        {props.icon}
+        {props.name}
+      </button>
+    );
+  }
+
   return (
     <Link
       to={props.to!}

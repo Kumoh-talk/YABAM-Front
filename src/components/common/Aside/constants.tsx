@@ -1,11 +1,13 @@
 import {
   HomeRounded,
   LocalActivityRounded,
+  LogoutRounded,
   ReceiptLongRounded,
   StoreRounded,
   QrCode2Rounded
 } from '@mui/icons-material';
 import { Props as AsideItemProps } from './components/AsideItem/AsideItem';
+import { requestLogout } from '@/utils/api/backend/auth';
 
 export const list: AsideItemProps[] = [
   {
@@ -44,10 +46,18 @@ export const list: AsideItemProps[] = [
     name: '테이블 QR 코드 생성',
     icon: <QrCode2Rounded />,
     to: '/qrcode',
-  }
-  // {
-  //   name: '쿠폰 관리',
-  //   icon: <LocalActivityRounded />,
-  //   to: '/coupon',
-  // },
+  },
+  {
+    name: '로그아웃',
+    icon: <LogoutRounded />,
+    onClick: async () => {
+      try {
+        await requestLogout();
+        window.location.href = '/';
+      } catch (error) {
+        console.error('로그아웃 실패:', error);
+        alert('로그아웃에 실패했습니다.');
+      }
+    },
+  },
 ];

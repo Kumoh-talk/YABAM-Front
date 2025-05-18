@@ -41,3 +41,11 @@ export const requestRefreshToken = async (
   }
   throw new Error('토큰 갱신 실패');
 };
+
+export const requestLogout = async () => {
+  const res = await api('/gateway/api/v1/logout', 'POST');
+  if ('success' in res && res.success === 'true') {
+    return res;
+  }
+  throw new Error('로그아웃 실패');
+};
