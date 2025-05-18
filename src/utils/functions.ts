@@ -108,13 +108,6 @@ export function getTableMenuTotal(orderMenus: OrderMenuInfo[] = []): number {
     : 0;
 }
 
-export function getTableTotalPrice(
-  price: number = 0,
-  menuTotal: number = 0
-): number {
-  return (price ?? 0) + menuTotal;
-}
-
 export function getTableOrdersByTableId(
   orders: OrderInfo[],
   tableId: string

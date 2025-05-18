@@ -4,7 +4,6 @@ import {
   formatTimeString,
   getRelativeSeconds,
   getTableMenuTotal,
-  getTableTotalPrice,
 } from '@/utils/functions';
 import clsx from 'clsx';
 import { useEffect, useState, useMemo } from 'react';
@@ -39,35 +38,34 @@ export const TableItem = (props: Props) => {
     };
   }, [props.startedAt]);
 
-  const tableColor = props.table.capacity === 4 ? '#6299FE' : '#dc3545';
-  const textColor = '#FFFFFF';
-
-  const menuTotal = useMemo(() => getTableMenuTotal(props.orderMenus), [props.orderMenus]);
-  const totalPrice = useMemo(() => getTableTotalPrice(props.price, menuTotal), [props.price, menuTotal]);
+  const totalPrice = (props.price ?? 0) + getTableMenuTotal(props.orderMenus);
 
   return (
     <div
       className={clsx(
-        'flex flex-col justify-between absolute w-[120px] h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium',
+        'flex flex-col justify-between absolute h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium text-white',
         {
           'border border-gray-500 p-4': !props.table.isActive,
-          'border-2 border-primary p-3.5': props.table.isActive,
-        }
+          'border-4 border-secondary p-3': props.table.isActive,
+          'w-[120px] bg-[#dc3545]': props.table.capacity === 6,
+          'w-[108px] bg-[#6299fe]': props.table.capacity === 4,
+        },
       )}
       style={{
         left: props.x,
         top: props.y,
-        width: props.table.capacity === 6 ? '120px' : '100px',
-        backgroundColor: tableColor,
-        color: textColor,
       }}
       onPointerDown={() =>
-        props.onPointerDown?.(props.table.id, props.table.pos.x, props.table.pos.y)
+        props.onPointerDown?.(
+          props.table.id,
+          props.table.pos.x,
+          props.table.pos.y,
+        )
       }
       onDoubleClick={() => props.onDoubleClick?.(props.table.id)}
       onDragStart={(e) => e.preventDefault()}
     >
-      <span className="leading-none font-bold text-xl text-right" style={{ color: '#ffffff' }}>
+      <span className="leading-none font-bold text-xl text-right">
         {props.table.number}
       </span>
       <div className="flex flex-col leading-6">
@@ -75,12 +73,7 @@ export const TableItem = (props: Props) => {
           <></>
         ) : (
           <>
-            <span
-              className="text-lg font-bold text-right"
-              style={{ color: '#ffffff' }}
-            >
-              {formatTimeString(time)}
-            </span>
+            <span className="text-lg text-right">{formatTimeString(time)}</span>
             <span className="font-bold text-right">
               {formatNumberWithComma(totalPrice)}원
             </span>
