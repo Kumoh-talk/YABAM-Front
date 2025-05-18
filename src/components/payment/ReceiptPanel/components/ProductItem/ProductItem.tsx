@@ -24,7 +24,7 @@ export const ProductItem = (props: Props) => {
         <Button
           color="primary-transparent"
           isNoPadding
-          onClick={() => props.onChangeAmount?.(props.item.menuInfo.menuId, -1)}
+          onClick={() => props.onChangeAmount?.(props.item.menuInfo.menuId, 1)}
         >
           <AddOutlined fontSize="small" />
         </Button>
