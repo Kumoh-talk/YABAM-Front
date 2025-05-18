@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TableItem } from './components';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Button } from '..';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { getRelativeSeconds, getTableOrderMenusAndPrice } from '@/utils/functions';
+import { getTableOrderMenusAndPrice } from '@/utils/functions';
 import { OrderInfo } from '@/types/backend/order';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
@@ -25,12 +25,18 @@ export const TableView = (props: Props) => {
     width: (tableSize.w + tableGap) / 2,
     height: (tableSize.h + tableGap) / 2,
   };
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   const context = useStoreValues();
   const orders = props.orders ?? context.orders;
   const { tables } = useTableValues();
-  const { createTable, moveTable, removeTable, getAvailableNum, calcTableCost } =
-    useTableActions();
+  const {
+    createTable,
+    moveTable,
+    removeTable,
+    getAvailableNum,
+    calcTableCost,
+  } = useTableActions();
   const [viewState, setViewState] = useState({
     pos: {
       x: 0,
@@ -149,24 +155,30 @@ export const TableView = (props: Props) => {
   };
 
   const onClickRemoveButton = () => {
-    removeTable(pointerState.seletedItem); 
+    removeTable(pointerState.seletedItem);
     setPointerState((prevState) => ({
       ...prevState,
-      seletedItem: '', 
+      seletedItem: '',
     }));
   };
 
   const onClickCreateButton = (capacity: number) => {
+    const bodyWidth = Math.floor(
+      ((bodyRef.current?.clientWidth ?? 99999999) - 40) / tableGrid.width,
+    );
+    const x = tables.length > 0 ? tables[tables.length - 1].pos.x + 2 : 0;
+    const y = tables.length > 0 ? tables[tables.length - 1].pos.y : 0;
+    const isOvered = Math.floor(x / bodyWidth) > 0;
     const newPos = {
-      x: tables.length > 0 ? tables[tables.length - 1].pos.x + 4 : 0,
-      y: tables.length > 0 ? tables[tables.length - 1].pos.y : 0,
+      x: isOvered ? 0 : x,
+      y: y + (isOvered ? 2 : 0),
     };
     const newNumber = getAvailableNum();
     createTable({
       number: newNumber,
       isActive: true,
       pos: newPos,
-      capacity
+      capacity,
     });
   };
 
@@ -194,7 +206,11 @@ export const TableView = (props: Props) => {
         ? pointerState.itemPos.ty
         : item.pos.y;
 
-    const { orderMenus, price, startTime } = getTableOrderMenusAndPrice(item, orders, calcTableCost);
+    const { orderMenus, price, startTime } = getTableOrderMenusAndPrice(
+      item,
+      orders,
+      calcTableCost,
+    );
 
     return (
       <TableItem
@@ -215,7 +231,7 @@ export const TableView = (props: Props) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setViewState(prev => ({ ...prev }));
+      setViewState((prev) => ({ ...prev }));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -241,9 +257,7 @@ export const TableView = (props: Props) => {
           </div>
         </header>
       )}
-      <div
-        className="overflow-x-auto overflow-y-hidden relative w-full h-full" 
-      >
+      <div ref={bodyRef} className="relative w-full h-full overflow-hidden">
         <div
           className="absolute size-full touch-none"
           onPointerDown={onPointerDown}
