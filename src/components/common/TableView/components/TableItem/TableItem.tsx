@@ -5,7 +5,7 @@ import {
   getRelativeSeconds,
 } from '@/utils/functions';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 export interface Props {
   table: Table;
@@ -42,11 +42,16 @@ export const TableItem = (props: Props) => {
   const tableColor = props.table.capacity === 4 ? '#6299FE' : '#dc3545';
   const textColor = '#FFFFFF';
 
-  // 메뉴 총합 계산
-  const menuTotal = props.orderMenus
-    ? props.orderMenus.reduce((sum, menu) => sum + (menu.menuInfo.menuPrice ?? 0) * (menu.quantity ?? 1), 0)
-    : 0;
-  const totalPrice = (props.price ?? 0) + menuTotal;
+  // 메뉴 총합 계산 (orderMenus, price가 바뀔 때마다 갱신)
+  const menuTotal = useMemo(() => {
+    return props.orderMenus
+      ? props.orderMenus.reduce((sum, menu) => sum + (menu.menuInfo.menuPrice ?? 0) * (menu.quantity ?? 1), 0)
+      : 0;
+  }, [props.orderMenus]);
+
+  const totalPrice = useMemo(() => {
+    return (props.price ?? 0) + menuTotal;
+  }, [props.price, menuTotal]);
 
   return (
     <div

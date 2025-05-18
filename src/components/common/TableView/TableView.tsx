@@ -4,6 +4,7 @@ import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Button } from '..';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { getRelativeSeconds } from '@/utils/functions';
+import { OrderInfo } from '@/types/backend/order';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 
@@ -11,6 +12,7 @@ export interface Props {
   isEditable?: boolean;
   onChangeSelectedTable?: (id: string) => void;
   onTableDoubleClick?: (id: string) => void;
+  orders?: OrderInfo[];
 }
 
 export const TableView = (props: Props) => {
@@ -24,7 +26,8 @@ export const TableView = (props: Props) => {
     height: (tableSize.h + tableGap) / 2,
   };
 
-  const { orders } = useStoreValues();
+  const context = useStoreValues();
+  const orders = props.orders ?? context.orders;
   const { tables } = useTableValues();
   const { createTable, moveTable, removeTable, getAvailableNum, calcTableCost } =
     useTableActions();

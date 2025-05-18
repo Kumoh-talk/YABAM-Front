@@ -37,7 +37,11 @@ export const PaymentPage = () => {
             receiptId={selectedTableOrders[0] ? selectedTableOrders[0].receipt.receiptInfo.receiptId.toString() : ''}
           />
         ) : (
-          <TableView onChangeSelectedTable={setSelectedTableId} onTableDoubleClick={handleTableDoubleClick} />
+          <TableView
+            orders={orders}
+            onChangeSelectedTable={setSelectedTableId}
+            onTableDoubleClick={handleTableDoubleClick}
+          />
         )}
       </section>
       <ReceiptPanel order={selectedTableOrders} />

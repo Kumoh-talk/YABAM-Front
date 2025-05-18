@@ -32,6 +32,16 @@ export const OrderItem = ({ order, table, isOpened, onClick, onStatusChange }: P
       console.error('주문 완료 처리 실패:', error);
     }
   };
+
+  const handleReroll = async () => {
+    try {
+      await updateOrderMenuStatus(order.orderId, 'RECEIVED' as OrderStatus);
+      onStatusChange?.();
+    } catch (error) {
+      console.error('주문 리롤(대기중 변경) 실패:', error);
+    }
+  };
+
   return (
     <li
       className={clsx(
@@ -64,6 +74,13 @@ export const OrderItem = ({ order, table, isOpened, onClick, onStatusChange }: P
           </Button>
           <Button color="primary" onClick={handleComplete}>
             <CheckRounded />
+          </Button>
+        </div>
+      )}
+      {order.orderStatus === 'COMPLETED' && (
+        <div className="flex flex-row self-end gap-2" onClick={e => e.stopPropagation()}>
+          <Button color="primary" onClick={handleReroll}>
+            진행중으로 변경
           </Button>
         </div>
       )}
