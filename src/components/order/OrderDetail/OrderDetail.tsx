@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
+import { CloseRounded } from '@mui/icons-material';
 import { useTableValues } from '@/contexts/table/TableContext';
 import { Button } from '@/components/common';
 
@@ -12,9 +13,10 @@ import { OrderInfo } from '@/types/backend/order';
 export interface Props {
   order: OrderInfo;
   onStatusChange?: () => void;
+  onClose?: () => void;
 }
 
-export const OrderDetail = ({ order, onStatusChange }: Props) => {
+export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
   const { tables } = useTableValues();
   useEffect(() => {
     dayjs.locale('ko');
@@ -54,7 +56,12 @@ export const OrderDetail = ({ order, onStatusChange }: Props) => {
             {formatRelativeTime(order.receipt.receiptInfo.startUsageTime!)} 주문
           </span>
         </div>
-        <div className="flex flex-row gap-2">{controls[order.orderStatus]}</div>
+        <div className="flex flex-row gap-2">
+          {controls[order.orderStatus]}
+          <Button color="black-transparent" onClick={() => onClose?.()}>
+            <CloseRounded />
+          </Button>
+        </div>
       </header>
       <div className="flex flex-row gap-8 h-max">
         <div className="flex flex-col gap-4">
@@ -76,9 +83,9 @@ export const OrderDetail = ({ order, onStatusChange }: Props) => {
           <ul className="flex flex-col gap-4">
             <span className="px-4 font-medium">완료됨</span>
             {completedOrderMenus.map((product, index) => (
-              <ProductItem 
-                key={index} 
-                item={product} 
+              <ProductItem
+                key={index}
+                item={product}
                 orderId={order.orderId}
                 isOrderStarted={order.orderStatus !== 'ORDERED'}
                 onStatusChange={onStatusChange}
