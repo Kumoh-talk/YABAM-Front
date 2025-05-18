@@ -1,9 +1,10 @@
 import { CategorySelect } from '../CategorySelect/CategorySelect';
 import { Button } from '../../common/Button/Button';
+import { ImageInput } from '@/components/common';
 import { useState } from 'react';
-import { useCategoryValues } from '@/contexts/category/CategoryContext';
 import { useStoreValues } from '@/contexts/store/StoreContext';
-import { useMenuActions, useMenuValues } from '@/contexts/menu/MenuContext';
+import { useCategoryValues } from '@/contexts/category/CategoryContext';
+import { useMenuActions } from '@/contexts/menu/MenuContext';
 import { MenuCreateDto } from '@/types/backend/menu';
 
 interface Props {
@@ -14,9 +15,11 @@ interface MenuForm {
   name: string;
   price: string;
   description: string;
+  imageUrl: string; // 이미지 URL 필드 추가
 }
 
 export const ProductAddPanel = ({ onClose }: Props) => {
+  const { store } = useStoreValues();
   const { categories } = useCategoryValues();
   const { createMenu } = useMenuActions();
   const [selectedCategoryId, setSelectedCategoryId] = useState(categories[0]?.id ?? 0);
@@ -24,6 +27,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
     name: '',
     price: '',
     description: '',
+    imageUrl: '', // 초기값 설정
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,8 +39,17 @@ export const ProductAddPanel = ({ onClose }: Props) => {
     }));
   };
 
+  const handleImageChange = (e: { target: { name: string; value: string } }) => {
+    console.log('이미지 URL 변경:', e.target.value); // 디버깅용 로그
+    setForm((prev) => ({
+      ...prev,
+      imageUrl: e.target.value,
+    }));
+  };
+
   const handleSubmit = async () => {
-    if (!form.name || !form.price || !form.description) {
+    console.log('폼 데이터:', form); // 디버깅용 로그
+    if (!form.name || !form.price || !form.description || !form.imageUrl) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -47,7 +60,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
         menuName: form.name,
         menuPrice: Number(form.price),
         menuDescription: form.description,
-        menuImageUrl: 'https://example.com/image.jpg',
+        menuImageUrl: form.imageUrl,
         menuIsSoldOut: false,
         menuIsRecommended: false,
         menuCategoryId: selectedCategoryId,
@@ -102,6 +115,16 @@ export const ProductAddPanel = ({ onClose }: Props) => {
             placeholder="설명입니다"
             value={form.description}
             onChange={handleChange}
+          />
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="px-4">이미지</div>
+          <ImageInput
+            name="image"
+            value={form.imageUrl}
+            onChange={handleImageChange}
+            storeId={store.id}
+            imageProperty="MENU_IMAGE"
           />
         </div>
       </div>

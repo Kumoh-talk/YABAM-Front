@@ -10,7 +10,7 @@ export interface Props {
   onChange?: InputChangeHandler<string>;
   value?: string;
   storeId: number;
-  imageProperty: 'STORE_HEAD' | 'STORE_DETAIL';
+  imageProperty: 'STORE_HEAD' | 'STORE_DETAIL' | 'MENU_IMAGE';
 }
 
 export const ImageInput = (props: Props) => {
@@ -37,6 +37,7 @@ export const ImageInput = (props: Props) => {
       props.onChange?.({
         target: { name: props.name ?? '', value: uploadedImageUrl },
       });
+      console.log('ImageInput onChange 호출:', uploadedImageUrl); // 디버깅용 로그
     } catch (err) {
       console.error('이미지 업로드 중 오류 발생:', err);
     }

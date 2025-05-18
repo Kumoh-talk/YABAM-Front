@@ -5,7 +5,7 @@ import {
 import { api } from './common';
 
 export const getPresignedUrl = async (dto: PresignedUrlRequestDto) => {
-  console.log('Presigned URL 요청 데이터:', dto); // 디버깅용 로그
+  console.log('Presigned URL 요청 데이터:', dto);
   const res = await api<PresignedUrlResponseDto>(
     '/yabam/api/v1/presigned-url',
     'POST',
