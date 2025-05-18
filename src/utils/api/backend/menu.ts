@@ -16,10 +16,7 @@ export const getMenus = async (storeId: number, pageSize: number = 200) => {
     'GET',
   );
   if ('success' in res && res.success === 'true') {
-    return res.data.pageContents.map((item) => ({
-      ...item.menuInfo,
-      ...item.menuCategoryInfo,
-    }));
+    return res.data.pageContents;
   }
   throw new Error('메뉴 목록 조회 실패');
 };

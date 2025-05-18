@@ -23,7 +23,9 @@ export const MenuSelectPanel = (props: Props) => {
   const filteredMenus = useMemo(
     () =>
       menus.filter(
-        (menu) => menu.menuCategoryId === category && !menu.menuIsSoldOut,
+        (menu) =>
+          menu.menuCategoryInfo.menuCategoryId === category &&
+          !menu.menuInfo.menuIsSoldOut,
       ),
     [menus, category],
   );
@@ -40,12 +42,9 @@ export const MenuSelectPanel = (props: Props) => {
           <div className="flex flex-row flex-wrap gap-4">
             {filteredMenus.map((menu) => (
               <CustomProduct
-                key={menu.menuId}
-                name={menu.menuName}
-                price={menu.menuPrice}
-                image={menu.menuImageUrl}
-                isSoldOut={menu.menuIsSoldOut}
-                onClick={() => props.onClickMenu?.(menu.menuId)}
+                key={menu.menuInfo.menuId}
+                item={menu.menuInfo}
+                onClick={props.onClickMenu}
               />
             ))}
           </div>

@@ -10,9 +10,13 @@ export const ProductPage = () => {
   const { menus, isRefreshing } = useMenuValues();
   const [selectedCategoryId, setSelectedCategoryId] = useState(categories[0]?.id ?? 0);
 
-  const filteredProducts = useMemo(() => 
-    menus.filter(menu => menu.menuCategoryId === selectedCategoryId),
-    [menus, selectedCategoryId]
+  const filteredProducts = useMemo(
+    () =>
+      menus.filter(
+        ({ menuCategoryInfo }) =>
+          menuCategoryInfo.menuCategoryId === selectedCategoryId,
+      ),
+    [menus, selectedCategoryId],
   );
 
   return (
@@ -32,31 +36,24 @@ export const ProductPage = () => {
         </div>
       </div>
       <div>
-      {isRefreshing ? (
-        <div>로딩 중...</div>
-      ) : filteredProducts.length === 0 ? (
-        <div className="text-center text-gray-500 py-8">해당 카테고리에 등록된 메뉴가 없습니다.</div>
-      ) : (
-        filteredProducts.map((product) => (
-          <ProductItem
-            key={product.menuId}
-            id={product.menuId}
-            image={product.menuImageUrl}
-            name={product.menuName}
-            price={product.menuPrice}
-            description={product.menuDescription}
-            recommended={product.menuIsRecommended}
-            isSoldOut={product.menuIsSoldOut}
-          />
-        ))
-      )}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="relative">
-            <ProductAddPanel onClose={() => setIsModalOpen(false)} />
+        {isRefreshing ? (
+          <div>로딩 중...</div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center text-gray-500 py-8">
+            해당 카테고리에 등록된 메뉴가 없습니다.
           </div>
-        </div>
-      )}
+        ) : (
+          filteredProducts.map(({ menuInfo }) => (
+            <ProductItem key={menuInfo.menuId} item={menuInfo} />
+          ))
+        )}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="relative">
+              <ProductAddPanel onClose={() => setIsModalOpen(false)} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
