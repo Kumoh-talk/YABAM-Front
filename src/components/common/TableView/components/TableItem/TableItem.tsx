@@ -35,19 +35,23 @@ export const TableItem = (props: Props) => {
     };
   }, [props.startedAt]);
 
+  // capacity에 따라 색상 결정
+  const tableColor = props.table.capacity === 4 ? '#6299FE' : '#dc3545';
+  const textColor = props.table.capacity === 4 ? '#FFFFFF' : '#FFFFFF';
+
   return (
     <div
       className={clsx(
-        'flex flex-col justify-between absolute w-[120px] h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] text-text-primary select-none font-medium',
+        'flex flex-col justify-between absolute w-[120px] h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium',
         { 'border border-gray-500 p-4': !props.table.isActive },
         { 'border-2 border-primary p-3.5': props.table.isActive },
-        { 'bg-gray-50': !props.isSelected },
-        { 'bg-[#DEEEFC]': props.isSelected },
       )}
       style={{
         left: props.x,
         top: props.y,
         width: props.table.capacity === 6 ? '150px' : '120px',
+        backgroundColor: tableColor,
+        color: textColor,
       }}
       onPointerDown={() => {
         props.onPointerDown?.(
@@ -64,7 +68,7 @@ export const TableItem = (props: Props) => {
       </span>
       <div className="flex flex-col leading-6">
         {props.isEditable ? (
-          <>{/* 여기에 qr 출력 버튼 넣어도 좋을듯 */}</>
+          <>{/* 여기에 QR 출력 버튼 추가 가능 */}</>
         ) : (
           <>
             <span className="text-text-secondary text-right">

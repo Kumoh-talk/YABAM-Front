@@ -3,9 +3,9 @@ import QRCode from 'qrcode';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { useStore } from '@/hooks/useStore';
-import { getTables } from '@/utils/api/backend/table'; // 테이블 조회 API 호출
-import { toast, ToastContainer } from 'react-toastify'; // react-toastify import
-import 'react-toastify/dist/ReactToastify.css'; // react-toastify 스타일
+import { getTables } from '@/utils/api/backend/table';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const QrCodeMakorPage = () => {
   const { store } = useStore();
@@ -50,7 +50,7 @@ const QrCodeMakorPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-4">
-      <ToastContainer /> {/* ToastContainer 추가 */}
+      <ToastContainer />
       <h1 className="text-2xl font-bold mb-4">QR 코드 생성 및 다운로드</h1>
       <button
         onClick={handleGenerateAndDownloadQRCodes}

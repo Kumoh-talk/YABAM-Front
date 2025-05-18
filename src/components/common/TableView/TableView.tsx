@@ -14,8 +14,8 @@ export interface Props {
 
 export const TableView = (props: Props) => {
   const tableSize = {
-    w: 120,
-    h: 112,
+    w: 80,
+    h: 62,
   };
   const tableGap = 10;
   const tableGrid = {
@@ -152,7 +152,7 @@ export const TableView = (props: Props) => {
     }));
   };
 
-  const onClickCreateButton = (capacity: number) => {
+  const onClickCreateButton = (capacity: number, color: string) => {
     const newPos = {
       x: tables.length > 0 ? tables[tables.length - 1].pos.x + 2 : 0,
       y: tables.length > 0 ? tables[tables.length - 1].pos.y : 0,
@@ -162,7 +162,7 @@ export const TableView = (props: Props) => {
       number: newNumber,
       isActive: true,
       pos: newPos,
-      capacity,
+      capacity
     });
   };
 
@@ -182,11 +182,11 @@ export const TableView = (props: Props) => {
 
   const list = tables.map((item) => {
     const x =
-      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id // string 비교
+      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id
         ? pointerState.itemPos.tx
         : item.pos.x;
     const y =
-      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id // string 비교
+      pointerState.mode === 'move_table' && pointerState.seletedItem === item.id
         ? pointerState.itemPos.ty
         : item.pos.y;
 
@@ -198,7 +198,7 @@ export const TableView = (props: Props) => {
         y={(y * tableGrid.height - viewState.pos.y + 16) * viewState.zoom}
         onPointerDown={onPointerDownItem}
         onDoubleClick={handleDoubleClick}
-        isSelected={pointerState.seletedItem === item.id} // string 비교
+        isSelected={pointerState.seletedItem === item.id}
         isEditable={props.isEditable}
       />
     );
@@ -215,10 +215,16 @@ export const TableView = (props: Props) => {
                 선택한 테이블 제거
               </Button>
             )}
-            <Button color="primary" onClick={() => onClickCreateButton(4)}>
+            <Button
+              color="primary"
+              onClick={() => onClickCreateButton(4, '#007bff')} // 4인 테이블 색상
+            >
               4인 테이블 추가
             </Button>
-            <Button color="red" onClick={() => onClickCreateButton(6)}>
+            <Button
+              color="red"
+              onClick={() => onClickCreateButton(6, '#dc3545')} // 6인 테이블 색상
+            >
               6인 테이블 추가
             </Button>
           </div>
