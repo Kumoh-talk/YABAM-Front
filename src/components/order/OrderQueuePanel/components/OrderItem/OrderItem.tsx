@@ -4,7 +4,8 @@ import clsx from 'clsx';
 import { Table } from '@/types';
 import { OrderInfo, OrderStatus } from '@/types/backend/order';
 import { CheckRounded, CloseRounded } from '@mui/icons-material';
-import { updateOrderMenuStatus } from '@/utils/api/backend/order';
+import { useOrder } from '@/hooks/useOrder';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
 export interface Props {
   order: OrderInfo;
@@ -14,33 +15,25 @@ export interface Props {
   onStatusChange?: () => void;
 }
 
-export const OrderItem = ({ order, table, isOpened, onClick, onStatusChange }: Props) => {
+export const OrderItem = ({
+  order,
+  table,
+  isOpened,
+  onClick,
+  onStatusChange,
+}: Props) => {
+  const { store } = useStoreValues();
+  const { handleOrderCancel, handleOrderComplete, handleOrderReroll } =
+    useOrder(store, null, onStatusChange);
+
   const handleCancel = async () => {
-    try {
-      await updateOrderMenuStatus(order.orderId, 'CANCELED' as OrderStatus);
-      onStatusChange?.();
-    } catch (error) {
-      console.error('주문 취소 실패:', error);
-    }
+    await handleOrderCancel(order.orderId);
   };
 
   const handleComplete = async () => {
-    try {
-      await updateOrderMenuStatus(order.orderId, 'RECEIVED' as OrderStatus);
-      onStatusChange?.();
-    } catch (error) {
-      console.error('주문 완료 처리 실패:', error);
-    }
+    await handleOrderComplete(order.orderId);
   };
 
-  const handleReroll = async () => {
-    try {
-      await updateOrderMenuStatus(order.orderId, 'RECEIVED' as OrderStatus);
-      onStatusChange?.();
-    } catch (error) {
-      console.error('주문 리롤(대기중 변경) 실패:', error);
-    }
-  };
 
   return (
     <li
@@ -68,7 +61,10 @@ export const OrderItem = ({ order, table, isOpened, onClick, onStatusChange }: P
         ))}
       </ul>
       {order.orderStatus === 'ORDERED' && (
-        <div className="flex flex-row self-end gap-2" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex flex-row self-end gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Button color="tertiary" onClick={handleCancel}>
             <CloseRounded />
           </Button>
@@ -78,10 +74,10 @@ export const OrderItem = ({ order, table, isOpened, onClick, onStatusChange }: P
         </div>
       )}
       {order.orderStatus === 'COMPLETED' && (
-        <div className="flex flex-row self-end gap-2" onClick={e => e.stopPropagation()}>
-          <Button color="primary" onClick={handleReroll}>
-            진행중으로 변경
-          </Button>
+        <div
+          className="flex flex-row self-end gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
         </div>
       )}
     </li>
@@ -99,7 +95,7 @@ const StatusTag = ({ status }: { status: OrderStatus }) => {
     ORDERED: '대기',
     RECEIVED: '진행중',
     COMPLETED: '완료됨',
-    CANCELED: '취소됨',
+    CANCELED: '취소됨'
   }[status];
 
   return (
