@@ -16,6 +16,7 @@ export const useStore = () => {
     university: '',
     tableTime: 30,
     tableCost: 1000,
+    headImageUrl: '',
   });
   const prevStoreRef = useRef<Store | null>(null);
 
@@ -36,6 +37,7 @@ export const useStore = () => {
           university: store.university,
           tableTime: store.tableTime,
           tableCost: store.tableCost,
+          headImageUrl: store.headImageUrl,
         });
       }
     } catch (e) {

@@ -61,7 +61,13 @@ export const StorePage = () => {
           </InputForm>
         </div>
         <InputForm label="점포 로고">
-          <ImageInput name="logo" value={form.logo} onChange={onChange} />
+          <ImageInput
+            name="logo"
+            value={form.logo}
+            onChange={onChange}
+            storeId={store.id}
+            imageProperty="STORE_HEAD"
+          />
         </InputForm>
       </div>
       <InputForm label="위치">
@@ -77,7 +83,11 @@ export const StorePage = () => {
           <StoreImageItem src="" />
           <StoreImageItem src="" />
           <StoreImageItem src="" />
-          <ImageInput className="w-32 h-48" />
+          <ImageInput
+            className="w-32 h-48"
+            storeId={store.id}
+            imageProperty="STORE_DETAIL"
+          />
         </ul>
       </InputForm>
     </section>

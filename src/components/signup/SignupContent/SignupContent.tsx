@@ -102,6 +102,7 @@ const StoreInfoPage = () => {
     university: '',
     tableTime: 30,
     tableCost: 1000,
+    headImageUrl: '',
   });
 
   useEffect(() => {

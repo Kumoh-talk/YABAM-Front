@@ -1,5 +1,6 @@
 import { ImageRounded } from '@mui/icons-material';
 import { InputChangeHandler } from '@/hooks/useInputs';
+import { getPresignedUrl, uploadImageToS3 } from '@/utils/api/backend/aws';
 import clsx from 'clsx';
 
 export interface Props {
@@ -7,34 +8,44 @@ export interface Props {
   name?: string;
   onChange?: InputChangeHandler<string>;
   value?: string;
+  storeId: number;
+  imageProperty: 'STORE_HEAD' | 'STORE_DETAIL';
 }
 
 export const ImageInput = (props: Props) => {
-  const loadImage = (file: File) => {
+  const loadImage = async (file: File) => {
     try {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          const img = e.target.result as string;
-          props.onChange?.({ target: { name: props.name ?? '', value: img } });
-        }
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {}
+      console.log('업로드할 파일:', file);
+      console.log('프리사인 유알엘 요청요청');
+      const presignedUrlData = await getPresignedUrl({
+        storeId: props.storeId,
+        imageProperty: props.imageProperty,
+      });
+
+      console.log('Presigned URL 받아온 결과:', presignedUrlData.presignedUrl);
+
+      await uploadImageToS3(presignedUrlData.presignedUrl, file);
+
+      props.onChange?.({
+        target: { name: props.name ?? '', value: presignedUrlData.presignedUrl.split('?')[0] },
+      });
+    } catch (err) {
+      console.error('이미지 업로드 중 오류 발생:', err);
+    }
   };
 
   const onDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const { files } = e.dataTransfer;
     if (files && files[0]) {
-      loadImage(files[0]);
+      await loadImage(files[0]);
     }
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files && files[0]) {
-      loadImage(files[0]);
+      await loadImage(files[0]);
     }
   };
 

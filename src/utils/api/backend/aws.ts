@@ -7,12 +7,12 @@ import { api } from './common';
 export const getPresignedUrl = async (dto: PresignedUrlRequestDto) => {
   console.log('Presigned URL 요청 데이터:', dto); // 디버깅용 로그
   const res = await api<PresignedUrlResponseDto>(
-    '/yabam/api/v1/store/presigned-url',
+    '/yabam/api/v1/presigned-url',
     'POST',
     dto,
   );
     console.log('Presigned URL 응답 데이터:', res);
-  if ('success' in res && res.success === 'true') {
+  if (res.success === 'true') {
     return res.data;
   }
   throw new Error('Presigned URL 발급 실패');

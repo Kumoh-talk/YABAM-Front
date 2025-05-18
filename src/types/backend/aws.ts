@@ -5,5 +5,4 @@ export type PresignedUrlRequestDto = {
 
 export type PresignedUrlResponseDto = {
   presignedUrl: string;
-  imageUrl: string;
 };

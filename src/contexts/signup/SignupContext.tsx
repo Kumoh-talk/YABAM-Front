@@ -39,6 +39,7 @@ export const SignupProvider = (props: Props) => {
     university: '',
     tableTime: 30,
     tableCost: 1000,
+    headImageUrl: '',
   });
 
   const nextPage = () => {
