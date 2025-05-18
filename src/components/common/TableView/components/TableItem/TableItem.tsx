@@ -17,6 +17,10 @@ export interface Props {
   isEditable?: boolean;
   onPointerDown?: (id: string, x: number, y: number) => void;
   onDoubleClick?: (id: string) => void;
+  orderMenus?: {
+    menuInfo: { menuPrice: number };
+    quantity: number;
+  }[];
 }
 
 export const TableItem = (props: Props) => {
@@ -37,6 +41,12 @@ export const TableItem = (props: Props) => {
 
   const tableColor = props.table.capacity === 4 ? '#6299FE' : '#dc3545';
   const textColor = '#FFFFFF';
+
+  // 메뉴 총합 계산
+  const menuTotal = props.orderMenus
+    ? props.orderMenus.reduce((sum, menu) => sum + (menu.menuInfo.menuPrice ?? 0) * (menu.quantity ?? 1), 0)
+    : 0;
+  const totalPrice = (props.price ?? 0) + menuTotal;
 
   return (
     <div
@@ -75,7 +85,7 @@ export const TableItem = (props: Props) => {
               {formatTimeString(time)}
             </span>
             <span className="font-bold text-right">
-              {formatNumberWithComma(props.price ?? 0)}원
+              {formatNumberWithComma(totalPrice)}원
             </span>
           </>
         )}

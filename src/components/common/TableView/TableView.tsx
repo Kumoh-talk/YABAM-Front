@@ -3,6 +3,7 @@ import { TableItem } from './components';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Button } from '..';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
+import { getRelativeSeconds } from '@/utils/functions';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 
@@ -25,7 +26,7 @@ export const TableView = (props: Props) => {
 
   const { orders } = useStoreValues();
   const { tables } = useTableValues();
-  const { createTable, moveTable, removeTable, getAvailableNum } =
+  const { createTable, moveTable, removeTable, getAvailableNum, calcTableCost } =
     useTableActions();
   const [viewState, setViewState] = useState({
     pos: {
@@ -190,6 +191,17 @@ export const TableView = (props: Props) => {
         ? pointerState.itemPos.ty
         : item.pos.y;
 
+    // 해당 테이블의 COMPLETED 주문에서 메뉴를 합산
+    const tableOrders = orders.filter(
+      (order) => order.receipt.tableInfo.tableId === item.id && order.orderStatus === 'COMPLETED'
+    );
+    const orderMenus = tableOrders.flatMap(order => order.orderMenus ?? []);
+    const activeOrder = tableOrders[0];
+    const startTime = activeOrder?.receipt.receiptInfo.startUsageTime || undefined;
+    const price = startTime
+      ? calcTableCost(getRelativeSeconds(startTime), item.capacity)
+      : 0;
+
     return (
       <TableItem
         key={item.id}
@@ -200,9 +212,20 @@ export const TableView = (props: Props) => {
         onDoubleClick={handleDoubleClick}
         isSelected={pointerState.seletedItem === item.id}
         isEditable={props.isEditable}
+        startedAt={startTime}
+        price={price}
+        orderMenus={orderMenus}
       />
     );
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViewState(prev => ({ ...prev }));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
