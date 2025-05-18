@@ -21,6 +21,11 @@ export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, 
   const inProgressCount = sorted.filter(order => order.orderStatus === 'RECEIVED').length;
   const completedCount = sorted.filter(order => order.orderStatus === 'COMPLETED').length;
 
+  const readyOrders = sorted.filter(order => order.orderStatus === 'ORDERED');
+  const inProgressOrders = sorted.filter(order => order.orderStatus === 'RECEIVED');
+  const completedOrders = sorted.filter(order => order.orderStatus === 'COMPLETED');
+  const displayOrders = [...inProgressOrders, ...readyOrders, ...completedOrders];
+
   return (
     <section className="flex flex-col w-[25rem] h-full border-l border-l-gray-500">
       <header className="flex flex-row justify-between px-4 py-3 bg-gray-200 text-sm leading-none font-medium">
@@ -32,7 +37,7 @@ export const OrderQueuePanel = ({ orders, tables, currentOrderId, onClickOrder, 
         </span>
       </header>
       <ul className="overflow-y-scroll">
-        {sorted.map((order) => {
+        {displayOrders.map((order) => {
           const table = tables.find((table) => table.id === order.receipt.tableInfo.tableId);
           if (!table) return null;
           return (
