@@ -2,28 +2,14 @@ import { useState, memo } from 'react';
 import { BlackPlusIcon } from '@/assets/icon/BlackPlusCcon';
 import { Toggle } from '../../common';
 import { Close } from '@mui/icons-material';
-import { MenuInfo } from '@/types/backend/menu';
 import { useMenuValues, useMenuActions } from '@/contexts/menu/MenuContext';
+import { MenuInfo } from '@/types/backend/menu';
 
-export interface ProductItemProps {
-  id: number;
-  image?: string;
-  name: string;
-  price: number;
-  description: string;
-  recommended: boolean;
-  isSoldOut: boolean;
+export interface Props {
+  item: MenuInfo;
 }
 
-export const ProductItem = memo(({
-  id,
-  image,
-  name,
-  price,
-  description,
-  recommended,
-  isSoldOut,
-}: ProductItemProps) => {
+export const ProductItem = memo(({item}: Props) => {
   const { menus } = useMenuValues();
   const { updateMenuDetail, updateMenuSoldOut, removeMenu } = useMenuActions();
   const [editingField, setEditingField] = useState<'name' | 'price' | 'description' | null>(null);
@@ -33,24 +19,24 @@ export const ProductItem = memo(({
     setEditingField(field);
     switch (field) {
       case 'name':
-        setEditValue(name);
+        setEditValue(item.menuName);
         break;
       case 'price':
-        setEditValue(price.toString());
+        setEditValue(item.menuPrice.toString());
         break;
       case 'description':
-        setEditValue(description);
+        setEditValue(item.menuDescription);
         break;
     }
   };
 
   const handleBlur = async () => {
     if (editingField) {
-      const menu = menus.find(m => m.menuId === id);
+      const menu = menus.find(({menuInfo}) => menuInfo.menuId === item.menuId)?.menuInfo;
       if (!menu) return;
       
       const value = editingField === 'price' ? Number(editValue) : editValue;
-      await updateMenuDetail(id, {
+      await updateMenuDetail(menu.menuId, {
         menuName: editingField === 'name' ? value as string : menu.menuName,
         menuPrice: editingField === 'price' ? value as number : menu.menuPrice,
         menuDescription: editingField === 'description' ? value as string : menu.menuDescription,
@@ -69,22 +55,22 @@ export const ProductItem = memo(({
   };
 
   const handleSoldOut = async () => {
-    await updateMenuSoldOut(id, !isSoldOut);
+    await updateMenuSoldOut(item.menuId, !item.menuIsSoldOut);
   };
 
   const handleRemove = async () => {
-    await removeMenu(id);
+    await removeMenu(item.menuId);
   };
 
   const handleRecommended = async () => {
-    const menu = menus.find(m => m.menuId === id);
+    const menu = menus.find(({menuInfo}) => menuInfo.menuId === item.menuId)?.menuInfo;
     if (!menu) return;
-    await updateMenuDetail(id, {
+    await updateMenuDetail(item.menuId, {
       menuName: menu.menuName,
       menuPrice: menu.menuPrice,
       menuDescription: menu.menuDescription,
       menuImageUrl: menu.menuImageUrl,
-      menuIsRecommended: !recommended,
+      menuIsRecommended: !menu.menuIsRecommended,
       menuIsSoldOut: menu.menuIsSoldOut,
     });
   };
@@ -95,8 +81,8 @@ export const ProductItem = memo(({
     >
       <div className="gap-4 flex items-center justify-center">
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
-          {image ? (
-            <img src={image} alt={name} className="w-full h-full object-cover" />
+          {item.menuImageUrl ? (
+            <img src={item.menuImageUrl} alt={item.menuName} className="w-full h-full object-cover" />
           ) : (
             <div className="flex flex-col gap-1 items-center justify-center">
               <BlackPlusIcon />
@@ -117,7 +103,7 @@ export const ProductItem = memo(({
             />
           ) : (
             <div className="text-xl text-[#3B3B3C] leading-5 font-medium" onDoubleClick={() => handleDoubleClick('name')}>
-              {name}
+              {item.menuName}
             </div>
           )}
           {editingField === 'price' ? (
@@ -132,7 +118,7 @@ export const ProductItem = memo(({
             />
           ) : (
             <div className="leading-6 text-[#0092CA] font-medium" onDoubleClick={() => handleDoubleClick('price')}>
-              {price.toLocaleString()}원
+              {item.menuPrice.toLocaleString()}원
             </div>
           )}
         </div>
@@ -148,13 +134,13 @@ export const ProductItem = memo(({
           />
         ) : (
           <div className="leading-6 text-[#6C6C6C] font-medium" onDoubleClick={() => handleDoubleClick('description')}>
-            {description}
+            {item.menuDescription}
           </div>
         )}
       </div>
       <div className="flex gap-10">
-        <Toggle color="primary" isSelected={recommended} onClick={handleRecommended} />
-        <Toggle color="secondary" isSelected={isSoldOut} onClick={handleSoldOut} />
+        <Toggle color="primary" isSelected={item.menuIsRecommended} onClick={handleRecommended} />
+        <Toggle color="secondary" isSelected={item.menuIsSoldOut} onClick={handleSoldOut} />
         <Close className="text-gray-700 hover:text-gray-600 cursor-pointer" onClick={handleRemove} />
       </div>
     </div>

@@ -1,4 +1,3 @@
-// import { MenuResponse } from '@/types/backend/menu';
 import {
   createMenu,
   deleteMenu,
@@ -8,40 +7,11 @@ import {
   updateMenuSoldOut,
 } from '@/utils/api/backend/menu';
 import { useEffect, useState } from 'react';
-import { MenuUpdateDetailDto, MenuCreateDto } from '@/types/backend/menu';
+import { MenuCreateDto, MenuPageContent } from '@/types/backend/menu';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 
-export type Menu = {
-  // menuInfo
-  menuId: number;
-  menuOrder: number;
-  menuName: string;
-  menuPrice: number;
-  menuDescription: string;
-  menuImageUrl: string;
-  menuIsSoldOut: boolean;
-  menuIsRecommended: boolean;
-  // menuCategoryInfo
-  menuCategoryId: number;
-  menuCategoryName: string;
-  menuCategoryOrder: number;
-};
-
 export const useMenu = () => {
-  const [menus, setMenus] = useState<Menu[]>([]);
-  const [menu, setMenu] = useState<Menu>({
-    menuId: -1,
-    menuOrder: 0,
-    menuName: '',
-    menuPrice: 0,
-    menuDescription: '',
-    menuImageUrl: '',
-    menuIsSoldOut: false,
-    menuIsRecommended: false,
-    menuCategoryId: -1,
-    menuCategoryName: '',
-    menuCategoryOrder: 0,
-  });
+  const [menus, setMenus] = useState<MenuPageContent[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { store } = useStoreValues();
 
@@ -50,24 +20,8 @@ export const useMenu = () => {
 
     try {
       setIsRefreshing(true);
-      const response = await getMenus(store.id);
-      const formattedMenus = response.map((menu) => ({
-        menuId: menu.menuId,
-        menuOrder: menu.menuOrder,
-        menuName: menu.menuName,
-        menuPrice: menu.menuPrice,
-        menuDescription: menu.menuDescription,
-        menuImageUrl: menu.menuImageUrl,
-        menuIsSoldOut: menu.menuIsSoldOut,
-        menuIsRecommended: menu.menuIsRecommended,
-        menuCategoryId: menu.menuCategoryId,
-        menuCategoryName: menu.menuCategoryName,
-        menuCategoryOrder: menu.menuCategoryOrder,
-      }));
-      setMenus(formattedMenus);
-      if (formattedMenus.length > 0) {
-        setMenu(formattedMenus[0]);
-      }
+      const res = await getMenus(store.id);
+      setMenus(res);
     } catch (e) {
       console.error(e);
     } finally {
@@ -78,12 +32,6 @@ export const useMenu = () => {
   useEffect(() => {
     refresh();
   }, [store?.id]);
-
-  useEffect(() => {
-    if (menus.length > 0 && menu.menuId === -1) {
-      setMenu(menus[0]);
-    }
-  }, [menus, menu.menuId]);
 
   const create = async (menuData: MenuCreateDto) => {
     if (!store?.id || store.id <= 0) return;
@@ -103,7 +51,7 @@ export const useMenu = () => {
       await updateMenuSoldOut(store.id, menuId, isSoldOut);
       setMenus(prev =>
         prev.map(menu =>
-          menu.menuId === menuId ? { ...menu, menuIsSoldOut: isSoldOut } : menu
+          menu.menuInfo.menuId === menuId ? { ...menu, menuIsSoldOut: isSoldOut } : menu
         )
       );
     } catch (e) {
@@ -129,7 +77,7 @@ export const useMenu = () => {
       await updateMenuDetail(store.id, menuId, detail);
       setMenus(prev =>
         prev.map(menu =>
-          menu.menuId === menuId ? { ...menu, ...detail } : menu
+          menu.menuInfo.menuId === menuId ? { ...menu, ...detail } : menu
         )
       );
     } catch (e) {
@@ -142,29 +90,20 @@ export const useMenu = () => {
 
     try {
       await deleteMenu(store.id, menuId);
-      setMenus(prev => prev.filter(menu => menu.menuId !== menuId));
+      setMenus(prev => prev.filter(menu => menu.menuInfo.menuId !== menuId));
     } catch (e) {
       console.error(e);
     }
   };
 
-  const update = (value: Partial<Omit<Menu, 'menuId'>>) => {
-    setMenu((prev) => ({
-      ...prev,
-      ...value,
-    }));
-  };
-
   return {
     menus,
-    menu,
     create,
     updateDetail,
     updateOrder,
     updateSoldOut,
     remove,
     refresh,
-    update,
     isRefreshing,
   };
 };

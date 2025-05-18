@@ -1,12 +1,9 @@
 import { useMenu } from '@/hooks/useMenu';
-import { Menu } from '@/hooks/useMenu';
-import { useStoreValues } from '@/contexts/store/StoreContext';
 import { createContext, useContext } from 'react';
-import { MenuCreateDto } from '@/types/backend/menu';
+import { MenuCreateDto, MenuInfo, MenuPageContent } from '@/types/backend/menu';
 
 export type Values = {
-  menus: Menu[];
-  menu: Menu;
+  menus: MenuPageContent[];
   isRefreshing: boolean;
 };
 
@@ -14,12 +11,11 @@ export type Actions = {
   createMenu: (data: MenuCreateDto) => Promise<void>;
   updateMenuDetail: (
     menuId: number,
-    data: Omit<Menu, 'menuId' | 'menuOrder' | 'menuCategoryId' | 'menuCategoryName' | 'menuCategoryOrder'>
+    data: Omit<MenuInfo, 'menuId' | 'menuOrder'>,
   ) => Promise<void>;
   updateMenuOrder: (menuId: number, menuOrder: number) => Promise<void>;
   updateMenuSoldOut: (menuId: number, menuIsSoldOut: boolean) => Promise<void>;
   removeMenu: (menuId: number) => Promise<void>;
-  updateMenu: (value: Partial<Omit<Menu, 'menuId'>>) => void;
   refreshMenus: () => Promise<void>;
 };
 
@@ -31,11 +27,19 @@ export interface Props {
 }
 
 export const MenuProvider = (props: Props) => {
-  const { menus, menu, create, updateDetail, updateOrder, updateSoldOut, remove, refresh, update, isRefreshing } =
-    useMenu();
+  const {
+    menus,
+    create,
+    updateDetail,
+    updateOrder,
+    updateSoldOut,
+    remove,
+    refresh,
+    isRefreshing,
+  } = useMenu();
 
   return (
-    <MenuValuesContext.Provider value={{ menus, menu, isRefreshing }}>
+    <MenuValuesContext.Provider value={{ menus, isRefreshing }}>
       <MenuActionsContext.Provider
         value={{
           createMenu: create,
@@ -43,7 +47,6 @@ export const MenuProvider = (props: Props) => {
           updateMenuOrder: updateOrder,
           updateMenuSoldOut: updateSoldOut,
           removeMenu: remove,
-          updateMenu: update,
           refreshMenus: refresh,
         }}
       >
