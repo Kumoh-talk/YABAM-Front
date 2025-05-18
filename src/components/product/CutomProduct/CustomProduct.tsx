@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { MenuInfo } from '@/types/backend/menu';
 import { formatNumberWithComma } from '@/utils/functions';
 
@@ -9,6 +10,10 @@ interface CustomProductProps {
 export const CustomProduct = ({ item, onClick }: CustomProductProps) => {
   return (
     <div
+      className={clsx(
+        'w-[16.5rem] p-4 gap-4 flex flex-col rounded-lg border border-neutral-300 select-none',
+        { 'opacity-50': item.menuIsSoldOut },
+      )}
       onClick={() => !item.menuIsSoldOut && onClick?.(item.menuId)}
       style={{ cursor: item.menuIsSoldOut ? 'not-allowed' : 'pointer' }}
     >
