@@ -18,7 +18,7 @@ export interface Props {
 export const TableView = (props: Props) => {
   const tableSize = {
     w: 120,
-    h: 92,
+    h: 112,
   };
   const tableGap = 10;
   const tableGrid = {
