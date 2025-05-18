@@ -44,7 +44,7 @@ export const PaymentPage = () => {
         toast.warn('영수증 ID가 존재하지 않습니다.');
         return;
       }
-      await createDirectOrder(receiptId, menuId, 1);
+      await createDirectOrder(receiptId, [{ menuId, menuQuantity: 1 }]);
     } catch (e) {
       alert('주문 추가 실패');
     }

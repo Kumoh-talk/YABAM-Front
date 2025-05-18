@@ -12,13 +12,15 @@ export const getOrders = async (saleId: number, perPage: number = 999, statuses:
   throw new Error('주문 목록 조회 실패');
 };
 
-export const createDirectOrder = async (receiptId: string, menuId: number, menuQuantity: number = 1) => {
-  const res = await api(`/yabam/api/v1/receipts/${receiptId}/orders/direct`, 'POST', [
-    {
-      menuId: menuId,
-      menuQuantity: menuQuantity,
-    },
-  ]);
+export const createDirectOrder = async (
+  receiptId: string, 
+  menus: { menuId: number; menuQuantity: number }[],
+) => {
+  const res = await api<OrderInfo>(
+    `/yabam/api/v1/receipts/${receiptId}/orders/direct`,
+    'POST',
+    menus,
+  );
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
