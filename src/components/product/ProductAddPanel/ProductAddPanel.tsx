@@ -49,7 +49,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
 
   const handleSubmit = async () => {
     console.log('폼 데이터:', form); // 디버깅용 로그
-    if (!form.name || !form.price || !form.description || !form.imageUrl) {
+    if (!form.name || !form.price || !form.description) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -60,7 +60,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
         menuName: form.name,
         menuPrice: Number(form.price),
         menuDescription: form.description,
-        menuImageUrl: form.imageUrl,
+        menuImageUrl: form.imageUrl || '', // 이미지가 없으면 빈 문자열로 처리
         menuIsSoldOut: false,
         menuIsRecommended: false,
         menuCategoryId: selectedCategoryId,

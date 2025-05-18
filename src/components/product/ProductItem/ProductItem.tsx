@@ -54,7 +54,7 @@ export const ProductItem = memo(({
         menuName: editingField === 'name' ? value as string : menu.menuName,
         menuPrice: editingField === 'price' ? value as number : menu.menuPrice,
         menuDescription: editingField === 'description' ? value as string : menu.menuDescription,
-        menuImageUrl: menu.menuImageUrl,
+        menuImageUrl: menu.menuImageUrl, // 이미지 URL 유지
         menuIsRecommended: menu.menuIsRecommended,
         menuIsSoldOut: menu.menuIsSoldOut,
       });
@@ -96,11 +96,11 @@ export const ProductItem = memo(({
       <div className="gap-4 flex items-center justify-center">
         <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
           {image ? (
-            <img src={image} alt={name} />
+            <img src={image} alt={name} className="w-full h-full object-cover" />
           ) : (
             <div className="flex flex-col gap-1 items-center justify-center">
               <BlackPlusIcon />
-              <div className="leading-6 ">이미지</div>
+              <div className="leading-6 text-gray-500">이미지 없음</div>
             </div>
           )}
         </div>
