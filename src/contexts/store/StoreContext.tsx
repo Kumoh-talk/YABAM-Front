@@ -6,6 +6,9 @@ import { SaleDto } from '@/types/backend/sale';
 import { StoreCreateDto } from '@/types/backend/store';
 import { createStore } from '@/utils/api/backend/store';
 import { OrderInfo } from '@/types/backend/order';
+import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
+import { toast } from 'react-toastify';
 
 export type Values = {
   store: Store;
@@ -33,7 +36,34 @@ export const StoreProvider = (props: Props) => {
   const { accessToken, logout } = useKakao();
   const { store, update, refresh: refreshStore } = useStore();
   const { sales, sale, openSale, closeSale } = useSale(store);
-  const { orders } = useOrder(store, sale);
+  const { orders, refreshOrder } = useOrder(store, sale);
+
+  const navigate = useNavigate();
+  const lastOrderIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshOrder();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [refreshOrder]);
+
+  useEffect(() => {
+    const ordered = orders.filter(order => order.orderStatus === 'ORDERED');
+    if (ordered.length > 0) {
+      const latestOrderId = ordered[0].orderId;
+      if (lastOrderIdRef.current !== latestOrderId) {
+        if (lastOrderIdRef.current !== null) {
+          toast.info('새로운 주문이 들어왔습니다!', {
+            onClick: () => navigate('/main'),
+            style: { cursor: 'pointer' },
+            autoClose: 4000,
+          });
+        }
+        lastOrderIdRef.current = latestOrderId;
+      }
+    }
+  }, [orders, navigate]);
 
   const requestCreateStore = async (value: Omit<Store, 'id'>) => {
     try {
