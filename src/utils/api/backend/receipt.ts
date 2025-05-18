@@ -1,16 +1,25 @@
-import { ReceiptCreateResponse, ReceiptNonAdjustSelectResponse } from '@/types/backend/receipt';
+import {
+  ReceiptCreateResponse,
+  ReceiptNonAdjustSelectResponse,
+} from '@/types/backend/receipt';
 import { api } from './common';
 
-export const createReceipt = async (storeId: number, tableId: number) => {
-  const res = await api<ReceiptCreateResponse>(`/yabam/api/v1/receipts?storeId=${storeId}&tableId=${tableId}`, 'POST');
+export const createReceipt = async (storeId: number, tableId: string) => {
+  const res = await api<ReceiptCreateResponse>(
+    `/yabam/api/v1/receipts?storeId=${storeId}&tableId=${tableId}`,
+    'POST',
+  );
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
   throw new Error('영수증 생성 실패');
 };
 
-export const getNonAdjestReceipt = async (tableId: number) => {
-  const res = await api<ReceiptNonAdjustSelectResponse>(`/yabam/api/v1/table/${tableId}/receipts/non-adjust`, 'GET');
+export const getNonAdjestReceipt = async (tableId: string) => {
+  const res = await api<ReceiptNonAdjustSelectResponse>(
+    `/yabam/api/v1/table/${tableId}/receipts/non-adjust`,
+    'GET',
+  );
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
@@ -19,8 +28,10 @@ export const getNonAdjestReceipt = async (tableId: number) => {
 
 export const getReceipts = async (saleId: number, isAdjust: boolean) => {
   const res = await api<ReceiptCreateResponse>(
-    isAdjust ? `/yabam/api/v1/sales/${saleId}/receipts` : `/yabam/api/v1/sales/${saleId}/non-adjust-receipts`,
-    'POST'
+    isAdjust
+      ? `/yabam/api/v1/sales/${saleId}/receipts`
+      : `/yabam/api/v1/sales/${saleId}/non-adjust-receipts`,
+    'POST',
   );
   if ('success' in res && res.success === 'true') {
     return res.data;
@@ -37,11 +48,8 @@ export const getReceipt = async (receiptId: string) => {
 };
 
 export const stopReceipts = async (receiptIds: string[]) => {
-  const ids = receiptIds.map(id => `receiptIds=${id}`).join('&');
-  const res = await api(
-    `/yabam/api/v1/receipts/stop?${ids}`,
-    'PATCH'
-  );
+  const ids = receiptIds.map((id) => `receiptIds=${id}`).join('&');
+  const res = await api(`/yabam/api/v1/receipts/stop?${ids}`, 'PATCH');
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
@@ -49,11 +57,8 @@ export const stopReceipts = async (receiptIds: string[]) => {
 };
 
 export const adjustReceipts = async (receiptIds: string[]) => {
-  const ids = receiptIds.map(id => `receiptIds=${id}`).join('&');
-  const res = await api(
-    `/yabam/api/v1/receipts/adjust?${ids}`,
-    'PATCH'
-  );
+  const ids = receiptIds.map((id) => `receiptIds=${id}`).join('&');
+  const res = await api(`/yabam/api/v1/receipts/adjust?${ids}`, 'PATCH');
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
