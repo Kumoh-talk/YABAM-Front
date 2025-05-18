@@ -1,18 +1,23 @@
-import { useState, useEffect } from 'react';
-import { OrderDetail, OrderQueuePanel } from '@/components/order';
+import { useState } from 'react';
+import {
+  ManualOrderPanel,
+  OrderDetail,
+  OrderQueuePanel,
+} from '@/components/order';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useTableValues } from '@/contexts/table/TableContext';
 import { useCheckLogin } from '@/hooks';
 import { useOrder } from '@/hooks/useOrder';
 import { useCall } from '@/hooks/useCall';
+import { TableView } from '@/components/common';
 
 export const OrderPage = () => {
   useCheckLogin(true);
   const { store, sale } = useStoreValues();
   const { orders, refreshOrder } = useOrder(store, sale);
   const { tables } = useTableValues();
+  const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
   const [currentOrderId, setCurrentOrderId] = useState<number>(-1);
-  const [isOrderDetailVisible, setIsOrderDetailVisible] = useState(false);
   const currentOrder = orders.find((order) => order.orderId === currentOrderId);
 
   const { calls } = useCall(sale?.saleId);
@@ -21,14 +26,32 @@ export const OrderPage = () => {
     await refreshOrder();
   };
 
+  // 수동 주문 페이지
+  const table = selectedTableId
+    ? tables.find((table) => table.id === selectedTableId)
+    : null;
+  if (table) {
+    return (
+      <ManualOrderPanel
+        table={table}
+        onClose={() => setSelectedTableId(null)}
+      />
+    );
+  }
+
   return (
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">
-        {isOrderDetailVisible && currentOrder && (
+        {currentOrder ? (
           <OrderDetail
             order={currentOrder}
             onStatusChange={handleStatusChange}
             onClose={() => setCurrentOrderId(-1)}
+          />
+        ) : (
+          <TableView
+            orders={orders}
+            onChangeSelectedTable={setSelectedTableId}
           />
         )}
       </section>
@@ -38,7 +61,6 @@ export const OrderPage = () => {
         currentOrderId={currentOrderId}
         onClickOrder={(id) => {
           setCurrentOrderId(id);
-          setIsOrderDetailVisible(true);
         }}
         onStatusChange={handleStatusChange}
       />

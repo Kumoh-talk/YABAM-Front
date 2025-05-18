@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/common';
-import { CategorySelect, ProductItem, ProductAddPanel } from '@/components/product';
+import {
+  CategorySelect,
+  ProductItem,
+  ProductAddPanel,
+} from '@/components/product';
 import { useCategoryValues } from '@/contexts/category/CategoryContext';
 import { useMenuValues } from '@/contexts/menu/MenuContext';
 
@@ -8,7 +12,9 @@ export const ProductPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { categories } = useCategoryValues();
   const { menus, isRefreshing } = useMenuValues();
-  const [selectedCategoryId, setSelectedCategoryId] = useState(categories[0]?.id ?? 0);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    categories[0]?.id ?? 0,
+  );
 
   const filteredProducts = useMemo(
     () =>
@@ -27,7 +33,10 @@ export const ProductPage = () => {
           <Button onClick={() => setIsModalOpen(true)}>상품 등록</Button>
         </header>
         <div className="w-full flex justify-between items-center">
-          <CategorySelect selected={selectedCategoryId} onSelect={setSelectedCategoryId} />
+          <CategorySelect
+            selected={selectedCategoryId}
+            onSelect={setSelectedCategoryId}
+          />
           <div className="flex gap-9 px-1">
             <div>사장님추천</div>
             <div>품절표시</div>
@@ -60,4 +69,3 @@ export const ProductPage = () => {
 };
 
 export default ProductPage;
-
