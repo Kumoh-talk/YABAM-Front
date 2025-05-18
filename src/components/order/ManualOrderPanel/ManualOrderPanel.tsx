@@ -2,9 +2,11 @@ import { MenuSelectPanel } from '@/components/common';
 import { ReceiptPanel } from '@/components/payment';
 import { useMenuValues } from '@/contexts/menu/MenuContext';
 import { Table } from '@/types';
-// import { useOrderContext } from '@/contexts/order/OrderContext';
+import { useOrderContext } from '@/contexts/order/OrderContext';
 import { OrderInfo, OrderMenuInfo, OrderStatus } from '@/types/backend/order';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { updateOrderMenuStatus } from '@/utils/api/backend/order';
 
 export type ManualOrderCartItem = {
   menuId: number;
@@ -18,12 +20,12 @@ export interface Props {
 
 export const ManualOrderPanel = (props: Props) => {
   const { menus } = useMenuValues();
-  // const {orders} = useOrderContext();
+  const { requestManualOrder } = useOrderContext();
   const [cart, setCart] = useState<ManualOrderCartItem[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const onClickMenu = (menuId: number) => {
     const existingItem = cart.find((item) => item.menuId === menuId);
-    console.log(menuId);
     if (existingItem) {
       setCart(
         cart.map((item) =>
@@ -54,6 +56,25 @@ export const ManualOrderPanel = (props: Props) => {
       }
       return oldCart;
     });
+  };
+
+  const onSubmitOrder = async (menuInfos: OrderMenuInfo[]) => {
+    try {
+      setIsProcessing(true);
+      const order = await requestManualOrder(props.table.id, menuInfos);
+      const resChangedReceived = await updateOrderMenuStatus(
+        order.orderId,
+        'RECEIVED',
+      );
+
+      toast.success('주문이 완료되었습니다.');
+      props.onClose?.();
+    } catch (e) {
+      console.error(e);
+      toast.error('주문을 실패했습니다.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const totalPrice = cart.reduce((acc, item) => {
@@ -114,6 +135,8 @@ export const ManualOrderPanel = (props: Props) => {
         order={[cartOrder]}
         mode="order"
         onChangeAmount={onChangeAmount}
+        onSubmitOrder={onSubmitOrder}
+        isProcessing={isProcessing}
       />
     </section>
   );

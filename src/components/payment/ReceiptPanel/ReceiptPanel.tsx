@@ -5,7 +5,7 @@ import {
   getRelativeSeconds,
 } from '@/utils/functions';
 import { Button } from '@/components/common';
-import { OrderInfo } from '@/types/backend/order';
+import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { OrderHeader, ProductList } from './components';
 import { useEffect, useState } from 'react';
@@ -18,6 +18,8 @@ export interface Props {
   table?: Table;
   order?: OrderInfo[];
   onChangeAmount?: (id: number, amount: number) => void;
+  onSubmitOrder?: (menuInfos: OrderMenuInfo[]) => void;
+  isProcessing?: boolean;
 }
 
 export const ReceiptPanel = (props: Props) => {
@@ -133,9 +135,12 @@ export const ReceiptPanel = (props: Props) => {
         <Button
           className="w-full py-8 text-2xl"
           color="primary"
-          onClick={handlePayment}
+          onClick={() => props.onSubmitOrder?.(flattedMenus)}
+          isDisabled={props.isProcessing}
         >
-          <span className="text-xl">주문 넣기</span>
+          <span className="text-xl">
+            {props.isProcessing ? '처리중입니다..' : '주문 넣기'}
+          </span>
         </Button>
       </div>
     </footer>
