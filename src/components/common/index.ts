@@ -8,3 +8,4 @@ export { ImageInput } from './ImageInput/ImageInput';
 export { LocationInput } from './LocationInput/LocationInput';
 export { TableView } from './TableView/TableView';
 export { InputForm } from './InputForm/InputForm';
+export { MenuSelectPanel } from './MenuSelectPanel/MenuSelectPanel';

@@ -3,7 +3,7 @@ import { ReceiptPanel } from '@/components/payment';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useCheckLogin } from '@/hooks';
 import { useState, useEffect, useMemo } from 'react';
-import { CustomOrderPage } from './CustomOrderPage';
+import { MenuSelectPanel } from '../components/common';
 import { useOrder } from '@/hooks/useOrder';
 
 export const PaymentPage = () => {
@@ -32,9 +32,12 @@ export const PaymentPage = () => {
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">
         {isOrderPageVisible ? (
-          <CustomOrderPage
+          <MenuSelectPanel
             onClose={() => setIsOrderPageVisible(false)}
-            receiptId={selectedTableOrders[0] ? selectedTableOrders[0].receipt.receiptInfo.receiptId.toString() : ''}
+            selectedCategory={[]}
+            receiptId={
+              selectedTableOrders[0].receipt.receiptInfo.receiptId ?? ''
+            }
           />
         ) : (
           <TableView
