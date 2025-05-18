@@ -3,7 +3,7 @@ import { TableItem } from './components';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Button } from '..';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { getRelativeSeconds } from '@/utils/functions';
+import { getRelativeSeconds, getTableOrderMenusAndPrice } from '@/utils/functions';
 import { OrderInfo } from '@/types/backend/order';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
@@ -149,10 +149,10 @@ export const TableView = (props: Props) => {
   };
 
   const onClickRemoveButton = () => {
-    removeTable(pointerState.seletedItem); // string으로 처리
+    removeTable(pointerState.seletedItem); 
     setPointerState((prevState) => ({
       ...prevState,
-      seletedItem: '', // 초기화
+      seletedItem: '', 
     }));
   };
 
@@ -194,16 +194,7 @@ export const TableView = (props: Props) => {
         ? pointerState.itemPos.ty
         : item.pos.y;
 
-    // 해당 테이블의 COMPLETED 주문에서 메뉴를 합산
-    const tableOrders = orders.filter(
-      (order) => order.receipt.tableInfo.tableId === item.id && order.orderStatus === 'COMPLETED'
-    );
-    const orderMenus = tableOrders.flatMap(order => order.orderMenus ?? []);
-    const activeOrder = tableOrders[0];
-    const startTime = activeOrder?.receipt.receiptInfo.startUsageTime || undefined;
-    const price = startTime
-      ? calcTableCost(getRelativeSeconds(startTime), item.capacity)
-      : 0;
+    const { orderMenus, price, startTime } = getTableOrderMenusAndPrice(item, orders, calcTableCost);
 
     return (
       <TableItem
@@ -251,7 +242,7 @@ export const TableView = (props: Props) => {
         </header>
       )}
       <div
-        className="overflow-x-auto overflow-y-hidden relative w-full h-full" // 가로 스크롤 활성화
+        className="overflow-x-auto overflow-y-hidden relative w-full h-full" 
       >
         <div
           className="absolute size-full touch-none"

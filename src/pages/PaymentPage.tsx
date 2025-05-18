@@ -43,7 +43,6 @@ export const PaymentPage = () => {
         return;
       }
       await createDirectOrder(receiptId, menuId, 1);
-      // 주문내역 새로고침 등 필요시 추가
     } catch (e) {
       alert('주문 추가 실패');
     }
@@ -60,7 +59,6 @@ export const PaymentPage = () => {
           />
         ) : (
           <TableView
-            orders={orders}
             onChangeSelectedTable={setSelectedTableId}
             onTableDoubleClick={handleTableDoubleClick}
           />

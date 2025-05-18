@@ -31,7 +31,6 @@ export interface Props {
 }
 
 export const MenuProvider = (props: Props) => {
-  const { store } = useStoreValues();
   const { menus, menu, create, updateDetail, updateOrder, updateSoldOut, remove, refresh, update, isRefreshing } =
     useMenu();
 

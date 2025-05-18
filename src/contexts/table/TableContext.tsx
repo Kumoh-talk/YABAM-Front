@@ -24,7 +24,6 @@ export interface Props {
 }
 
 export const TableProvider = (props: Props) => {
-  const { store } = useStoreValues();
   const {
     tables,
     createTable,
@@ -35,8 +34,8 @@ export const TableProvider = (props: Props) => {
   } = useTable();
 
   const calcTableCost = (time: number, tableCapacity: number) => {
-    const hourlyRate = tableCapacity === 4 ? 4000 : 6000; 
-    return Math.ceil(time / 3600) * hourlyRate; 
+    const hourlyRate = tableCapacity === 4 ? 4000 : 6000;
+    return Math.ceil(time / 3600) * hourlyRate;
   };
 
   return (
