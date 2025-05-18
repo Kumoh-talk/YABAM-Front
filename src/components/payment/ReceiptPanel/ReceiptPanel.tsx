@@ -75,6 +75,20 @@ export const ReceiptPanel = (props: Props) => {
     }
   };
 
+  const flattedMenus = filteredOrder
+    ?.flatMap((orderItem) => orderItem.orderMenus)
+    .reduce((acc, menu) => {
+      const existingMenu = acc.find(
+        (m) => m.menuInfo.menuId === menu.menuInfo.menuId,
+      );
+      if (existingMenu) {
+        existingMenu.quantity += menu.quantity;
+      } else {
+        acc.push({ ...menu });
+      }
+      return acc;
+    }, [] as OrderMenuInfo[]);
+
   const receiptFooter = filteredOrder && (
     <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
       <div className="flex flex-col">
@@ -145,29 +159,11 @@ export const ReceiptPanel = (props: Props) => {
       )}
       <div className="flex flex-col flex-1 overflow-y-auto">
         <OrderHeader />
-        {filteredOrder && filteredOrder.length > 0 ? (
-          (() => {
-            const allMenus = filteredOrder.flatMap(
-              (orderItem) => orderItem.orderMenus,
-            );
-            const mergedMenus = allMenus.reduce((acc, menu) => {
-              const existingMenu = acc.find(
-                (m) => m.menuInfo.menuId === menu.menuInfo.menuId,
-              );
-              if (existingMenu) {
-                existingMenu.quantity += menu.quantity;
-              } else {
-                acc.push({ ...menu });
-              }
-              return acc;
-            }, [] as typeof allMenus);
-            return (
-              <ProductList
-                items={mergedMenus}
-                onChangeAmount={props.onChangeAmount}
-              />
-            );
-          })()
+        {flattedMenus.length > 0 ? (
+          <ProductList
+            items={flattedMenus}
+            onChangeAmount={props.onChangeAmount}
+          />
         ) : (
           <div className="flex flex-1 items-center justify-center text-lg text-text-secondary">
             {(props.mode ?? 'receipt') === 'receipt'
