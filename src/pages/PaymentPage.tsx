@@ -2,9 +2,11 @@ import { TableView } from '@/components/common';
 import { ReceiptPanel } from '@/components/payment';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useCheckLogin } from '@/hooks';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { MenuSelectPanel } from '../components/common';
 import { useOrder } from '@/hooks/useOrder';
+import { createDirectOrder } from '@/utils/api/backend/order';
+import { toast } from 'react-toastify';
 
 export const PaymentPage = () => {
   useCheckLogin(true);
@@ -14,11 +16,15 @@ export const PaymentPage = () => {
   const { orders } = useOrder(store, sale);
 
   const selectedTableOrders = useMemo(() => {
-    const filteredOrders = orders.filter((order) => order.receipt.tableInfo.tableId === selectedTableId);
+    const filteredOrders = orders.filter(
+      (order) => order.receipt.tableInfo.tableId === selectedTableId,
+    );
     const completedOrders = filteredOrders
       .map((order) => ({
         ...order,
-        orderMenus: order.orderMenus.filter((menu) => menu.orderMenuStatus === 'COMPLETED'),
+        orderMenus: order.orderMenus.filter(
+          (menu) => menu.orderMenuStatus === 'COMPLETED',
+        ),
       }))
       .filter((order) => order.orderMenus.length > 0);
     return completedOrders;
@@ -28,6 +34,21 @@ export const PaymentPage = () => {
     setSelectedTableId(tableId);
     setIsOrderPageVisible(true);
   };
+
+  const handleProductClick = async (menuId: number) => {
+    try {
+      const receiptId = selectedTableOrders[0].receipt.receiptInfo.receiptId;
+      if (!receiptId) {
+        toast.warn('영수증 ID가 존재하지 않습니다.');
+        return;
+      }
+      await createDirectOrder(receiptId, menuId, 1);
+      // 주문내역 새로고침 등 필요시 추가
+    } catch (e) {
+      alert('주문 추가 실패');
+    }
+  };
+
   return (
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">
@@ -35,9 +56,7 @@ export const PaymentPage = () => {
           <MenuSelectPanel
             onClose={() => setIsOrderPageVisible(false)}
             selectedCategory={[]}
-            receiptId={
-              selectedTableOrders[0].receipt.receiptInfo.receiptId ?? ''
-            }
+            onClickMenu={handleProductClick}
           />
         ) : (
           <TableView
