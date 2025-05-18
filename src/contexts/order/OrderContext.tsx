@@ -1,17 +1,33 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { OrderInfo } from '@/types/backend/order';
-import { getOrders } from '@/utils/api/backend/order';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
+import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import { createDirectOrder, getOrders } from '@/utils/api/backend/order';
 import { useStoreValues } from '@/contexts/store/StoreContext';
-import { SaleDto } from '@/types/backend/sale';
+import {
+  createReceipt,
+  getNonAdjestReceipt,
+} from '@/utils/api/backend/receipt';
+import { toast } from 'react-toastify';
 
 interface OrderContextType {
   orders: OrderInfo[];
   refreshOrders: () => Promise<void>;
+  requestManualOrder: (
+    tableId: string,
+    menuInfos: OrderMenuInfo[],
+  ) => Promise<OrderInfo>;
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
-export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { store, sale } = useStoreValues();
   const [orders, setOrders] = useState<OrderInfo[]>([]);
 
@@ -21,7 +37,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return;
       }
       const res = await getOrders(sale.saleId, 999, [
-        'ORDERED', 'RECEIVED', 'COMPLETED', 'CANCELED'
+        'ORDERED',
+        'RECEIVED',
+        'COMPLETED',
+        'CANCELED',
       ]);
       setOrders(res.pageContents);
     } catch (e) {
@@ -41,8 +60,48 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => clearInterval(interval);
   }, [refreshOrders]);
 
+  const tryAndGetReceiptId = async (tableId: string) => {
+    try {
+      const receiptId = (await getNonAdjestReceipt(tableId)).receiptId;
+      if (receiptId) {
+        return receiptId;
+      }
+      const res = await createReceipt(store.id, tableId);
+      return res.receiptInfo.receiptId;
+    } catch (e) {
+      console.error(e);
+      toast.error('영수증을 생성할 수 없습니다.');
+      throw e;
+    }
+  };
+
+  const requestManualOrder = async (
+    tableId: string,
+    menuInfos: OrderMenuInfo[],
+  ) => {
+    try {
+      const receiptId = await tryAndGetReceiptId(tableId);
+
+      const res = await createDirectOrder(
+        receiptId,
+        menuInfos.map((menu) => ({
+          menuId: menu.menuInfo.menuId,
+          menuQuantity: menu.quantity,
+        })),
+      );
+
+      return res;
+    } catch (e) {
+      console.error(e);
+      toast.error('수동 주문 중 에러가 발생했습니다.');
+      throw e;
+    }
+  };
+
   return (
-    <OrderContext.Provider value={{ orders, refreshOrders }}>
+    <OrderContext.Provider
+      value={{ orders, refreshOrders, requestManualOrder }}
+    >
       {children}
     </OrderContext.Provider>
   );
