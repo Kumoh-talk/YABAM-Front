@@ -1,5 +1,9 @@
 import { AddRounded } from '@mui/icons-material';
-import { formatNumberWithComma, formatTimeString, getRelativeSeconds } from '@/utils/functions';
+import {
+  formatNumberWithComma,
+  formatTimeString,
+  getRelativeSeconds,
+} from '@/utils/functions';
 import { Button } from '@/components/common';
 import { OrderInfo } from '@/types/backend/order';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
@@ -21,7 +25,7 @@ export const ReceiptPanel = ({ order }: Props) => {
     filteredOrder.reduce((acc, curr) => {
       const orderTotalPrice = curr.orderMenus.reduce(
         (menuAcc, menu) => menuAcc + menu.menuInfo.menuPrice * menu.quantity,
-        0
+        0,
       );
       return acc + orderTotalPrice;
     }, 0) ?? 0;
@@ -44,8 +48,8 @@ export const ReceiptPanel = ({ order }: Props) => {
 
   const firstOrder = filteredOrder[0];
   const tableId = firstOrder?.receipt?.tableInfo?.tableId;
-  const table = tables.find(t => t.id === tableId);
-  
+  const table = tables.find((t) => t.id === tableId);
+
   const usedTimeString = formatTimeString(usedTime * 1000);
   const usedTimePrice = table ? calcTableCost(usedTime, table.capacity) : 0;
   const totalPrice = allPrice + usedTimePrice;
@@ -88,7 +92,9 @@ export const ReceiptPanel = ({ order }: Props) => {
             return <ProductList items={mergedMenus} />;
           })()
         ) : (
-          <div className="flex flex-1 items-center justify-center text-lg text-gray-400">주문내역이 없습니다</div>
+          <div className="flex flex-1 items-center justify-center text-lg text-gray-400">
+            주문내역이 없습니다
+          </div>
         )}
       </div>
       {filteredOrder && (
@@ -108,7 +114,9 @@ export const ReceiptPanel = ({ order }: Props) => {
           </div>
           <div className="flex flex-row justify-between p-4 items-center">
             <span>결제 금액</span>
-            <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
+            <span className="text-xl">
+              {formatNumberWithComma(totalPrice)}원
+            </span>
           </div>
           <div className="flex flex-row gap-4 p-4 text-white">
             <Button className="flex-1 py-8" color="tertiary">
