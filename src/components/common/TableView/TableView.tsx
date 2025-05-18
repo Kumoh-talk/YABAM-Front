@@ -217,13 +217,13 @@ export const TableView = (props: Props) => {
             )}
             <Button
               color="primary"
-              onClick={() => onClickCreateButton(4, '#007bff')} // 4인 테이블 색상
+              onClick={() => onClickCreateButton(4, '#007bff')}
             >
               4인 테이블 추가
             </Button>
             <Button
               color="red"
-              onClick={() => onClickCreateButton(6, '#dc3545')} // 6인 테이블 색상
+              onClick={() => onClickCreateButton(6, '#dc3545')}
             >
               6인 테이블 추가
             </Button>
