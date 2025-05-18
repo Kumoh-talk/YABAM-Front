@@ -35,3 +35,27 @@ export const getReceipt = async (receiptId: string) => {
   }
   throw new Error('영수증 조회 실패');
 };
+
+export const stopReceipts = async (receiptIds: string[]) => {
+  const ids = receiptIds.map(id => `receiptIds=${id}`).join('&');
+  const res = await api(
+    `/yabam/api/v1/receipts/stop?${ids}`,
+    'PATCH'
+  );
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('영수증 사용종료 실패');
+};
+
+export const adjustReceipts = async (receiptIds: string[]) => {
+  const ids = receiptIds.map(id => `receiptIds=${id}`).join('&');
+  const res = await api(
+    `/yabam/api/v1/receipts/adjust?${ids}`,
+    'PATCH'
+  );
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('영수증 최종정산 실패');
+};

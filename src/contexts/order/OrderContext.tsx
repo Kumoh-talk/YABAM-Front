@@ -35,8 +35,15 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [store, sale]);
 
   useEffect(() => {
-    console.log('OrderProvider store:', store, 'sale:', sale);
     refreshOrders();
+  }, [refreshOrders]);
+
+  // 3초마다 자동 새로고침
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshOrders();
+    }, 2000);
+    return () => clearInterval(interval);
   }, [refreshOrders]);
 
   return (
