@@ -21,14 +21,12 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const refreshOrders = useCallback(async () => {
     try {
       if (!store || store.id === -1 || !sale) {
-        console.log('refreshOrders: store/sale 값이 올바르지 않음', store, sale);
         return;
       }
       const res = await getOrders(sale.saleId, 999, [
         'ORDERED', 'RECEIVED', 'COMPLETED', 'CANCELED'
       ]);
       setOrders(res.pageContents);
-      console.log('refreshOrders: 주문 목록', res.pageContents);
     } catch (e) {
       console.error(e);
     }

@@ -40,7 +40,6 @@ export const ProductAddPanel = ({ onClose }: Props) => {
   };
 
   const handleImageChange = (e: { target: { name: string; value: string } }) => {
-    console.log('이미지 URL 변경:', e.target.value); // 디버깅용 로그
     setForm((prev) => ({
       ...prev,
       imageUrl: e.target.value,
@@ -48,7 +47,6 @@ export const ProductAddPanel = ({ onClose }: Props) => {
   };
 
   const handleSubmit = async () => {
-    console.log('폼 데이터:', form); // 디버깅용 로그
     if (!form.name || !form.price || !form.description) {
       alert('모든 필드를 입력해주세요.');
       return;

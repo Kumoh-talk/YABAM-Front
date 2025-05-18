@@ -16,7 +16,6 @@ export const getMenus = async (storeId: number, pageSize: number = 200) => {
     'GET',
   );
   if ('success' in res && res.success === 'true') {
-    console.log(res.data.pageContents);
     return res.data.pageContents.map((item) => ({
       ...item.menuInfo,
       ...item.menuCategoryInfo,
@@ -43,7 +42,6 @@ export const createMenu = async (storeId: number, dto: MenuCreateDto) => {
     dto,
   );
   if ('success' in res && res.success === 'true') {
-    console.log(res.data);
     return res.data;
   }
   throw new Error('메뉴 생성 실패');

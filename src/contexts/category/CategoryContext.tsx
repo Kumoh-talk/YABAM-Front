@@ -26,7 +26,6 @@ export interface Props {
 }
 
 export const CategoryProvider = (props: Props) => {
-  const { store } = useStoreValues();
   const { categories, category, create, updateName, updateOrder, remove, refresh, update, isRefreshing } =
     useCategory();
 

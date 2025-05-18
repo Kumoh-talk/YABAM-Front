@@ -36,7 +36,6 @@ const QrCodeMakorPage = () => {
         zip.file(`${table.tableNumber}번 테이블.png`, qrCodeDataUrl.split(',')[1], { base64: true });
       }
 
-      // 압축 파일 생성 및 다운로드
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       saveAs(zipBlob, '테이블_QR_코드.zip');
       toast.success('QR 코드가 성공적으로 생성되었습니다!');

@@ -5,13 +5,11 @@ import {
 import { api } from './common';
 
 export const getPresignedUrl = async (dto: PresignedUrlRequestDto) => {
-  console.log('Presigned URL 요청 데이터:', dto);
   const res = await api<PresignedUrlResponseDto>(
     '/yabam/api/v1/presigned-url',
     'POST',
     dto,
   );
-    console.log('Presigned URL 응답 데이터:', res);
   if (res.success === 'true') {
     return res.data;
   }
