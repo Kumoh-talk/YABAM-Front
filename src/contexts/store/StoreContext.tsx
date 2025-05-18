@@ -15,6 +15,7 @@ export type Values = {
 };
 
 export type Actions = {
+  logout: () => Promise<boolean>;
   updateStore: (value: Partial<Omit<Store, 'id'>>) => void;
   requestCreateStore: (value: Omit<Store, 'id'>) => Promise<boolean>;
   openSale: () => Promise<void>;
@@ -29,7 +30,7 @@ export interface Props {
 }
 
 export const StoreProvider = (props: Props) => {
-  const { accessToken } = useKakao();
+  const { accessToken, logout } = useKakao();
   const { store, update, refresh: refreshStore } = useStore();
   const { sales, sale, openSale, closeSale } = useSale(store);
   const { orders } = useOrder(store, sale);
@@ -69,6 +70,7 @@ export const StoreProvider = (props: Props) => {
           requestCreateStore,
           openSale,
           closeSale,
+          logout,
         }}
       >
         {props.children}

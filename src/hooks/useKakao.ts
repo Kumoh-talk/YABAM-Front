@@ -3,11 +3,15 @@ import { useCookies } from 'react-cookie';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 import { AccessTokenJwt } from '@/types/backend/auth';
-import { requestLogin, requestRefreshToken } from '@/utils/api/backend/auth';
+import {
+  requestLogin,
+  requestLogout,
+  requestRefreshToken,
+} from '@/utils/api/backend/auth';
 import { fetchGetTokenKakao } from '@/utils/api/kakao';
 
 export const useKakao = () => {
-  const [cookies, setCookies] = useCookies([
+  const [cookies, setCookies, removeCookie] = useCookies([
     'access_token',
     'refresh_token',
     'id_token',
@@ -68,6 +72,20 @@ export const useKakao = () => {
     }
   };
 
+  const logout = async () => {
+    try {
+      await requestLogout();
+      removeCookie('id_token', { path: '/' });
+      removeCookie('access_token', { path: '/' });
+      removeCookie('refresh_token', { path: '/' });
+      return true;
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      toast.error('로그아웃에 실패했습니다.');
+      return false;
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (!cookies.access_token || !cookies.refresh_token) {
@@ -92,6 +110,7 @@ export const useKakao = () => {
 
   return {
     login,
+    logout,
     accessToken: cookies.access_token,
     refreshToken: cookies.refresh_token,
   };
