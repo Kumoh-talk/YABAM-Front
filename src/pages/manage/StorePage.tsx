@@ -80,21 +80,28 @@ export const StorePage = () => {
       </InputForm>
       <InputForm label="소개 이미지">
         <ul className="flex flex-row gap-2">
-          {store.detailImageUrls.map((url, index) => (
-            <StoreImageItem
-              key={index}
-              src={url}
-              storeId={store.id}
-              onDelete={(deletedUrl) => {
-                // 삭제된 URL을 제외한 새로운 배열로 업데이트
-                updateStore({
-                  detailImageUrls: store.detailImageUrls.filter(
-                    (imageUrl) => imageUrl !== deletedUrl
-                  ),
-                });
-              }}
-            />
-          ))}
+          {store.detailImageUrls.map((url, index) => {
+            // URL 수정: https:/ -> https://
+            const fixedUrl =
+              url.startsWith('https:/') && !url.startsWith('https://')
+                ? url.replace('https:/', 'https://')
+                : url;
+
+            return (
+              <StoreImageItem
+                key={index}
+                src={fixedUrl}
+                storeId={store.id}
+                onDelete={(deletedUrl) => {
+                  updateStore({
+                    detailImageUrls: store.detailImageUrls.filter(
+                      (imageUrl) => imageUrl !== deletedUrl
+                    ),
+                  });
+                }}
+              />
+            );
+          })}
           <ImageInput
             className="w-32 h-48"
             storeId={store.id}
