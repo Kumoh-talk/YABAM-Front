@@ -60,7 +60,7 @@ export const OrderQueuePanel = ({
           <span>완료 {completedCount}</span>
         </span>
       </header>
-      <ul className="overflow-y-scroll">
+      <ul className="overflow-y-auto">
         {displayOrders.map((order) => {
           const table = tables.find(
             (table) => table.id === order.receipt.tableInfo.tableId,
