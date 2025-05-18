@@ -67,7 +67,7 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
             {table.number}번 테이블
           </h2>
           <span className="leading-none">
-            {formatRelativeTime(order.receipt.receiptInfo.startUsageTime!)} 주문
+            {formatRelativeTime(order.createdAt ?? order.receipt.receiptInfo.startUsageTime!)} 주문
           </span>
         </div>
         <div className="flex flex-row gap-2">

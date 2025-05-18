@@ -15,6 +15,7 @@ export type OrderInfo = {
   orderId: number;
   orderStatus: OrderStatus;
   totalPrice: number;
+  createdAt: string;
   receipt: {
     receiptInfo: ReceiptInfo;
     tableInfo: TableInfo;

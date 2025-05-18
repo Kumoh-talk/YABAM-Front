@@ -22,7 +22,7 @@ export const OrderHistoryItem = (props: Props) => {
     })
     .join('\n');
 
-  const startUsageTime = props.order.receipt.receiptInfo.startUsageTime!;
+  const startUsageTime = props.order.createdAt ?? props.order.receipt.receiptInfo.startUsageTime!;
   const startedTimeStr = new Date(
     new Date(startUsageTime).getTime() -
       new Date().getTimezoneOffset() * 60 * 1000,

@@ -50,7 +50,7 @@ export const OrderItem = ({
           <span>{table.number}번 테이블</span>
         </div>
         <span>
-          {formatRelativeTime(order.receipt.receiptInfo.startUsageTime!)}
+          {formatRelativeTime(order.createdAt ?? order.receipt.receiptInfo.startUsageTime!)}
         </span>
       </div>
       <ul className="flex flex-col gap-1">
