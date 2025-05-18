@@ -3,6 +3,8 @@ import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
 import { CloseRounded } from '@mui/icons-material';
 import { useTableValues } from '@/contexts/table/TableContext';
 import { Button } from '@/components/common';
+import { useOrder } from '@/hooks/useOrder';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
@@ -18,6 +20,8 @@ export interface Props {
 
 export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
   const { tables } = useTableValues();
+  const { store } = useStoreValues();
+  const { handleOrderCancel, handleOrderComplete, handleComplete } = useOrder(store, null, onStatusChange);
   useEffect(() => {
     dayjs.locale('ko');
   }, []);
@@ -36,14 +40,21 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
     product.orderMenuStatus === 'CANCELED',
   );
 
+  const handleAllMenusComplete = async () => {
+    for (const menu of order.orderMenus) {
+      await handleComplete(menu.orderMenuId);
+    }
+    onStatusChange?.();
+  };
+
   const controls = {
     ORDERED: (
       <>
-        <Button color="tertiary">주문 전체 취소</Button>
-        <Button color="primary">주문 접수</Button>
+        <Button color="tertiary" onClick={() => handleOrderCancel(order.orderId)}>주문 전체 취소</Button>
+        <Button color="primary" onClick={() => handleOrderComplete(order.orderId)}>주문 접수</Button>
       </>
     ),
-    RECEIVED: <Button color="primary">전체 완료 처리</Button>,
+    RECEIVED: <Button color="primary" onClick={handleAllMenusComplete}>전체 완료 처리</Button>,
     COMPLETED: <></>,
     CANCELED: <></>,
   };
