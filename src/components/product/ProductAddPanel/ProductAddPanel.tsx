@@ -60,7 +60,7 @@ export const ProductAddPanel = ({ onClose }: Props) => {
         menuName: form.name,
         menuPrice: Number(form.price),
         menuDescription: form.description,
-        menuImageUrl: form.imageUrl || '', // 이미지가 없으면 빈 문자열로 처리
+        menuImageUrl: form.imageUrl || 'https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/KakaoTalk_20250519_004258791.png',
         menuIsSoldOut: false,
         menuIsRecommended: false,
         menuCategoryId: selectedCategoryId,
