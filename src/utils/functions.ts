@@ -1,15 +1,21 @@
 import { getMyStores } from './api/backend/store';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Seoul');
 
 export const formatNumberWithComma = (value: number): string => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 export const formatRelativeTime = (date: string) => {
-  const now = new Date();
-  const orderDate = new Date(date);
-  const diffInSeconds = Math.floor(
-    (now.getTime() - orderDate.getTime()) / 1000,
-  );
+  const now = dayjs().tz('Asia/Seoul');
+  const orderDate = dayjs.utc(date).tz('Asia/Seoul');
+  const diffInSeconds = Math.floor(now.diff(orderDate) / 1000);
 
   if (diffInSeconds < 60) {
     return `${diffInSeconds}초 전`;
@@ -18,7 +24,7 @@ export const formatRelativeTime = (date: string) => {
   } else if (diffInSeconds < 86400) {
     return `${Math.floor(diffInSeconds / 3600)}시간 전`;
   } else {
-    return orderDate.toLocaleDateString();
+    return orderDate.format('YYYY. MM. DD.');
   }
 };
 
@@ -28,7 +34,9 @@ export const isExternalUrl = (url: string) =>
   url.startsWith('mailto:');
 
 export const getRelativeSeconds = (date: number | string | Date) => {
-  const result = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  const now = dayjs().tz('Asia/Seoul');
+  const targetDate = dayjs.utc(date).tz('Asia/Seoul');
+  const result = Math.floor(now.diff(targetDate) / 1000);
   return isNaN(result) ? 0 : result;
 };
 

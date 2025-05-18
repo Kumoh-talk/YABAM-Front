@@ -8,7 +8,7 @@ export type Values = {
 };
 
 export type Actions = {
-  calcTableCost: (time: number) => number;
+  calcTableCost: (time: number, tableCapacity: number) => number;
   createTable: (table: Omit<Table, 'id'> & { capacity: number }) => void;
   updateTable: (table: Table) => void;
   removeTable: (id: string) => void;
@@ -34,8 +34,9 @@ export const TableProvider = (props: Props) => {
     getAvailableNum,
   } = useTable();
 
-  const calcTableCost = (time: number) => {
-    return Math.ceil(time / store.tableTime / 60) * store.tableCost;
+  const calcTableCost = (time: number, tableCapacity: number) => {
+    const hourlyRate = tableCapacity === 4 ? 4000 : 6000; 
+    return Math.ceil(time / 3600) * hourlyRate; 
   };
 
   return (

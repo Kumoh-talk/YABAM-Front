@@ -2,9 +2,10 @@ import { AddRounded } from '@mui/icons-material';
 import { formatNumberWithComma, formatTimeString, getRelativeSeconds } from '@/utils/functions';
 import { Button } from '@/components/common';
 import { OrderInfo } from '@/types/backend/order';
-import { useTableActions } from '@/contexts/table/TableContext';
+import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { OrderHeader, ProductList } from './components';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 export interface Props {
   order?: OrderInfo[];
@@ -12,6 +13,7 @@ export interface Props {
 
 export const ReceiptPanel = ({ order }: Props) => {
   const { calcTableCost } = useTableActions();
+  const { tables } = useTableValues();
   const [usedTime, setUsedTime] = useState<number>(0);
   const allPrice =
     order?.reduce((acc, curr) => {
@@ -25,9 +27,12 @@ export const ReceiptPanel = ({ order }: Props) => {
   useEffect(() => {
     const updateTime = () => {
       const firstOrder = order?.[0];
-      const seconds = firstOrder?.receipt?.receiptInfo?.startUsageTime
-        ? getRelativeSeconds(firstOrder.receipt.receiptInfo.startUsageTime)
-        : 0;
+      const startTime = firstOrder?.receipt?.receiptInfo?.startUsageTime;
+      if (startTime) {
+        console.log('Server Time:', startTime);
+        console.log('Parsed Time:', dayjs.utc(startTime).tz('Asia/Seoul').format());
+      }
+      const seconds = startTime ? getRelativeSeconds(startTime) : 0;
       setUsedTime(seconds);
     };
     const interval = setInterval(updateTime, 1000);
@@ -38,8 +43,12 @@ export const ReceiptPanel = ({ order }: Props) => {
     };
   }, [order]);
 
+  const firstOrder = order?.[0];
+  const tableId = firstOrder?.receipt?.tableInfo?.tableId;
+  const table = tables.find(t => t.id === tableId);
+  
   const usedTimeString = formatTimeString(usedTime * 1000);
-  const usedTimePrice = calcTableCost(usedTime);
+  const usedTimePrice = table ? calcTableCost(usedTime, table.capacity) : 0;
   const totalPrice = allPrice + usedTimePrice;
   return (
     <section className="flex flex-col w-[22.5rem] border-l border-gray-500">
