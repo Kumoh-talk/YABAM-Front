@@ -8,7 +8,6 @@ import {
 } from '@/utils/functions';
 import { Table } from '@/types';
 import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
-import { stopReceipts, adjustReceipts } from '@/utils/api/backend/receipt';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { useOrderActions } from '@/contexts/order/OrderContext';
 import { Button } from '@/components/common';
@@ -38,7 +37,7 @@ export const ReceiptPanel = (props: Props) => {
       );
       return acc + orderTotalPrice;
     }, 0) ?? 0;
-  const { refreshOrders } = useOrderActions();
+  const { stopReceipt, adjustReceipt } = useOrderActions();
   const [isProcessingStop, setIsProcessingStop] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
@@ -70,9 +69,7 @@ export const ReceiptPanel = (props: Props) => {
     if (!receipt) return;
     try {
       setIsProcessingStop(true);
-      const receiptId = receipt.receiptId;
-      await stopReceipts([receiptId]);
-      await refreshOrders();
+      await stopReceipt(receipt);
     } catch (e) {
       toast.error('사용 종료 중 오류가 발생했습니다.');
     } finally {
@@ -81,15 +78,10 @@ export const ReceiptPanel = (props: Props) => {
   };
 
   const onClickPayment = async () => {
-    if (!receipt) return;
+    if (!receipt || !tableInfo) return;
     try {
       setIsProcessingPayment(true);
-      const receiptId = receipt.receiptId;
-      if (!receipt.stopUsageTime) {
-        await stopReceipts([receiptId]);
-      }
-      await adjustReceipts([receiptId]);
-      await refreshOrders();
+      await adjustReceipt(receipt, props.order!);
       toast.success('결제가 완료되었습니다!');
     } catch (e) {
       toast.error('결제 처리 중 오류가 발생했습니다.');

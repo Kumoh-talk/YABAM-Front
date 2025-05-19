@@ -1,15 +1,16 @@
-import React, { createContext, useContext, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useOrder } from "@/hooks";
-import { OrderInfo, OrderMenuInfo } from "@/types/backend/order";
-import { createDirectOrder } from "@/utils/api/backend/order";
+import React, { createContext, useContext, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useOrder } from '@/hooks';
+import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import { createDirectOrder } from '@/utils/api/backend/order';
 import {
   createReceipt,
   getNonAdjestReceipt,
-} from "@/utils/api/backend/receipt";
-import { useStoreValues } from "@/contexts/store/StoreContext";
-import { useTableActions } from "../table/TableContext";
+} from '@/utils/api/backend/receipt';
+import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useTableActions } from '../table/TableContext';
+import { ReceiptInfo } from '@/types/backend/receipt';
 
 export type Values = {
   orders: OrderInfo[];
@@ -19,7 +20,7 @@ export type Actions = {
   refreshOrders: () => Promise<void>;
   requestManualOrder: (
     tableId: string,
-    menuInfos: OrderMenuInfo[]
+    menuInfos: OrderMenuInfo[],
   ) => Promise<OrderInfo>;
   cancelOrder: (orderId: number) => Promise<void>;
   confirmOrder: (orderId: number) => Promise<void>;
@@ -29,9 +30,12 @@ export type Actions = {
   revertOrderMenu: (orderMenuId: number) => Promise<void>;
   setOrderMenuQuantity: (
     orderMenuId: number,
-    quantity: number
+    quantity: number,
   ) => Promise<void>;
   deleteOrderMenu: (orderMenuId: number) => Promise<void>;
+
+  stopReceipt: (receipt: ReceiptInfo) => Promise<void>;
+  adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[])  => Promise<void>;
 };
 
 const OrderValuesContext = createContext<Values | undefined>(undefined);
@@ -51,6 +55,8 @@ export const OrderProvider = (props: Props) => {
     setOrderMenuStatuses,
     setOrderMenuQuantity,
     deleteOrderMenu,
+    stopReceipt,
+    adjustReceipt,
   } = useOrder(store, sale);
 
   const navigate = useNavigate();
@@ -62,14 +68,14 @@ export const OrderProvider = (props: Props) => {
   }, [refreshOrders]);
 
   useEffect(() => {
-    const ordered = orders.filter((order) => order.orderStatus === "ORDERED");
+    const ordered = orders.filter((order) => order.orderStatus === 'ORDERED');
     if (ordered.length > 0) {
       const latestOrderId = ordered[0].orderId;
       if (lastOrderIdRef.current !== latestOrderId) {
         if (lastOrderIdRef.current !== null) {
-          toast.info("새로운 주문이 들어왔습니다!", {
-            onClick: () => navigate("/main"),
-            style: { cursor: "pointer" },
+          toast.info('새로운 주문이 들어왔습니다!', {
+            onClick: () => navigate('/main'),
+            style: { cursor: 'pointer' },
             autoClose: 4000,
           });
         }
@@ -89,14 +95,14 @@ export const OrderProvider = (props: Props) => {
       return res.receiptInfo.receiptId;
     } catch (e) {
       console.error(e);
-      toast.error("영수증을 생성할 수 없습니다.");
+      toast.error('영수증을 생성할 수 없습니다.');
       throw e;
     }
   };
 
   const requestManualOrder = async (
     tableId: string,
-    menuInfos: OrderMenuInfo[]
+    menuInfos: OrderMenuInfo[],
   ) => {
     try {
       const receiptId = await tryAndGetReceiptId(tableId);
@@ -106,29 +112,29 @@ export const OrderProvider = (props: Props) => {
         menuInfos.map((menu) => ({
           menuId: menu.menuInfo.menuId,
           menuQuantity: menu.quantity,
-        }))
+        })),
       );
 
       return res;
     } catch (e) {
       console.error(e);
-      toast.error("수동 주문 중 에러가 발생했습니다.");
+      toast.error('수동 주문 중 에러가 발생했습니다.');
       throw e;
     }
   };
 
   // 주문 단위
-  const cancelOrder = (orderId: number) => setOrderStatus(orderId, "CANCELED");
-  const confirmOrder = (orderId: number) => setOrderStatus(orderId, "RECEIVED");
-  const revertOrder = (orderId: number) => setOrderStatus(orderId, "RECEIVED");
+  const cancelOrder = (orderId: number) => setOrderStatus(orderId, 'CANCELED');
+  const confirmOrder = (orderId: number) => setOrderStatus(orderId, 'RECEIVED');
+  const revertOrder = (orderId: number) => setOrderStatus(orderId, 'RECEIVED');
 
   // 주문메뉴 단위
   const cancelOrderMenu = (orderMenuId: number) =>
-    setOrderMenuStatuses([orderMenuId], "CANCELED");
+    setOrderMenuStatuses([orderMenuId], 'CANCELED');
   const completeOrderMenus = async (orderMenuIds: number[]) =>
-    setOrderMenuStatuses(orderMenuIds, "COMPLETED");
+    setOrderMenuStatuses(orderMenuIds, 'COMPLETED');
   const revertOrderMenu = async (orderMenuId: number) =>
-    setOrderMenuStatuses([orderMenuId], "COOKING");
+    setOrderMenuStatuses([orderMenuId], 'COOKING');
 
   return (
     <OrderValuesContext.Provider value={{ orders }}>
@@ -144,6 +150,8 @@ export const OrderProvider = (props: Props) => {
           revertOrderMenu,
           setOrderMenuQuantity,
           deleteOrderMenu,
+          stopReceipt,
+          adjustReceipt,
         }}
       >
         {props.children}
@@ -155,7 +163,7 @@ export const OrderProvider = (props: Props) => {
 export const useOrderValues = () => {
   const value = useContext(OrderValuesContext);
   if (!value) {
-    throw new Error("useOrderValues should be used within OrderProvider");
+    throw new Error('useOrderValues should be used within OrderProvider');
   }
   return value;
 };
@@ -163,7 +171,7 @@ export const useOrderValues = () => {
 export const useOrderActions = () => {
   const value = useContext(OrderActionsContext);
   if (!value) {
-    throw new Error("useOrderActions should be used within OrderProvider");
+    throw new Error('useOrderActions should be used within OrderProvider');
   }
   return value;
 };

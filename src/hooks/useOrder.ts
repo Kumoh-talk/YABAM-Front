@@ -1,17 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
-import { Store } from "@/types";
-import { OrderInfo, OrderStatus } from "@/types/backend/order";
+import { useCallback, useEffect, useState } from 'react';
+import { Store } from '@/types';
+import { OrderInfo, OrderStatus } from '@/types/backend/order';
 import {
   getOrders,
   updateOrderMenuQuantity,
   deleteOrderMenu,
-} from "@/utils/api/backend/order";
-import { SaleDto } from "@/types/backend/sale";
+} from '@/utils/api/backend/order';
+import { SaleDto } from '@/types/backend/sale';
 import {
   updateOrderMenuStatus,
   updateOrderStatus,
-} from "@/utils/api/backend/order";
-import { OrderMenuStatus } from "@/types/backend/order";
+} from '@/utils/api/backend/order';
+import { OrderMenuStatus } from '@/types/backend/order';
+import { adjustReceipts, stopReceipts } from '@/utils/api/backend/receipt';
+import { ReceiptInfo } from '@/types/backend/receipt';
 
 export const useOrder = (store: Store, sale: SaleDto | null) => {
   const [orders, setOrders] = useState<OrderInfo[]>([]);
@@ -22,10 +24,10 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
         return;
       }
       const res = await getOrders(sale.saleId, 999, [
-        "ORDERED",
-        "RECEIVED",
-        "COMPLETED",
-        "CANCELED",
+        'ORDERED',
+        'RECEIVED',
+        'COMPLETED',
+        'CANCELED',
       ]);
       setOrders(res.pageContents);
     } catch (e) {
@@ -51,7 +53,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
   // 주문메뉴 상태 변경
   const setOrderMenuStatuses = async (
     orderMenuIds: number[],
-    status: OrderMenuStatus
+    status: OrderMenuStatus,
   ) => {
     try {
       for (const orderMenuId of orderMenuIds) {
@@ -65,7 +67,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
   // 주문 메뉴 수량 변경
   const setOrderMenuQuantity = async (
     orderMenuId: number,
-    quantity: number
+    quantity: number,
   ) => {
     try {
       await updateOrderMenuQuantity(orderMenuId, quantity);
@@ -84,6 +86,30 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     }
   };
 
+  // 테이블 사용 종료
+  const stopReceipt = async (receipt: ReceiptInfo) => {
+    try {
+      await stopReceipts([receipt.receiptId]);
+      await refreshOrders();
+    } catch (error) {
+      console.error(`테이블 사용 종료(${receipt.receiptId}) 실패:`, error);
+    }
+  };
+
+  // 테이블 결제 완료 처리
+  const adjustReceipt = async (receipt: ReceiptInfo, orders: OrderInfo[]) => {
+    try {
+      if (!receipt.stopUsageTime) {
+        await stopReceipts([receipt.receiptId]);
+      }
+      // TODO: received 상태인 order 완료 처리하기
+      await adjustReceipts([receipt.receiptId]);
+      await refreshOrders();
+    } catch (error) {
+      console.error(`테이블 결제(${receipt.receiptId}) 실패:`, error);
+    }
+  };
+
   return {
     orders,
     refreshOrders,
@@ -91,5 +117,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     setOrderMenuStatuses,
     setOrderMenuQuantity,
     deleteOrderMenu,
+    stopReceipt,
+    adjustReceipt,
   };
 };
