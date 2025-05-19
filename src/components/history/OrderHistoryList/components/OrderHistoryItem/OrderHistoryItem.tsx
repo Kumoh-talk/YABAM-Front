@@ -1,8 +1,9 @@
+import { useTableActions } from '@/contexts/table/TableContext';
 import { OrderInfo } from '@/types/backend/order';
 import {
-  formarDateString,
   formatNumberWithComma,
   formatTimeString,
+  getRelativeSeconds,
 } from '@/utils/functions';
 
 export interface Props {
@@ -10,6 +11,7 @@ export interface Props {
 }
 
 export const OrderHistoryItem = (props: Props) => {
+  const { calcTableCost } = useTableActions();
   const startedTime = props.order.receipt.receiptInfo.startUsageTime!;
   const stoppedTime = props.order.receipt.receiptInfo.stopUsageTime;
   const duration = stoppedTime
@@ -22,7 +24,7 @@ export const OrderHistoryItem = (props: Props) => {
     })
     .join('\n');
 
-  const startUsageTime = props.order.createdAt ?? props.order.receipt.receiptInfo.startUsageTime!;
+  const startUsageTime = startedTime ?? props.order.createdAt;
   const startedTimeStr = new Date(
     new Date(startUsageTime).getTime() -
       new Date().getTimezoneOffset() * 60 * 1000,
@@ -35,9 +37,14 @@ export const OrderHistoryItem = (props: Props) => {
     second: '2-digit',
     hour12: false,
   });
+  const tablePrice = calcTableCost(
+    getRelativeSeconds(startUsageTime, stoppedTime ?? new Date()),
+    props.order.receipt.tableInfo.tableCapacity,
+  );
+  const totalPrice = props.order.totalPrice + tablePrice;
 
   return (
-    <li className="flex flex-row gap-4 px-2 font-medium text-base leading-[140%]">
+    <li className="flex flex-row gap-4 p-2 font-medium text-base leading-[140%] rounded-lg even:bg-gray-100">
       <span className="w-[11.25rem] text-center">{startedTimeStr}</span>
       <span className="w-24 text-center">
         {props.order.receipt.tableInfo.tableNumber}번 테이블
@@ -50,10 +57,14 @@ export const OrderHistoryItem = (props: Props) => {
         </span>
       )}
       <span className="w-0 flex-1 whitespace-pre-line">{menuStr}</span>
-      <span className="w-20 text-right">0</span>
-      <span className="w-[80px] text-right">0</span>
-      <span className="w-[80px] text-right">
+      <span className="w-20 text-right">
         {formatNumberWithComma(props.order.totalPrice)}
+      </span>
+      <span className="w-[80px] text-right">
+        {formatNumberWithComma(tablePrice)}
+      </span>
+      <span className="w-[80px] text-right">
+        {formatNumberWithComma(totalPrice)}
       </span>
       <span className="w-[87px]"></span>
     </li>
