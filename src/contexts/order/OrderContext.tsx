@@ -7,6 +7,7 @@ import { createDirectOrder } from '@/utils/api/backend/order';
 import {
   createReceipt,
   getNonAdjestReceipt,
+  restartReceipt,
 } from '@/utils/api/backend/receipt';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useTableActions } from '../table/TableContext';
@@ -33,9 +34,9 @@ export type Actions = {
     quantity: number,
   ) => Promise<void>;
   deleteOrderMenu: (orderMenuId: number) => Promise<void>;
-
   stopReceipt: (receipt: ReceiptInfo) => Promise<void>;
   adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[]) => Promise<void>;
+  setRestartReceipt: (receiptIds: string[]) => Promise<void>;
 };
 
 const OrderValuesContext = createContext<Values | undefined>(undefined);
@@ -58,6 +59,7 @@ export const OrderProvider = (props: Props) => {
     stopReceipts,
     updateOrderStatus,
     adjustReceipts,
+    setRestartReceipt, 
   } = useOrder(store, sale);
 
   const navigate = useNavigate();
@@ -188,6 +190,7 @@ export const OrderProvider = (props: Props) => {
           deleteOrderMenu,
           stopReceipt,
           adjustReceipt,
+          setRestartReceipt,
         }}
       >
         {props.children}

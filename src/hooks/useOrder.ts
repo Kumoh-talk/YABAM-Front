@@ -5,14 +5,14 @@ import {
   getOrders,
   updateOrderMenuQuantity,
   deleteOrderMenu,
-} from '@/utils/api/backend/order';
-import { SaleDto } from '@/types/backend/sale';
-import {
   updateOrderMenuStatus,
   updateOrderStatus,
 } from '@/utils/api/backend/order';
+import { SaleDto } from '@/types/backend/sale';
+import {
+} from '@/utils/api/backend/order';
 import { OrderMenuStatus } from '@/types/backend/order';
-import { adjustReceipts, stopReceipts } from '@/utils/api/backend/receipt';
+import { adjustReceipts, stopReceipts, restartReceipt } from '@/utils/api/backend/receipt';
 import { ReceiptInfo } from '@/types/backend/receipt';
 
 export const useOrder = (store: Store, sale: SaleDto | null) => {
@@ -86,6 +86,15 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     }
   };
 
+  const setRestartReceipt = async (receiptIds: string[]) => {
+    try {
+      await restartReceipt(receiptIds);
+      await refreshOrders();
+    } catch (error) {
+      console.error(`영수증 재시작 실패:`, error);
+    }
+  };
+
   return {
     orders,
     refreshOrders,
@@ -96,5 +105,6 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     stopReceipts,
     updateOrderStatus,
     adjustReceipts,
+    setRestartReceipt,
   };
 };

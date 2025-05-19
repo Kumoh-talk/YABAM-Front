@@ -1,8 +1,10 @@
 import {
   ReceiptCreateResponse,
   ReceiptNonAdjustSelectResponse,
+  ReceiptInfo,
 } from '@/types/backend/receipt';
 import { api } from './common';
+
 
 export const createReceipt = async (storeId: number, tableId: string) => {
   const res = await api<ReceiptCreateResponse>(
@@ -45,6 +47,18 @@ export const getReceipt = async (receiptId: string) => {
     return res.data;
   }
   throw new Error('영수증 조회 실패');
+};
+
+export const restartReceipt = async (receiptIds: string[]) => {
+  const ids = receiptIds.map((id) => `receiptIds=${id}`).join('&');
+  const res = await api(
+    `/yabam/api/v1/receipts/re-start?${ids}`,
+    'PATCH',
+  );
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('영수증 재시작 실패');
 };
 
 export const stopReceipts = async (receiptIds: string[]) => {

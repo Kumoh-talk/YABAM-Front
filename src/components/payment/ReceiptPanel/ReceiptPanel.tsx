@@ -36,9 +36,10 @@ export const ReceiptPanel = (props: Props) => {
       );
       return acc + orderTotalPrice;
     }, 0) ?? 0;
-  const { stopReceipt, adjustReceipt } = useOrderActions();
+  const { stopReceipt, adjustReceipt, setRestartReceipt } = useOrderActions();
   const [isProcessingStop, setIsProcessingStop] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isProcessingRestart, setIsProcessingRestart] = useState(false);
 
   const receipt = filteredOrder[0]?.receipt.receiptInfo;
   const tableInfo = filteredOrder[0]?.receipt.tableInfo;
@@ -86,6 +87,19 @@ export const ReceiptPanel = (props: Props) => {
       toast.error('결제 처리 중 오류가 발생했습니다.');
     } finally {
       setIsProcessingPayment(false);
+    }
+  };
+
+  const onClickRestart = async () => {
+    if (!receipt) return;
+    try {
+      setIsProcessingRestart(true);
+      await setRestartReceipt([receipt.receiptId]);
+      toast.success('테이블이 재사용 상태로 변경되었습니다!');
+    } catch (e) {
+      toast.error('테이블 재사용 처리 중 오류가 발생했습니다.');
+    } finally {
+      setIsProcessingRestart(false);
     }
   };
 
@@ -139,16 +153,29 @@ export const ReceiptPanel = (props: Props) => {
             </span>
           </Button>
         ) : (
+          <>
           <Button
-            className="flex-1 py-8 text-2xl"
-            color="primary"
-            onClick={onClickPayment}
-            isDisabled={isProcessingPayment}
-          >
-            <span className="text-xl">
-              {isProcessingPayment ? '처리중..' : '결제 완료'}
-            </span>
-          </Button>
+              className="flex-1 py-8 text-2xl"
+              color="secondary"
+              onClick={onClickRestart}
+              isDisabled={isProcessingRestart}
+            >
+              <span className="text-xl">
+                {isProcessingRestart ? '처리중..' : '재사용'}
+              </span>
+            </Button>
+            <Button
+              className="flex-1 py-8 text-2xl"
+              color="primary"
+              onClick={onClickPayment}
+              isDisabled={isProcessingPayment}
+            >
+              <span className="text-xl">
+                {isProcessingPayment ? '처리중..' : '결제 완료'}
+              </span>
+            </Button>
+            
+          </>
         )}
       </div>
     </footer>
