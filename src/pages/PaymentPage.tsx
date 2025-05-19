@@ -42,11 +42,24 @@ export const PaymentPage = () => {
   const handleProductClick = async (menuId: number) => {
     try {
       const receiptId = selectedTableOrders[0].receipt.receiptInfo.receiptId;
+      const menu = selectedTableOrders
+        .find((order) =>
+          order.orderMenus.some((menu) => menu.menuInfo.menuId === menuId),
+        )
+        ?.orderMenus.find((menu) => menu.menuInfo.menuId === menuId);
+
       if (!receiptId) {
         toast.warn("영수증 ID가 존재하지 않습니다.");
         return;
       }
-      await createDirectOrder(receiptId, [{ menuId, menuQuantity: 1 }]);
+
+      if (menu) {
+        // 메뉴가 이미 존재하는 경우 수량 증가
+        await updateOrderMenuQuantity(menu.orderMenuId, menu.quantity + 1);
+      } else {
+        // 메뉴가 없는 경우 새로 추가
+        await createDirectOrder(receiptId, [{ menuId, menuQuantity: 1 }]);
+      }
     } catch (e) {
       alert("주문 추가 실패");
     }

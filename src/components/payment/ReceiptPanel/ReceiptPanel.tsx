@@ -5,13 +5,13 @@ import {
   formatNumberWithComma,
   formatTimeString,
   getRelativeSeconds,
-} from '@/utils/functions';
-import { Table } from '@/types';
-import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
-import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { useOrderActions } from '@/contexts/order/OrderContext';
-import { Button } from '@/components/common';
-import { OrderHeader, ProductList } from './components';
+} from "@/utils/functions";
+import { Table } from "@/types";
+import { OrderInfo, OrderMenuInfo } from "@/types/backend/order";
+import { useTableActions, useTableValues } from "@/contexts/table/TableContext";
+import { useOrderActions } from "@/contexts/order/OrderContext";
+import { Button } from "@/components/common";
+import { OrderHeader, ProductList } from "./components";
 
 export interface Props {
   mode?: "order" | "receipt";
@@ -71,7 +71,7 @@ export const ReceiptPanel = (props: Props) => {
       setIsProcessingStop(true);
       await stopReceipt(receipt);
     } catch (e) {
-      toast.error('사용 종료 중 오류가 발생했습니다.');
+      toast.error("사용 종료 중 오류가 발생했습니다.");
     } finally {
       setIsProcessingStop(false);
     }
@@ -82,7 +82,7 @@ export const ReceiptPanel = (props: Props) => {
     try {
       setIsProcessingPayment(true);
       await adjustReceipt(receipt, props.order!);
-      toast.success('결제가 완료되었습니다!');
+      toast.success("결제가 완료되었습니다!");
     } catch (e) {
       toast.error("결제 처리 중 오류가 발생했습니다.");
     } finally {
@@ -123,31 +123,31 @@ export const ReceiptPanel = (props: Props) => {
         <span>결제 금액</span>
         <span className='text-xl'>{formatNumberWithComma(totalPrice)}원</span>
       </div>
-      <div className="flex flex-row gap-4 p-4 text-white">
+      <div className='flex flex-row gap-4 p-4 text-white'>
         {!receipt?.stopUsageTime ? (
           <Button
-            className="flex-1 py-8"
-            color="tertiary"
+            className='flex-1 py-8'
+            color='tertiary'
             onClick={onClickStopReceipt}
             isDisabled={isProcessingStop || !receipt}
           >
-            <span className="text-xl">
+            <span className='text-xl'>
               {isProcessingStop
-                ? '처리중..'
+                ? "처리중.."
                 : receipt
-                ? '사용 종료'
-                : '사용 중이 아님'}
+                ? "사용 종료"
+                : "사용 중이 아님"}
             </span>
           </Button>
         ) : (
           <Button
-            className="flex-1 py-8 text-2xl"
-            color="primary"
+            className='flex-1 py-8 text-2xl'
+            color='primary'
             onClick={onClickPayment}
             isDisabled={isProcessingPayment}
           >
-            <span className="text-xl">
-              {isProcessingPayment ? '처리중..' : '결제 완료'}
+            <span className='text-xl'>
+              {isProcessingPayment ? "처리중.." : "결제 완료"}
             </span>
           </Button>
         )}
@@ -168,20 +168,18 @@ export const ReceiptPanel = (props: Props) => {
           onClick={() => props.onSubmitOrder?.(flattedMenus)}
           isDisabled={props.isProcessing || flattedMenus.length === 0}
         >
-          <span className="text-xl">
-            {props.isProcessing ? '처리중입니다..' : '주문 넣기'}
+          <span className='text-xl'>
+            {props.isProcessing ? "처리중입니다.." : "주문 넣기"}
           </span>
         </Button>
       </div>
     </footer>
   );
   return (
-    <section className="flex flex-col w-[22.5rem] border-l border-gray-500">
-      {(props.mode ?? 'receipt') === 'receipt' ? (
-        <header className="flex flex-row justify-between items-center p-2.5 pl-1.5">
-          <Button color="primary-transparent">
-            <AddRounded />
-          </Button>
+    <section className='flex flex-col w-[22.5rem] border-l border-gray-500'>
+      {(props.mode ?? "receipt") === "receipt" ? (
+        <header className='flex flex-row justify-between items-center p-2.5 pl-1.5'>
+          <div />
           <span className='text-xl font-medium px-2'>주문 내역</span>
         </header>
       ) : (
@@ -199,10 +197,10 @@ export const ReceiptPanel = (props: Props) => {
             onChangeAmount={props.onChangeAmount}
           />
         ) : (
-          <div className="flex flex-1 items-center justify-center text-lg text-text-secondary">
-            {(props.mode ?? 'receipt') === 'receipt'
-              ? '주문내역이 없습니다'
-              : '주문을 추가해주세요'}
+          <div className='flex flex-1 items-center justify-center text-lg text-text-secondary'>
+            {(props.mode ?? "receipt") === "receipt"
+              ? "주문내역이 없습니다"
+              : "주문을 추가해주세요"}
           </div>
         )}
       </div>
