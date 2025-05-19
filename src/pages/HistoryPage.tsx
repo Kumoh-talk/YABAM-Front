@@ -1,14 +1,21 @@
 import { Button } from '@/components/common';
 import { SaleSelect, OrderHistoryList } from '@/components/history';
+import { useOrderActions } from '@/contexts/order/OrderContext';
 import { useStoreValues } from '@/contexts/store/StoreContext';
-import { useCheckLogin } from '@/hooks';
+import { useCheckLogin, useCsv } from '@/hooks';
+import { OrderInfo } from '@/types/backend/order';
 import { SaleDto } from '@/types/backend/sale';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export const HistoryPage = () => {
   useCheckLogin(true);
+  const { getOrders } = useOrderActions();
   const { sales } = useStoreValues();
   const [sale, setSale] = useState<SaleDto | null>(null);
+  const [orders, setOrders] = useState<OrderInfo[][]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { saveHistory } = useCsv();
 
   useEffect(() => {
     if (sales.length > 0) {
@@ -16,6 +23,47 @@ export const HistoryPage = () => {
       setSale(latestSale);
     }
   }, [sales]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getOrders(sale?.saleId ?? -1, undefined, [
+          'RECEIVED',
+          'COMPLETED',
+        ]);
+
+        const receiptsAndOrders = [
+          ...new Set(
+            response.pageContents.map(
+              (order) => order.receipt.receiptInfo.receiptId,
+            ),
+          ),
+        ]
+          .map((receiptId) =>
+            response.pageContents.filter(
+              (order) => order.receipt.receiptInfo.receiptId === receiptId,
+            ),
+          )
+          .sort((a, b) => {
+            const aTime = new Date(
+              a[0].receipt.receiptInfo.startUsageTime!,
+            ).getTime();
+            const bTime = new Date(
+              b[0].receipt.receiptInfo.startUsageTime!,
+            ).getTime();
+            return bTime - aTime;
+          });
+
+        setOrders(receiptsAndOrders);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        toast.error('주문 내역을 불러오는 중 오류가 발생했습니다.');
+      }
+      setIsLoading(false);
+    };
+    fetchOrders();
+  }, [sale?.saleId]);
 
   return (
     <section className="flex flex-col w-full h-full">
@@ -25,10 +73,10 @@ export const HistoryPage = () => {
         </div>
         <div className="flex flex-row gap-4 items-center">
           <SaleSelect value={sale} values={sales} onChange={setSale} />
-          <Button>CSV로 출력</Button>
+          <Button onClick={() => saveHistory(orders)}>CSV로 출력</Button>
         </div>
       </header>
-      <OrderHistoryList saleId={sale?.saleId ?? -1} />
+      <OrderHistoryList receiptsAndOrders={orders} isLoading={isLoading} />
     </section>
   );
 };
