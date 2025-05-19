@@ -144,7 +144,7 @@ export const ReceiptPanel = (props: Props) => {
           className="w-full py-8 text-2xl"
           color="primary"
           onClick={() => props.onSubmitOrder?.(flattedMenus)}
-          isDisabled={props.isProcessing}
+          isDisabled={props.isProcessing || flattedMenus.length === 0}
         >
           <span className="text-xl">
             {props.isProcessing ? '처리중입니다..' : '주문 넣기'}
