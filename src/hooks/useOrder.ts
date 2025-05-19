@@ -9,8 +9,6 @@ import {
   updateOrderStatus,
 } from '@/utils/api/backend/order';
 import { SaleDto } from '@/types/backend/sale';
-import {
-} from '@/utils/api/backend/order';
 import { OrderMenuStatus } from '@/types/backend/order';
 import { adjustReceipts, stopReceipts, restartReceipt } from '@/utils/api/backend/receipt';
 import { ReceiptInfo } from '@/types/backend/receipt';
@@ -97,6 +95,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
 
   return {
     orders,
+    getOrders,
     refreshOrders,
     setOrderStatus,
     setOrderMenuStatuses,

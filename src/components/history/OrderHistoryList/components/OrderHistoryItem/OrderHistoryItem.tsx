@@ -25,10 +25,7 @@ export const OrderHistoryItem = (props: Props) => {
     .join('\n');
 
   const startUsageTime = startedTime ?? props.order.createdAt;
-  const startedTimeStr = new Date(
-    new Date(startUsageTime).getTime() -
-      new Date().getTimezoneOffset() * 60 * 1000,
-  ).toLocaleString('ko-KR', {
+  const startedTimeStr = new Date(startUsageTime).toLocaleString('ko-KR', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

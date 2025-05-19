@@ -1,11 +1,31 @@
-import { useOrderValues } from '@/contexts/order/OrderContext';
 import { OrderHistoryItem } from './components';
+import { useEffect, useState } from 'react';
+import { OrderInfo } from '@/types/backend/order';
+import { useOrderActions } from '@/contexts/order/OrderContext';
+import { toast } from 'react-toastify';
 
 export interface Props {
   saleId: number;
 }
-export const OrderHistoryList = (_: Props) => {
-  const { orders } = useOrderValues();
+export const OrderHistoryList = (saleId: Props) => {
+  const [orders, setOrders] = useState<OrderInfo[]>([]);
+  const { getOrders } = useOrderActions();
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await getOrders(saleId.saleId, undefined, [
+          'RECEIVED',
+          'COMPLETED',
+        ]);
+        setOrders(response.pageContents);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        toast.error('주문 내역을 불러오는 중 오류가 발생했습니다.');
+      }
+    };
+    fetchOrders();
+  }, [saleId.saleId]);
 
   const list = orders.map((order) => (
     <OrderHistoryItem key={order.orderId} order={order} />

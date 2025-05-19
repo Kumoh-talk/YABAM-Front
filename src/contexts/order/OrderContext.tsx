@@ -2,7 +2,12 @@ import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useOrder } from '@/hooks';
-import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import {
+  OrderInfo,
+  OrderMenuInfo,
+  OrderSelectResponse,
+  OrderStatus,
+} from '@/types/backend/order';
 import { createDirectOrder } from '@/utils/api/backend/order';
 import {
   createReceipt,
@@ -19,6 +24,11 @@ export type Values = {
 
 export type Actions = {
   refreshOrders: () => Promise<void>;
+  getOrders: (
+    saleId: number,
+    perPage: number | undefined,
+    statuses: OrderStatus[],
+  ) => Promise<OrderSelectResponse>;
   requestManualOrder: (
     tableId: string,
     menuInfos: OrderMenuInfo[],
@@ -52,6 +62,7 @@ export const OrderProvider = (props: Props) => {
   const {
     orders,
     refreshOrders,
+    getOrders,
     setOrderStatus,
     setOrderMenuStatuses,
     setOrderMenuQuantity,
@@ -59,7 +70,7 @@ export const OrderProvider = (props: Props) => {
     stopReceipts,
     updateOrderStatus,
     adjustReceipts,
-    setRestartReceipt, 
+    setRestartReceipt,
   } = useOrder(store, sale);
 
   const navigate = useNavigate();
@@ -179,6 +190,7 @@ export const OrderProvider = (props: Props) => {
       <OrderActionsContext.Provider
         value={{
           refreshOrders,
+          getOrders,
           requestManualOrder,
           cancelOrder,
           confirmOrder,
