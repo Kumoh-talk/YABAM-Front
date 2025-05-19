@@ -95,9 +95,9 @@ export const ReceiptPanel = (props: Props) => {
     try {
       setIsProcessingRestart(true);
       await setRestartReceipt([receipt.receiptId]);
-      toast.success('테이블이 재사용 상태로 변경되었습니다!');
+      toast.success('테이블이 재시작 되었습니다!');
     } catch (e) {
-      toast.error('테이블 재사용 처리 중 오류가 발생했습니다.');
+      toast.error('테이블 재시작 처리 중 오류가 발생했습니다.');
     } finally {
       setIsProcessingRestart(false);
     }
@@ -161,7 +161,7 @@ export const ReceiptPanel = (props: Props) => {
               isDisabled={isProcessingRestart}
             >
               <span className="text-xl">
-                {isProcessingRestart ? '처리중..' : '재사용'}
+                {isProcessingRestart ? '처리중..' : '재시작'}
               </span>
             </Button>
             <Button
