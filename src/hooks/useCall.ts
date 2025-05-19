@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { getCalls } from '@/utils/api/backend/call';
-import { CallInfo } from '@/types/backend/call';
+import { useEffect, useState } from "react";
+import { getCalls, completeCall } from "@/utils/api/backend/call";
+import { CallInfo } from "@/types/backend/call";
 
 export const useCall = (
   saleId?: number,
   lastCallId?: number,
-  interval: number = 3000,
+  interval: number = 3000
 ) => {
   const [calls, setCalls] = useState<CallInfo[]>([]);
 
@@ -25,5 +25,15 @@ export const useCall = (
     return () => clearTimeout(timer);
   }, [saleId, lastCallId, interval]);
 
-  return { calls };
+  const handleCompleteCall = async (callId: number) => {
+    try {
+      await completeCall(callId);
+      const res = await getCalls(saleId!, lastCallId);
+      setCalls(res.callInfoDtos);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return { calls, handleCompleteCall };
 };

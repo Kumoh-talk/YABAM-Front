@@ -1,10 +1,10 @@
-import { Button } from '@/components/common';
-import { useStoreValues } from '@/contexts/store/StoreContext';
-import { useCall } from '@/hooks/useCall';
+import { Button } from "@/components/common";
+import { useStoreValues } from "@/contexts/store/StoreContext";
+import { useCallValues } from "@/contexts/call/CallContext";
 
 export const CallPanel = () => {
   const { sale } = useStoreValues();
-  const { calls } = useCall(sale?.saleId);
+  const { calls, handleCompleteCall } = useCallValues();
 
   return (
     <section className="absolute left-4 bottom-0 w-[22rem] bg-white border border-gray-300 rounded-lg shadow-lg z-50">
@@ -17,7 +17,7 @@ export const CallPanel = () => {
         )}
       </header>
       <ul className="max-h-60 overflow-y-auto">
-        {calls.length === 0 ? (
+        {calls.length > 0 ? (
           calls.map((call) => (
             <li
               key={call.callId}
@@ -26,7 +26,9 @@ export const CallPanel = () => {
               <span>
                 [{call.tableNumber}번 테이블] {call.callMessage}
               </span>
-              <Button>확인</Button>
+              <Button onClick={() => handleCompleteCall(call.callId)}>
+                확인
+              </Button>
             </li>
           ))
         ) : (
