@@ -9,6 +9,7 @@ import {
   getNonAdjestReceipt,
 } from '@/utils/api/backend/receipt';
 import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useTableActions } from '../table/TableContext';
 
 export type Values = {
   orders: OrderInfo[];
@@ -37,6 +38,7 @@ export interface Props {
 
 export const OrderProvider = (props: Props) => {
   const { store, sale } = useStoreValues();
+  const { refreshTable } = useTableActions();
   const { orders, refreshOrders, setOrderStatus, setOrderMenuStatuses } =
     useOrder(store, sale);
 
@@ -63,6 +65,7 @@ export const OrderProvider = (props: Props) => {
         lastOrderIdRef.current = latestOrderId;
       }
     }
+    refreshTable();
   }, [orders, navigate]);
 
   const tryAndGetReceiptId = async (tableId: string) => {

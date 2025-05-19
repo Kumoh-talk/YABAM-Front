@@ -37,7 +37,9 @@ export const useTable = () => {
     refreshTable();
   }, [store]);
 
-  const createTable = async (table: Omit<Table, 'id'> & { capacity: number }) => {
+  const createTable = async (
+    table: Omit<Table, 'id'> & { capacity: number },
+  ) => {
     try {
       if (store.id === -1) return;
       await createTableApi({
@@ -121,6 +123,7 @@ export const useTable = () => {
 
   return {
     tables,
+    refreshTable,
     createTable,
     updateTable,
     removeTable,

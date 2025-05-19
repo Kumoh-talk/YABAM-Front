@@ -8,6 +8,7 @@ export type Values = {
 
 export type Actions = {
   calcTableCost: (time: number, tableCapacity: number) => number;
+  refreshTable: () => Promise<void>;
   createTable: (table: Omit<Table, 'id'> & { capacity: number }) => void;
   updateTable: (table: Table) => void;
   removeTable: (id: string) => void;
@@ -25,6 +26,7 @@ export interface Props {
 export const TableProvider = (props: Props) => {
   const {
     tables,
+    refreshTable,
     createTable,
     updateTable,
     removeTable,
@@ -42,6 +44,7 @@ export const TableProvider = (props: Props) => {
       <TableActionsContext.Provider
         value={{
           calcTableCost,
+          refreshTable,
           createTable,
           updateTable,
           removeTable,
