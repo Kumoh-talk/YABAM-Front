@@ -23,7 +23,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
       if (store.id === -1 || !sale) {
         return;
       }
-      const res = await getOrders(sale.saleId, 999, [
+      const res = await getOrders(sale.saleId, 1500, [
         'ORDERED',
         'RECEIVED',
         'COMPLETED',
@@ -86,30 +86,6 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     }
   };
 
-  // 테이블 사용 종료
-  const stopReceipt = async (receipt: ReceiptInfo) => {
-    try {
-      await stopReceipts([receipt.receiptId]);
-      await refreshOrders();
-    } catch (error) {
-      console.error(`테이블 사용 종료(${receipt.receiptId}) 실패:`, error);
-    }
-  };
-
-  // 테이블 결제 완료 처리
-  const adjustReceipt = async (receipt: ReceiptInfo, orders: OrderInfo[]) => {
-    try {
-      if (!receipt.stopUsageTime) {
-        await stopReceipts([receipt.receiptId]);
-      }
-      // TODO: received 상태인 order 완료 처리하기
-      await adjustReceipts([receipt.receiptId]);
-      await refreshOrders();
-    } catch (error) {
-      console.error(`테이블 결제(${receipt.receiptId}) 실패:`, error);
-    }
-  };
-
   return {
     orders,
     refreshOrders,
@@ -117,7 +93,8 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     setOrderMenuStatuses,
     setOrderMenuQuantity,
     deleteOrderMenu,
-    stopReceipt,
-    adjustReceipt,
+    stopReceipts,
+    updateOrderStatus,
+    adjustReceipts,
   };
 };

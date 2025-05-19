@@ -35,7 +35,7 @@ export type Actions = {
   deleteOrderMenu: (orderMenuId: number) => Promise<void>;
 
   stopReceipt: (receipt: ReceiptInfo) => Promise<void>;
-  adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[])  => Promise<void>;
+  adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[]) => Promise<void>;
 };
 
 const OrderValuesContext = createContext<Values | undefined>(undefined);
@@ -55,8 +55,9 @@ export const OrderProvider = (props: Props) => {
     setOrderMenuStatuses,
     setOrderMenuQuantity,
     deleteOrderMenu,
-    stopReceipt,
-    adjustReceipt,
+    stopReceipts,
+    updateOrderStatus,
+    adjustReceipts,
   } = useOrder(store, sale);
 
   const navigate = useNavigate();
@@ -135,6 +136,41 @@ export const OrderProvider = (props: Props) => {
     setOrderMenuStatuses(orderMenuIds, 'COMPLETED');
   const revertOrderMenu = async (orderMenuId: number) =>
     setOrderMenuStatuses([orderMenuId], 'COOKING');
+
+  // 테이블 사용 종료
+  const stopReceipt = async (receipt: ReceiptInfo) => {
+    try {
+      await stopReceipts([receipt.receiptId]);
+      await refreshOrders();
+      await refreshTable();
+    } catch (error) {
+      console.error(`테이블 사용 종료(${receipt.receiptId}) 실패:`, error);
+    }
+  };
+
+  // 테이블 결제 완료 처리
+  const adjustReceipt = async (receipt: ReceiptInfo, orders: OrderInfo[]) => {
+    try {
+      if (!receipt.stopUsageTime) {
+        await stopReceipts([receipt.receiptId]);
+      }
+      // TODO: received 상태인 order 완료 처리하기
+      const receivedOrders = orders.filter(
+        (order) => order.orderStatus === 'RECEIVED',
+      );
+      for (const order of receivedOrders) {
+        await setOrderMenuStatuses(
+          order.orderMenus.map((menu) => menu.orderMenuId),
+          'COMPLETED',
+        );
+      }
+      await adjustReceipts([receipt.receiptId]);
+      await refreshOrders();
+      await refreshTable();
+    } catch (error) {
+      console.error(`테이블 결제(${receipt.receiptId}) 실패:`, error);
+    }
+  };
 
   return (
     <OrderValuesContext.Provider value={{ orders }}>
