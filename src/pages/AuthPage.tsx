@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ProgressActivityIcon } from '@/assets/icon/ProgressActivityIcon';
-import { useKakao } from '@/hooks/useKakao';
+import { useAuth } from '@/hooks/useAuth';
 import { checkHasOwnStore } from '@/utils/functions';
 
 export const AuthPage = () => {
   const navigate = useNavigate();
-  const { login } = useKakao();
+  const { login } = useAuth();
 
   const isRequestedRef = useRef(false);
   const { provider } = useParams<{ provider: string }>();

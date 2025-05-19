@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect } from 'react';
-import { useKakao, useStore } from '@/hooks';
+import { useAuth, useStore } from '@/hooks';
 import { Store } from '@/types';
 import { useSale } from '@/hooks/useSale';
 import { SaleDto } from '@/types/backend/sale';
@@ -28,7 +28,7 @@ export interface Props {
 }
 
 export const StoreProvider = (props: Props) => {
-  const { accessToken, logout } = useKakao();
+  const { accessToken, logout } = useAuth();
   const { store, update, refresh: refreshStore } = useStore();
   const { sales, sale, openSale, closeSale } = useSale(store);
 

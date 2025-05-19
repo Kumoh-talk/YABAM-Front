@@ -10,7 +10,7 @@ import {
 } from '@/utils/api/backend/auth';
 import { fetchGetTokenKakao } from '@/utils/api/kakao';
 
-export const useKakao = () => {
+export const useAuth = () => {
   const [cookies, setCookies, removeCookie] = useCookies([
     'access_token',
     'refresh_token',
