@@ -27,7 +27,7 @@ createRoot(document.getElementById('root')!).render(
                     <CallProvider>
                       <App />
                       <ToastContainer
-                        position="bottom-right"
+                        position="bottom-left"
                         limit={5}
                         closeButton={false}
                         autoClose={4000}
