@@ -11,7 +11,7 @@ export const OrderHistoryList = (_: Props) => {
     <OrderHistoryItem key={order.orderId} order={order} />
   ));
   return (
-    <section className="flex flex-col gap-4 items-stretch px-8">
+    <section className="flex flex-col gap-4 items-stretch px-8 overflow-y-auto">
       <header className="flex flex-row gap-4 px-2 font-medium text-base leading-[140%] text-center">
         <span className="w-[11.25rem]">주문일시</span>
         <span className="w-24">테이블 번호</span>
