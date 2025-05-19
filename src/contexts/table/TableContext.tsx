@@ -1,7 +1,6 @@
 import { useTable } from '@/hooks';
 import { Table } from '@/types';
 import { createContext, useContext } from 'react';
-import { useStoreValues } from '../store/StoreContext';
 
 export type Values = {
   tables: Table[];
