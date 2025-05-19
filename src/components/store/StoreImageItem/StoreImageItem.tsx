@@ -26,10 +26,11 @@ export const StoreImageItem = ({ src, storeId, onDelete }: Props) => {
     }
   };
 
+  const fixedUrl = src.replace(/:\/(?=[^/])/, '://'); // :/ -> ://
   return (
     <div className="relative w-32 h-48 overflow-hidden rounded-lg border border-gray-500 group">
       <img
-        src={src}
+        src={fixedUrl}
         alt=""
         className="w-full h-full object-cover outline-none"
       />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { Table } from '@/types';
 import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useMenuValues } from '@/contexts/menu/MenuContext';
 import { useOrderActions } from '@/contexts/order/OrderContext';
 import { MenuSelectPanel } from '@/components/common';
@@ -19,6 +20,7 @@ export interface Props {
 
 export const ManualOrderPanel = (props: Props) => {
   const { menus } = useMenuValues();
+  const { sale } = useStoreValues();
   const { requestManualOrder, confirmOrder } = useOrderActions();
   const [cart, setCart] = useState<ManualOrderCartItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -59,6 +61,10 @@ export const ManualOrderPanel = (props: Props) => {
 
   const onSubmitOrder = async (menuInfos: OrderMenuInfo[]) => {
     try {
+      if (!sale) {
+        toast.warn('주문은 영업 중에만 받을 수 있습니다.');
+        return;
+      }
       setIsProcessing(true);
       const order = await requestManualOrder(props.table.id, menuInfos);
       await confirmOrder(order.orderId);
