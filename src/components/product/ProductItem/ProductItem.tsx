@@ -89,9 +89,9 @@ export const ProductItem = memo(({ item }: Props) => {
   };
 
   return (
-    <div className="w-full flex justify-between items-center p-2 bg-white rounded-lg z-0 transition-all duration-200 ease-in-out">
+    <li className="w-full flex justify-between items-center p-2 bg-white rounded-lg even:bg-gray-100">
       <div className="gap-4 flex items-center justify-center">
-        <div className="w-20 h-20 p-3 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500">
+        <div className="w-20 h-20 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500 overflow-hidden">
           {item.menuImageUrl ? (
             <img
               src={item.menuImageUrl}
@@ -105,7 +105,7 @@ export const ProductItem = memo(({ item }: Props) => {
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-1 justify-baseline">
+        <div className="flex flex-col gap-2">
           {editingField === 'name' ? (
             <input
               type="text"
@@ -113,12 +113,12 @@ export const ProductItem = memo(({ item }: Props) => {
               onChange={(e) => setEditValue(e.target.value)}
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
-              className="text-xl text-[#3B3B3C] leading-5 border border-gray-300 rounded px-1"
+              className="text-xl text-[#3B3B3C] leading-none border border-gray-300 rounded px-1"
               autoFocus
             />
           ) : (
             <div
-              className="text-xl text-[#3B3B3C] leading-5 font-medium"
+              className="text-base text-[#3B3B3C] leading-none font-medium"
               onDoubleClick={() => handleDoubleClick('name')}
             >
               {item.menuName}
@@ -136,7 +136,7 @@ export const ProductItem = memo(({ item }: Props) => {
             />
           ) : (
             <div
-              className="leading-6 text-[#0092CA] font-medium"
+              className="text-primary text-sm leading-none font-medium"
               onDoubleClick={() => handleDoubleClick('price')}
             >
               {item.menuPrice.toLocaleString()}원
@@ -162,7 +162,7 @@ export const ProductItem = memo(({ item }: Props) => {
           </div>
         )}
       </div>
-      <div className="flex gap-10">
+      <div className="flex gap-10 items-center">
         <Toggle
           color="primary"
           isSelected={item.menuIsRecommended}
@@ -178,7 +178,7 @@ export const ProductItem = memo(({ item }: Props) => {
           onClick={handleRemove}
         />
       </div>
-    </div>
+    </li>
   );
 });
 

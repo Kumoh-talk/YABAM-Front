@@ -37,14 +37,14 @@ export const ProductPage = () => {
             selected={selectedCategoryId}
             onSelect={setSelectedCategoryId}
           />
-          <div className="flex gap-9 px-1">
-            <div>사장님추천</div>
-            <div>품절표시</div>
-            <div>삭제</div>
+          <div className="flex gap-9 px-1 font-medium pr-2">
+            <span>사장님추천</span>
+            <span>품절표시</span>
+            <span>삭제</span>
           </div>
         </div>
       </div>
-      <div>
+      <ul>
         {isRefreshing ? (
           <div>로딩 중...</div>
         ) : filteredProducts.length === 0 ? (
@@ -63,7 +63,7 @@ export const ProductPage = () => {
             </div>
           </div>
         )}
-      </div>
+      </ul>
     </div>
   );
 };
