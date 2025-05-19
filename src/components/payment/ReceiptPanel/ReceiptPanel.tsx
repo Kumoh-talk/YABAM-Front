@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { stopReceipts, adjustReceipts } from '@/utils/api/backend/receipt';
 import { useOrderContext } from '@/contexts/order/OrderContext';
 import { Table } from '@/types';
+import { toast } from 'react-toastify';
 
 export interface Props {
   mode?: 'order' | 'receipt';
@@ -38,6 +39,7 @@ export const ReceiptPanel = (props: Props) => {
       return acc + orderTotalPrice;
     }, 0) ?? 0;
   const { refreshOrders } = useOrderContext();
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -64,16 +66,19 @@ export const ReceiptPanel = (props: Props) => {
 
   const handlePayment = async () => {
     if (!filteredOrder || filteredOrder.length === 0) return;
-    const receiptIds = Array.from(
-      new Set(filteredOrder.map((o) => o.receipt.receiptInfo.receiptId)),
-    );
     try {
+      setIsProcessingPayment(true);
+      const receiptIds = Array.from(
+        new Set(filteredOrder.map((o) => o.receipt.receiptInfo.receiptId)),
+      );
       await stopReceipts(receiptIds);
       await adjustReceipts(receiptIds);
       await refreshOrders();
-      alert('결제가 완료되었습니다!');
+      toast.success('결제가 완료되었습니다!');
     } catch (e) {
-      alert('결제 처리 중 오류가 발생했습니다.');
+      toast.error('결제 처리 중 오류가 발생했습니다.');
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -118,8 +123,9 @@ export const ReceiptPanel = (props: Props) => {
           className="flex-1 py-8 text-2xl"
           color="primary"
           onClick={handlePayment}
+          isDisabled={isProcessingPayment}
         >
-          <span className="text-xl">결제</span>
+          <span className="text-xl">{isProcessingPayment ? '처리중..' : '결제 처리'}</span>
         </Button>
       </div>
     </footer>
