@@ -1,6 +1,6 @@
 import { Table } from '@/types';
 import { OrderItem } from './components';
-import { OrderInfo, orderStatusList } from '@/types/backend/order';
+import { OrderInfo } from '@/types/backend/order';
 
 export interface Props {
   orders: OrderInfo[];
@@ -15,7 +15,6 @@ export const OrderQueuePanel = ({
   tables,
   currentOrderId,
   onClickOrder,
-  onStatusChange,
 }: Props) => {
   const sorted = orders.sort(
     (a, b) =>
@@ -73,7 +72,6 @@ export const OrderQueuePanel = ({
               table={table}
               isOpened={currentOrderId === order.orderId}
               onClick={onClickOrder}
-              onStatusChange={onStatusChange}
             />
           );
         })}

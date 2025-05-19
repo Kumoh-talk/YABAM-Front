@@ -1,28 +1,29 @@
-import { Button } from '@/components/common';
-import { OrderMenuInfo, OrderMenuStatus } from '@/types/backend/order';
-import { formatNumberWithComma } from '@/utils/functions';
-import { CheckRounded, CloseRounded, ReplayRounded } from '@mui/icons-material';
 import clsx from 'clsx';
-import { useOrder } from '@/hooks/useOrder';
-import { useStoreValues } from '@/contexts/store/StoreContext';
+import { CheckRounded, CloseRounded, ReplayRounded } from '@mui/icons-material';
+import { Button } from '@/components/common';
+import { OrderMenuInfo } from '@/types/backend/order';
+import { formatNumberWithComma } from '@/utils/functions';
+import { useOrderActions } from '@/contexts/order/OrderContext';
 
 export interface Props {
   item: OrderMenuInfo;
   isOrderStarted?: boolean;
   orderId: number;
-  onStatusChange?: () => void;
 }
 
-export const ProductItem = ({ item, isOrderStarted, onStatusChange }: Props) => {
-  const { store } = useStoreValues();
-  const { handleCancel, handleComplete, handleReplay } = useOrder(store, null, onStatusChange);
+export const ProductItem = ({ item, isOrderStarted }: Props) => {
+  const { cancelOrderMenu, completeOrderMenus, revertOrderMenu } =
+    useOrderActions();
 
   return (
     <li
       className={clsx(
         'flex flex-row px-4 py-3 justify-between items-center rounded-lg border border-gray-500',
-        { 'opacity-50': item.orderMenuStatus === 'CANCELED' },
-        { 'opacity-50': item.orderMenuStatus === 'COMPLETED' },
+        {
+          'opacity-50': ['CANCELED', 'COMPLETED'].includes(
+            item.orderMenuStatus,
+          ),
+        },
       )}
     >
       <div className="flex flex-col gap-2 font-medium">
@@ -35,17 +36,26 @@ export const ProductItem = ({ item, isOrderStarted, onStatusChange }: Props) => 
         </span>
       </div>
       {isOrderStarted && (
-        <div className="flex flex-row gap-2" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex flex-row gap-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           {['CANCELED', 'COMPLETED'].includes(item.orderMenuStatus) ? (
-            <Button color="tertiary" onClick={() => handleReplay(item.orderMenuId)}>
+            <Button
+              color="tertiary"
+              onClick={() => revertOrderMenu(item.orderMenuId)}
+            >
               <ReplayRounded />
             </Button>
           ) : (
             <>
-              <Button color="tertiary" onClick={() => handleCancel(item.orderMenuId)}>
+              <Button
+                color="tertiary"
+                onClick={() => cancelOrderMenu(item.orderMenuId)}
+              >
                 <CloseRounded />
               </Button>
-              <Button color="primary" onClick={() => handleComplete(item.orderMenuId)}>
+              <Button onClick={() => completeOrderMenus([item.orderMenuId])}>
                 <CheckRounded />
               </Button>
             </>

@@ -5,24 +5,19 @@ import {
   OrderDetail,
   OrderQueuePanel,
 } from '@/components/order';
-import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useTableValues } from '@/contexts/table/TableContext';
+import { useOrderValues } from '@/contexts/order/OrderContext';
 import { useCheckLogin } from '@/hooks';
-import { useOrder } from '@/hooks/useOrder';
 import { TableView } from '@/components/common';
 
 export const OrderPage = () => {
   useCheckLogin(true);
-  const { store, sale } = useStoreValues();
-  const { orders, refreshOrder } = useOrder(store, sale);
   const { tables } = useTableValues();
   const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
+
+  const { orders } = useOrderValues();
   const [currentOrderId, setCurrentOrderId] = useState<number>(-1);
   const currentOrder = orders.find((order) => order.orderId === currentOrderId);
-
-  const handleStatusChange = async () => {
-    await refreshOrder();
-  };
 
   // 수동 주문 페이지
   const table = selectedTableId
@@ -43,7 +38,6 @@ export const OrderPage = () => {
         {currentOrder ? (
           <OrderDetail
             order={currentOrder}
-            onStatusChange={handleStatusChange}
             onClose={() => setCurrentOrderId(-1)}
           />
         ) : (
@@ -60,7 +54,6 @@ export const OrderPage = () => {
         onClickOrder={(id) => {
           setCurrentOrderId(id);
         }}
-        onStatusChange={handleStatusChange}
       />
       <CallPanel />
     </section>

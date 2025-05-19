@@ -1,64 +1,69 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useOrder } from '@/hooks';
 import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
-import { createDirectOrder, getOrders } from '@/utils/api/backend/order';
-import { useStoreValues } from '@/contexts/store/StoreContext';
+import { createDirectOrder } from '@/utils/api/backend/order';
 import {
   createReceipt,
   getNonAdjestReceipt,
 } from '@/utils/api/backend/receipt';
-import { toast } from 'react-toastify';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
-interface OrderContextType {
+export type Values = {
   orders: OrderInfo[];
+};
+
+export type Actions = {
   refreshOrders: () => Promise<void>;
   requestManualOrder: (
     tableId: string,
     menuInfos: OrderMenuInfo[],
   ) => Promise<OrderInfo>;
+  cancelOrder: (orderId: number) => Promise<void>;
+  confirmOrder: (orderId: number) => Promise<void>;
+  revertOrder: (orderId: number) => Promise<void>;
+  cancelOrderMenu: (orderMenuId: number) => Promise<void>;
+  completeOrderMenus: (orderMenuIds: number[]) => Promise<void>;
+  revertOrderMenu: (orderMenuId: number) => Promise<void>;
+};
+
+const OrderValuesContext = createContext<Values | undefined>(undefined);
+const OrderActionsContext = createContext<Actions | undefined>(undefined);
+
+export interface Props {
+  readonly children: React.ReactNode;
 }
 
-const OrderContext = createContext<OrderContextType | undefined>(undefined);
-
-export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const OrderProvider = (props: Props) => {
   const { store, sale } = useStoreValues();
-  const [orders, setOrders] = useState<OrderInfo[]>([]);
+  const { orders, refreshOrders, setOrderStatus, setOrderMenuStatuses } =
+    useOrder(store, sale);
 
-  const refreshOrders = useCallback(async () => {
-    try {
-      if (!store || store.id === -1 || !sale) {
-        return;
-      }
-      const res = await getOrders(sale.saleId, 999, [
-        'ORDERED',
-        'RECEIVED',
-        'COMPLETED',
-        'CANCELED',
-      ]);
-      setOrders(res.pageContents);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [store, sale]);
+  const navigate = useNavigate();
+  const lastOrderIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    refreshOrders();
-  }, [refreshOrders]);
-
-  // 3초마다 자동 새로고침
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refreshOrders();
-    }, 2000);
+    const interval = setInterval(refreshOrders, 1000);
     return () => clearInterval(interval);
   }, [refreshOrders]);
+
+  useEffect(() => {
+    const ordered = orders.filter((order) => order.orderStatus === 'ORDERED');
+    if (ordered.length > 0) {
+      const latestOrderId = ordered[0].orderId;
+      if (lastOrderIdRef.current !== latestOrderId) {
+        if (lastOrderIdRef.current !== null) {
+          toast.info('새로운 주문이 들어왔습니다!', {
+            onClick: () => navigate('/main'),
+            style: { cursor: 'pointer' },
+            autoClose: 4000,
+          });
+        }
+        lastOrderIdRef.current = latestOrderId;
+      }
+    }
+  }, [orders, navigate]);
 
   const tryAndGetReceiptId = async (tableId: string) => {
     try {
@@ -98,19 +103,51 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // 주문 단위
+  const cancelOrder = (orderId: number) => setOrderStatus(orderId, 'CANCELED');
+  const confirmOrder = (orderId: number) => setOrderStatus(orderId, 'RECEIVED');
+  const revertOrder = (orderId: number) => setOrderStatus(orderId, 'RECEIVED');
+
+  // 주문메뉴 단위
+  const cancelOrderMenu = (orderMenuId: number) =>
+    setOrderMenuStatuses([orderMenuId], 'CANCELED');
+  const completeOrderMenus = async (orderMenuIds: number[]) =>
+    setOrderMenuStatuses(orderMenuIds, 'COMPLETED');
+  const revertOrderMenu = async (orderMenuId: number) =>
+    setOrderMenuStatuses([orderMenuId], 'COOKING');
+
   return (
-    <OrderContext.Provider
-      value={{ orders, refreshOrders, requestManualOrder }}
-    >
-      {children}
-    </OrderContext.Provider>
+    <OrderValuesContext.Provider value={{ orders }}>
+      <OrderActionsContext.Provider
+        value={{
+          refreshOrders,
+          requestManualOrder,
+          cancelOrder,
+          confirmOrder,
+          revertOrder,
+          cancelOrderMenu,
+          completeOrderMenus,
+          revertOrderMenu,
+        }}
+      >
+        {props.children}
+      </OrderActionsContext.Provider>
+    </OrderValuesContext.Provider>
   );
 };
 
-export const useOrderContext = () => {
-  const value = useContext(OrderContext);
+export const useOrderValues = () => {
+  const value = useContext(OrderValuesContext);
   if (!value) {
-    throw new Error('useOrderContext should be used within OrderContext');
+    throw new Error('useOrderValues should be used within OrderProvider');
   }
   return value;
-};;
+};
+
+export const useOrderActions = () => {
+  const value = useContext(OrderActionsContext);
+  if (!value) {
+    throw new Error('useOrderActions should be used within OrderProvider');
+  }
+  return value;
+};

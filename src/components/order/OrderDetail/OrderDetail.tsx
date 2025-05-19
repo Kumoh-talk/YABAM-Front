@@ -1,27 +1,23 @@
 import { useEffect } from 'react';
-import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
-import { CloseRounded } from '@mui/icons-material';
-import { useTableValues } from '@/contexts/table/TableContext';
-import { Button } from '@/components/common';
-import { useOrder } from '@/hooks/useOrder';
-import { useStoreValues } from '@/contexts/store/StoreContext';
-
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
-import { ProductItem, CallList } from './components';
+import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
+import { CloseRounded } from '@mui/icons-material';
 import { Table } from '@/types';
 import { OrderInfo } from '@/types/backend/order';
+import { useTableValues } from '@/contexts/table/TableContext';
+import { useOrderActions } from '@/contexts/order/OrderContext';
+import { Button } from '@/components/common';
+import { ProductItem, CallList } from './components';
 
 export interface Props {
   order: OrderInfo;
-  onStatusChange?: () => void;
   onClose?: () => void;
 }
 
-export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
+export const OrderDetail = ({ order, onClose }: Props) => {
   const { tables } = useTableValues();
-  const { store } = useStoreValues();
-  const { handleOrderCancel, handleOrderComplete, handleComplete } = useOrder(store, null, onStatusChange);
+  const { cancelOrder, confirmOrder, completeOrderMenus } = useOrderActions();
   useEffect(() => {
     dayjs.locale('ko');
   }, []);
@@ -33,28 +29,33 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
   const readyOrderMenus = order.orderMenus.filter((product) =>
     ['ORDERED', 'COOKING'].includes(product.orderMenuStatus),
   );
-  const completedOrderMenus = order.orderMenus.filter((product) =>
-    product.orderMenuStatus === 'COMPLETED',
+  const completedOrderMenus = order.orderMenus.filter(
+    (product) => product.orderMenuStatus === 'COMPLETED',
   );
-  const canceledOrderMenus = order.orderMenus.filter((product) =>
-    product.orderMenuStatus === 'CANCELED',
+  const canceledOrderMenus = order.orderMenus.filter(
+    (product) => product.orderMenuStatus === 'CANCELED',
   );
 
-  const handleAllMenusComplete = async () => {
-    for (const menu of order.orderMenus) {
-      await handleComplete(menu.orderMenuId);
-    }
-    onStatusChange?.();
+  const onClickCompleteAllMenus = async () => {
+    await completeOrderMenus(order.orderMenus.map((menu) => menu.orderMenuId));
   };
 
   const controls = {
     ORDERED: (
       <>
-        <Button color="tertiary" onClick={() => handleOrderCancel(order.orderId)}>주문 전체 취소</Button>
-        <Button color="primary" onClick={() => handleOrderComplete(order.orderId)}>주문 접수</Button>
+        <Button color="tertiary" onClick={() => cancelOrder(order.orderId)}>
+          주문 전체 취소
+        </Button>
+        <Button color="primary" onClick={() => confirmOrder(order.orderId)}>
+          주문 접수
+        </Button>
       </>
     ),
-    RECEIVED: <Button color="primary" onClick={handleAllMenusComplete}>전체 완료 처리</Button>,
+    RECEIVED: (
+      <Button color="primary" onClick={onClickCompleteAllMenus}>
+        전체 완료 처리
+      </Button>
+    ),
     COMPLETED: <></>,
     CANCELED: <></>,
   };
@@ -67,7 +68,10 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
             {table.number}번 테이블
           </h2>
           <span className="leading-none">
-            {formatRelativeTime(order.createdAt ?? order.receipt.receiptInfo.startUsageTime!)} 주문
+            {formatRelativeTime(
+              order.createdAt ?? order.receipt.receiptInfo.startUsageTime!,
+            )}{' '}
+            주문
           </span>
         </div>
         <div className="flex flex-row gap-2">
@@ -88,9 +92,8 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
               <ProductItem
                 key={index}
                 item={orderMenu}
-                isOrderStarted={order.orderStatus !== 'ORDERED'}
                 orderId={order.orderId}
-                onStatusChange={onStatusChange}
+                isOrderStarted={order.orderStatus !== 'ORDERED'}
               />
             ))}
           </ul>
@@ -102,7 +105,6 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
                 item={product}
                 orderId={order.orderId}
                 isOrderStarted={order.orderStatus !== 'ORDERED'}
-                onStatusChange={onStatusChange}
               />
             ))}
           </ul>
@@ -114,7 +116,6 @@ export const OrderDetail = ({ order, onStatusChange, onClose }: Props) => {
                 item={product}
                 orderId={order.orderId}
                 isOrderStarted={order.orderStatus !== 'ORDERED'}
-                onStatusChange={onStatusChange}
               />
             ))}
           </ul>

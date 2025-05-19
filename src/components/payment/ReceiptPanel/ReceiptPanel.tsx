@@ -1,18 +1,18 @@
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { AddRounded } from '@mui/icons-material';
 import {
   formatNumberWithComma,
   formatTimeString,
   getRelativeSeconds,
 } from '@/utils/functions';
-import { Button } from '@/components/common';
-import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
-import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { OrderHeader, ProductList } from './components';
-import { useEffect, useState } from 'react';
-import { stopReceipts, adjustReceipts } from '@/utils/api/backend/receipt';
-import { useOrderContext } from '@/contexts/order/OrderContext';
 import { Table } from '@/types';
-import { toast } from 'react-toastify';
+import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import { stopReceipts, adjustReceipts } from '@/utils/api/backend/receipt';
+import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
+import { useOrderActions } from '@/contexts/order/OrderContext';
+import { Button } from '@/components/common';
+import { OrderHeader, ProductList } from './components';
 
 export interface Props {
   mode?: 'order' | 'receipt';
@@ -38,7 +38,7 @@ export const ReceiptPanel = (props: Props) => {
       );
       return acc + orderTotalPrice;
     }, 0) ?? 0;
-  const { refreshOrders } = useOrderContext();
+  const { refreshOrders } = useOrderActions();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
@@ -125,7 +125,9 @@ export const ReceiptPanel = (props: Props) => {
           onClick={handlePayment}
           isDisabled={isProcessingPayment}
         >
-          <span className="text-xl">{isProcessingPayment ? '처리중..' : '결제 처리'}</span>
+          <span className="text-xl">
+            {isProcessingPayment ? '처리중..' : '결제 처리'}
+          </span>
         </Button>
       </div>
     </footer>

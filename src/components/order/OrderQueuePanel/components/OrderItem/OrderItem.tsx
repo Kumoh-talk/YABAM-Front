@@ -4,36 +4,17 @@ import clsx from 'clsx';
 import { Table } from '@/types';
 import { OrderInfo, OrderStatus } from '@/types/backend/order';
 import { CheckRounded, CloseRounded } from '@mui/icons-material';
-import { useOrder } from '@/hooks/useOrder';
-import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useOrderActions } from '@/contexts/order/OrderContext';
 
 export interface Props {
   order: OrderInfo;
   table: Table;
   isOpened: boolean;
   onClick?: (id: number) => void;
-  onStatusChange?: () => void;
 }
 
-export const OrderItem = ({
-  order,
-  table,
-  isOpened,
-  onClick,
-  onStatusChange,
-}: Props) => {
-  const { store } = useStoreValues();
-  const { handleOrderCancel, handleOrderComplete, handleOrderReroll } =
-    useOrder(store, null, onStatusChange);
-
-  const handleCancel = async () => {
-    await handleOrderCancel(order.orderId);
-  };
-
-  const handleComplete = async () => {
-    await handleOrderComplete(order.orderId);
-  };
-
+export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
+  const { cancelOrder, confirmOrder } = useOrderActions();
 
   return (
     <li
@@ -50,7 +31,9 @@ export const OrderItem = ({
           <span>{table.number}번 테이블</span>
         </div>
         <span>
-          {formatRelativeTime(order.createdAt ?? order.receipt.receiptInfo.startUsageTime!)}
+          {formatRelativeTime(
+            order.createdAt ?? order.receipt.receiptInfo.startUsageTime!,
+          )}
         </span>
       </div>
       <ul className="flex flex-col gap-1">
@@ -65,20 +48,16 @@ export const OrderItem = ({
           className="flex flex-row self-end gap-2"
           onClick={(e) => e.stopPropagation()}
         >
-          <Button color="tertiary" onClick={handleCancel}>
+          <Button color="tertiary" onClick={() => cancelOrder(order.orderId)}>
             <CloseRounded />
           </Button>
-          <Button color="primary" onClick={handleComplete}>
+          <Button onClick={() => confirmOrder(order.orderId)}>
             <CheckRounded />
           </Button>
         </div>
       )}
       {order.orderStatus === 'COMPLETED' && (
-        <div
-          className="flex flex-row self-end gap-2"
-          onClick={(e) => e.stopPropagation()}
-        >
-        </div>
+        <div className="flex flex-row self-end gap-2"></div>
       )}
     </li>
   );
@@ -95,7 +74,7 @@ const StatusTag = ({ status }: { status: OrderStatus }) => {
     ORDERED: '대기',
     RECEIVED: '진행중',
     COMPLETED: '완료됨',
-    CANCELED: '취소됨'
+    CANCELED: '취소됨',
   }[status];
 
   return (

@@ -1,12 +1,11 @@
-import { MenuSelectPanel } from '@/components/common';
-import { ReceiptPanel } from '@/components/payment';
-import { useMenuValues } from '@/contexts/menu/MenuContext';
-import { Table } from '@/types';
-import { useOrderContext } from '@/contexts/order/OrderContext';
-import { OrderInfo, OrderMenuInfo, OrderStatus } from '@/types/backend/order';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { updateOrderMenuStatus } from '@/utils/api/backend/order';
+import { Table } from '@/types';
+import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import { useMenuValues } from '@/contexts/menu/MenuContext';
+import { useOrderActions } from '@/contexts/order/OrderContext';
+import { MenuSelectPanel } from '@/components/common';
+import { ReceiptPanel } from '@/components/payment';
 
 export type ManualOrderCartItem = {
   menuId: number;
@@ -20,7 +19,7 @@ export interface Props {
 
 export const ManualOrderPanel = (props: Props) => {
   const { menus } = useMenuValues();
-  const { requestManualOrder } = useOrderContext();
+  const { requestManualOrder, confirmOrder } = useOrderActions();
   const [cart, setCart] = useState<ManualOrderCartItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -62,12 +61,9 @@ export const ManualOrderPanel = (props: Props) => {
     try {
       setIsProcessing(true);
       const order = await requestManualOrder(props.table.id, menuInfos);
-      const resChangedReceived = await updateOrderMenuStatus(
-        order.orderId,
-        'RECEIVED',
-      );
+      await confirmOrder(order.orderId);
 
-      toast.success('주문이 완료되었습니다.');
+      toast.success('주문이 접수되었습니다.');
       props.onClose?.();
     } catch (e) {
       console.error(e);

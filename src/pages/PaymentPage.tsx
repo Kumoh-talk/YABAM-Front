@@ -1,19 +1,17 @@
+import { useState, useMemo } from 'react';
+import { toast } from 'react-toastify';
+import { createDirectOrder } from '@/utils/api/backend/order';
+import { useOrderValues } from '@/contexts/order/OrderContext';
+import { useCheckLogin } from '@/hooks';
 import { TableView } from '@/components/common';
 import { ReceiptPanel } from '@/components/payment';
-import { useStoreValues } from '@/contexts/store/StoreContext';
-import { useCheckLogin } from '@/hooks';
-import { useState, useMemo } from 'react';
 import { MenuSelectPanel } from '../components/common';
-import { useOrder } from '@/hooks/useOrder';
-import { createDirectOrder } from '@/utils/api/backend/order';
-import { toast } from 'react-toastify';
 
 export const PaymentPage = () => {
   useCheckLogin(true);
+  const { orders } = useOrderValues();
   const [selectedTableId, setSelectedTableId] = useState<string>('');
   const [isOrderPageVisible, setIsOrderPageVisible] = useState(false);
-  const { store, sale } = useStoreValues();
-  const { orders } = useOrder(store, sale);
 
   const selectedTableOrders = useMemo(() => {
     const filteredOrders = orders.filter(
