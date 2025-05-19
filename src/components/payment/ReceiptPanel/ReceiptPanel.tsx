@@ -5,14 +5,13 @@ import {
   formatNumberWithComma,
   formatTimeString,
   getRelativeSeconds,
-} from "@/utils/functions";
-import { Table } from "@/types";
-import { OrderInfo, OrderMenuInfo } from "@/types/backend/order";
-import { stopReceipts, adjustReceipts } from "@/utils/api/backend/receipt";
-import { useTableActions, useTableValues } from "@/contexts/table/TableContext";
-import { useOrderActions } from "@/contexts/order/OrderContext";
-import { Button } from "@/components/common";
-import { OrderHeader, ProductList } from "./components";
+} from '@/utils/functions';
+import { Table } from '@/types';
+import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
+import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
+import { useOrderActions } from '@/contexts/order/OrderContext';
+import { Button } from '@/components/common';
+import { OrderHeader, ProductList } from './components';
 
 export interface Props {
   mode?: "order" | "receipt";
@@ -34,18 +33,24 @@ export const ReceiptPanel = (props: Props) => {
     filteredOrder.reduce((acc, curr) => {
       const orderTotalPrice = curr.orderMenus.reduce(
         (menuAcc, menu) => menuAcc + menu.menuInfo.menuPrice * menu.quantity,
-        0
+        0,
       );
       return acc + orderTotalPrice;
     }, 0) ?? 0;
-  const { refreshOrders } = useOrderActions();
+  const { stopReceipt, adjustReceipt } = useOrderActions();
+  const [isProcessingStop, setIsProcessingStop] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  const receipt = filteredOrder[0]?.receipt.receiptInfo;
+  const tableInfo = filteredOrder[0]?.receipt.tableInfo;
+  const table = tables.find((t) => t.id === tableInfo?.tableId);
 
   useEffect(() => {
     const updateTime = () => {
-      const firstOrder = filteredOrder[0];
-      const startTime = firstOrder?.receipt?.receiptInfo?.startUsageTime;
-      const seconds = startTime ? getRelativeSeconds(startTime) : 0;
+      const startTime = receipt?.startUsageTime;
+      const seconds = startTime
+        ? getRelativeSeconds(startTime, receipt?.stopUsageTime ?? new Date())
+        : 0;
       setUsedTime(seconds);
     };
     const interval = setInterval(updateTime, 1000);
@@ -54,27 +59,30 @@ export const ReceiptPanel = (props: Props) => {
     return () => {
       clearInterval(interval);
     };
-  }, [filteredOrder]);
-
-  const firstOrder = filteredOrder[0];
-  const tableId = firstOrder?.receipt?.tableInfo?.tableId;
-  const table = tables.find((t) => t.id === tableId);
+  }, [receipt]);
 
   const usedTimeString = formatTimeString(usedTime * 1000);
   const usedTimePrice = table ? calcTableCost(usedTime, table.capacity) : 0;
   const totalPrice = allPrice + usedTimePrice;
 
-  const handlePayment = async () => {
-    if (!filteredOrder || filteredOrder.length === 0) return;
+  const onClickStopReceipt = async () => {
+    if (!receipt) return;
+    try {
+      setIsProcessingStop(true);
+      await stopReceipt(receipt);
+    } catch (e) {
+      toast.error('사용 종료 중 오류가 발생했습니다.');
+    } finally {
+      setIsProcessingStop(false);
+    }
+  };
+
+  const onClickPayment = async () => {
+    if (!receipt || !tableInfo) return;
     try {
       setIsProcessingPayment(true);
-      const receiptIds = Array.from(
-        new Set(filteredOrder.map((o) => o.receipt.receiptInfo.receiptId))
-      );
-      await stopReceipts(receiptIds);
-      await adjustReceipts(receiptIds);
-      await refreshOrders();
-      toast.success("결제가 완료되었습니다!");
+      await adjustReceipt(receipt, props.order!);
+      toast.success('결제가 완료되었습니다!');
     } catch (e) {
       toast.error("결제 처리 중 오류가 발생했습니다.");
     } finally {
@@ -86,7 +94,7 @@ export const ReceiptPanel = (props: Props) => {
     ?.flatMap((orderItem) => orderItem.orderMenus)
     .reduce((acc, menu) => {
       const existingMenu = acc.find(
-        (m) => m.menuInfo.menuId === menu.menuInfo.menuId
+        (m) => m.menuInfo.menuId === menu.menuInfo.menuId,
       );
       if (existingMenu) {
         existingMenu.quantity += menu.quantity;
@@ -97,57 +105,71 @@ export const ReceiptPanel = (props: Props) => {
     }, [] as OrderMenuInfo[]);
 
   const receiptFooter = filteredOrder && (
-    <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
-      <div className="flex flex-col">
-        <div className="flex flex-row justify-between px-4 py-2">
+    <footer className='flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium'>
+      <div className='flex flex-col'>
+        <div className='flex flex-row justify-between px-4 py-2'>
           <span>구매 금액</span>
           <span>{formatNumberWithComma(allPrice)}원</span>
         </div>
-        <div className="flex flex-row justify-between px-4 py-2">
+        <div className='flex flex-row justify-between px-4 py-2'>
           <span>테이블 사용료</span>
-          <span className="flex flex-col gap-1 items-end">
+          <span className='flex flex-col gap-1 items-end'>
             <span>{formatNumberWithComma(usedTimePrice)}원</span>
-            <span className="text-text-secondary">{usedTimeString}</span>
+            <span className='text-text-secondary'>{usedTimeString}</span>
           </span>
         </div>
       </div>
-      <div className="flex flex-row justify-between p-4 items-center">
+      <div className='flex flex-row justify-between p-4 items-center'>
         <span>결제 금액</span>
-        <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
+        <span className='text-xl'>{formatNumberWithComma(totalPrice)}원</span>
       </div>
       <div className="flex flex-row gap-4 p-4 text-white">
-        <Button className="flex-1 py-8" color="tertiary">
-          <span className="text-xl">사용종료</span>
-        </Button>
-        <Button
-          className="flex-1 py-8 text-2xl"
-          color="primary"
-          onClick={handlePayment}
-          isDisabled={isProcessingPayment}
-        >
-          <span className="text-xl">
-            {isProcessingPayment ? "처리중.." : "결제 처리"}
-          </span>
-        </Button>
+        {!receipt?.stopUsageTime ? (
+          <Button
+            className="flex-1 py-8"
+            color="tertiary"
+            onClick={onClickStopReceipt}
+            isDisabled={isProcessingStop || !receipt}
+          >
+            <span className="text-xl">
+              {isProcessingStop
+                ? '처리중..'
+                : receipt
+                ? '사용 종료'
+                : '사용 중이 아님'}
+            </span>
+          </Button>
+        ) : (
+          <Button
+            className="flex-1 py-8 text-2xl"
+            color="primary"
+            onClick={onClickPayment}
+            isDisabled={isProcessingPayment}
+          >
+            <span className="text-xl">
+              {isProcessingPayment ? '처리중..' : '결제 완료'}
+            </span>
+          </Button>
+        )}
       </div>
     </footer>
   );
 
   const orderFooter = (
-    <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
-      <div className="flex flex-row justify-between p-4 items-center">
+    <footer className='flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium'>
+      <div className='flex flex-row justify-between p-4 items-center'>
         <span>총 금액</span>
-        <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
+        <span className='text-xl'>{formatNumberWithComma(totalPrice)}원</span>
       </div>
-      <div className="flex flex-row gap-4 p-4 text-white">
+      <div className='flex flex-row gap-4 p-4 text-white'>
         <Button
-          className="w-full py-8 text-2xl"
-          color="primary"
+          className='w-full py-8 text-2xl'
+          color='primary'
           onClick={() => props.onSubmitOrder?.(flattedMenus)}
           isDisabled={props.isProcessing || flattedMenus.length === 0}
         >
           <span className="text-xl">
-            {props.isProcessing ? "처리중입니다.." : "주문 넣기"}
+            {props.isProcessing ? '처리중입니다..' : '주문 넣기'}
           </span>
         </Button>
       </div>
@@ -155,21 +177,21 @@ export const ReceiptPanel = (props: Props) => {
   );
   return (
     <section className="flex flex-col w-[22.5rem] border-l border-gray-500">
-      {(props.mode ?? "receipt") === "receipt" ? (
+      {(props.mode ?? 'receipt') === 'receipt' ? (
         <header className="flex flex-row justify-between items-center p-2.5 pl-1.5">
           <Button color="primary-transparent">
             <AddRounded />
           </Button>
-          <span className="text-xl font-medium px-2">주문 내역</span>
+          <span className='text-xl font-medium px-2'>주문 내역</span>
         </header>
       ) : (
-        <header className="flex flex-row justify-center items-center p-2.5 pl-1.5">
-          <span className="text-xl font-medium px-2">
+        <header className='flex flex-row justify-center items-center p-2.5 pl-1.5'>
+          <span className='text-xl font-medium px-2'>
             {props.table?.number ?? 0}번 테이블
           </span>
         </header>
       )}
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <div className='flex flex-col flex-1 overflow-y-auto'>
         <OrderHeader />
         {flattedMenus.length > 0 ? (
           <ProductList
@@ -178,9 +200,9 @@ export const ReceiptPanel = (props: Props) => {
           />
         ) : (
           <div className="flex flex-1 items-center justify-center text-lg text-text-secondary">
-            {(props.mode ?? "receipt") === "receipt"
-              ? "주문내역이 없습니다"
-              : "주문을 추가해주세요"}
+            {(props.mode ?? 'receipt') === 'receipt'
+              ? '주문내역이 없습니다'
+              : '주문을 추가해주세요'}
           </div>
         )}
       </div>
