@@ -1,11 +1,11 @@
-import { useStoreValues } from '@/contexts/store/StoreContext';
+import { useOrderValues } from '@/contexts/order/OrderContext';
 import { OrderHistoryItem } from './components';
 
 export interface Props {
   saleId: number;
 }
 export const OrderHistoryList = (_: Props) => {
-  const { orders } = useStoreValues();
+  const { orders } = useOrderValues();
 
   const list = orders.map((order) => (
     <OrderHistoryItem key={order.orderId} order={order} />

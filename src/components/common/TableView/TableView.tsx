@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { TableItem } from './components';
-import { useStoreValues } from '@/contexts/store/StoreContext';
-import { Button } from '..';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { getTableTotalPrice } from '@/utils/functions';
 import { OrderInfo } from '@/types/backend/order';
+import { Button } from '..';
+import { TableItem } from './components';
 
 export type PointerMode = 'idle' | 'navigate_view' | 'move_table';
 
@@ -27,8 +26,7 @@ export const TableView = (props: Props) => {
   };
   const bodyRef = useRef<HTMLDivElement>(null);
 
-  const context = useStoreValues();
-  const orders = props.orders ?? context.orders;
+  const orders = props.orders ?? [];
   const { tables } = useTableValues();
   const {
     createTable,
