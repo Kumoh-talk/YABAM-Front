@@ -39,13 +39,19 @@ export const ReceiptPanel = (props: Props) => {
       return acc + orderTotalPrice;
     }, 0) ?? 0;
   const { refreshOrders } = useOrderActions();
+  const [isProcessingStop, setIsProcessingStop] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  const receipt = filteredOrder[0]?.receipt.receiptInfo;
+  const tableInfo = filteredOrder[0]?.receipt.tableInfo;
+  const table = tables.find((t) => t.id === tableInfo?.tableId);
 
   useEffect(() => {
     const updateTime = () => {
-      const firstOrder = filteredOrder[0];
-      const startTime = firstOrder?.receipt?.receiptInfo?.startUsageTime;
-      const seconds = startTime ? getRelativeSeconds(startTime) : 0;
+      const startTime = receipt?.startUsageTime;
+      const seconds = startTime
+        ? getRelativeSeconds(startTime, receipt?.stopUsageTime ?? new Date())
+        : 0;
       setUsedTime(seconds);
     };
     const interval = setInterval(updateTime, 1000);
@@ -54,25 +60,35 @@ export const ReceiptPanel = (props: Props) => {
     return () => {
       clearInterval(interval);
     };
-  }, [filteredOrder]);
-
-  const firstOrder = filteredOrder[0];
-  const tableId = firstOrder?.receipt?.tableInfo?.tableId;
-  const table = tables.find((t) => t.id === tableId);
+  }, [receipt]);
 
   const usedTimeString = formatTimeString(usedTime * 1000);
   const usedTimePrice = table ? calcTableCost(usedTime, table.capacity) : 0;
   const totalPrice = allPrice + usedTimePrice;
 
-  const handlePayment = async () => {
-    if (!filteredOrder || filteredOrder.length === 0) return;
+  const onClickStopReceipt = async () => {
+    if (!receipt) return;
+    try {
+      setIsProcessingStop(true);
+      const receiptId = receipt.receiptId;
+      await stopReceipts([receiptId]);
+      await refreshOrders();
+    } catch (e) {
+      toast.error('사용 종료 중 오류가 발생했습니다.');
+    } finally {
+      setIsProcessingStop(false);
+    }
+  };
+
+  const onClickPayment = async () => {
+    if (!receipt) return;
     try {
       setIsProcessingPayment(true);
-      const receiptIds = Array.from(
-        new Set(filteredOrder.map((o) => o.receipt.receiptInfo.receiptId)),
-      );
-      await stopReceipts(receiptIds);
-      await adjustReceipts(receiptIds);
+      const receiptId = receipt.receiptId;
+      if (!receipt.stopUsageTime) {
+        await stopReceipts([receiptId]);
+      }
+      await adjustReceipts([receiptId]);
       await refreshOrders();
       toast.success('결제가 완료되었습니다!');
     } catch (e) {
@@ -116,19 +132,33 @@ export const ReceiptPanel = (props: Props) => {
         <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
       </div>
       <div className="flex flex-row gap-4 p-4 text-white">
-        <Button className="flex-1 py-8" color="tertiary">
-          <span className="text-xl">사용종료</span>
-        </Button>
-        <Button
-          className="flex-1 py-8 text-2xl"
-          color="primary"
-          onClick={handlePayment}
-          isDisabled={isProcessingPayment}
-        >
-          <span className="text-xl">
-            {isProcessingPayment ? '처리중..' : '결제 처리'}
-          </span>
-        </Button>
+        {!receipt?.stopUsageTime ? (
+          <Button
+            className="flex-1 py-8"
+            color="tertiary"
+            onClick={onClickStopReceipt}
+            isDisabled={isProcessingStop || !receipt}
+          >
+            <span className="text-xl">
+              {isProcessingStop
+                ? '처리중..'
+                : receipt
+                ? '사용 종료'
+                : '사용 중이 아님'}
+            </span>
+          </Button>
+        ) : (
+          <Button
+            className="flex-1 py-8 text-2xl"
+            color="primary"
+            onClick={onClickPayment}
+            isDisabled={isProcessingPayment}
+          >
+            <span className="text-xl">
+              {isProcessingPayment ? '처리중..' : '결제 완료'}
+            </span>
+          </Button>
+        )}
       </div>
     </footer>
   );

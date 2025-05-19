@@ -28,8 +28,13 @@ export const isExternalUrl = (url: string) =>
   url.startsWith('http:') ||
   url.startsWith('mailto:');
 
-export const getRelativeSeconds = (date: number | string | Date) => {
-  const result = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+export const getRelativeSeconds = (
+  startDate: number | string | Date,
+  endDate: number | string | Date = new Date(),
+) => {
+  const result = Math.floor(
+    (new Date(endDate).getTime() - new Date(startDate).getTime()) / 1000,
+  );
   return isNaN(result) ? 0 : result;
 };
 

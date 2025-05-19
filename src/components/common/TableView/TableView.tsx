@@ -221,6 +221,7 @@ export const TableView = (props: Props) => {
         isSelected={pointerState.seletedItem === item.id}
         isEditable={props.isEditable}
         startedAt={startTime}
+        endedAt={orders[0]?.receipt.receiptInfo.stopUsageTime}
         price={price}
         orderMenus={orderMenus}
       />
