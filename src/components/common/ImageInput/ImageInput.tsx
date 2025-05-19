@@ -22,11 +22,13 @@ export const ImageInput = (props: Props) => {
         imageProperty: props.imageProperty,
       });
 
+      const filteredUrl = presignedUrlData.presignedUrl;
+
       // S3에 이미지 업로드
-      await uploadImageToS3(presignedUrlData.presignedUrl, file);
+      await uploadImageToS3(filteredUrl, file);
 
       // 업로드된 이미지 URL
-      const uploadedImageUrl = presignedUrlData.presignedUrl.split('?')[0];
+      const uploadedImageUrl = filteredUrl.split('?')[0];
 
       // 가게 상세 이미지 업로드 API 호출 (STORE_DETAIL일 경우만)
       if (props.imageProperty === 'STORE_DETAIL') {

@@ -52,11 +52,8 @@ export const updateStore = async (storeId: number, dto: StoreUpdateDto) => {
 };
 
 export const uploadStoreImage = async (storeId: number, detailImageUrl: string) => {
-  // 중복된 슬래시 제거
-  const cleanedUrl = detailImageUrl.replace(/\/{2,}/g, '/');
-
   const res = await api(
-    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(cleanedUrl)}`,
+    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(detailImageUrl)}`,
     'POST',
   );
 
