@@ -1,12 +1,12 @@
-import { Table } from '@/types';
+import { Table } from "@/types";
 import {
   formatNumberWithComma,
   formatTimeString,
   getRelativeSeconds,
-} from '@/utils/functions';
-import clsx from 'clsx';
-import { useEffect, useState, useMemo } from 'react';
-import { OrderMenuInfo } from '@/types/backend/order';
+} from "@/utils/functions";
+import clsx from "clsx";
+import { useEffect, useState, useMemo } from "react";
+import { OrderMenuInfo } from "@/types/backend/order";
 
 export interface Props {
   table: Table;
@@ -23,6 +23,7 @@ export interface Props {
 
 export const TableItem = (props: Props) => {
   const [time, setTime] = useState(0);
+  const [isClicked, setIsClicked] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -40,25 +41,29 @@ export const TableItem = (props: Props) => {
   return (
     <div
       className={clsx(
-        'flex flex-col justify-between absolute h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium text-white cursor-pointer',
+        "flex flex-col justify-between absolute h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium text-white cursor-pointer transition-colors duration-200",
         {
-          'border border-gray-500 p-4': !props.table.isActive,
-          'border-4 border-secondary p-3': props.table.isActive,
-          'w-[120px] bg-[#dc3545]': props.table.capacity === 6,
-          'w-[108px] bg-[#6299fe]': props.table.capacity === 4,
-        },
+          "border border-gray-500 p-4": !props.table.isActive,
+          "border-4 border-secondary p-3": props.table.isActive,
+          "w-[120px] bg-[#dc3545]": props.table.capacity === 6,
+          "w-[108px] bg-[#6299fe]": props.table.capacity === 4,
+          "border-4 border-yellow-400": isClicked || props.isSelected,
+        }
       )}
       style={{
         left: props.x,
         top: props.y,
       }}
-      onPointerDown={() =>
+      onPointerDown={() => {
+        setIsClicked(true);
         props.onPointerDown?.(
           props.table.id,
           props.table.pos.x,
-          props.table.pos.y,
-        )
-      }
+          props.table.pos.y
+        );
+      }}
+      onPointerUp={() => setIsClicked(false)}
+      onPointerLeave={() => setIsClicked(false)}
       onDoubleClick={() => props.onDoubleClick?.(props.table.id)}
       onDragStart={(e) => e.preventDefault()}
     >
