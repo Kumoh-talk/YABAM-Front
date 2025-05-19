@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Close } from '@mui/icons-material';
-import { Button, Toggle } from '@/components/common';
-import { DragIndicator } from '@mui/icons-material';
+import { Button } from '@/components/common';
 import { useCategoryActions } from '@/contexts/category/CategoryContext';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { Category } from '@/hooks/useCategory';
 import { getMenusByCategory } from '@/utils/api/backend/menu';
 
-interface CategoryListProps {
+export interface Props {
   category: Category;
   isSelected: boolean;
-  onToggle: (categoryId: number) => void;
-  onRemove: (categoryId: number) => void;
+  onToggle?: (categoryId: number) => void;
+  onRemove?: (categoryId: number) => void;
 }
 
-export const CategoryList = ({ category, onRemove }: CategoryListProps) => {
+export const CategoryItem = ({ category, onRemove }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(category.name);
   const [menuCount, setMenuCount] = useState(0);
@@ -60,7 +59,7 @@ export const CategoryList = ({ category, onRemove }: CategoryListProps) => {
   };
 
   return (
-    <div className="w-full flex justify-between px-2 py-4">
+    <li className="w-full flex justify-between px-2 py-4 rounded-lg even:bg-gray-100">
       <div className="gap-4 flex items-center ">
         <div className="gap-1">
           {isEditing ? (
@@ -74,18 +73,27 @@ export const CategoryList = ({ category, onRemove }: CategoryListProps) => {
               autoFocus
             />
           ) : (
-            <div className="text-text-primary cursor-pointer font-medium" onDoubleClick={handleDoubleClick}>
+            <div
+              className="text-text-primary cursor-pointer font-medium"
+              onDoubleClick={handleDoubleClick}
+            >
               {category.name}
             </div>
           )}
-          <div className="text-sm text-text-secondary font-medium">메뉴 {menuCount}개</div>
+          <div className="text-sm text-text-secondary font-medium">
+            메뉴 {menuCount}개
+          </div>
         </div>
       </div>
       <div className="flex gap-8 items-center">
-        <Button color="black-transparent" isNoPadding onClick={() => onRemove(category.id)}>
+        <Button
+          color="black-transparent"
+          isNoPadding
+          onClick={() => onRemove?.(category.id)}
+        >
           <Close className="text-gray-700" />
         </Button>
       </div>
-    </div>
+    </li>
   );
 };
