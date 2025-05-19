@@ -46,11 +46,11 @@ export const TableItem = (props: Props) => {
       className={clsx(
         'flex flex-col justify-between absolute h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium text-white cursor-pointer transition-colors duration-200',
         {
-          'border border-gray-500 p-4': !props.table.isActive,
+          'border border-gray-500 p-4': !props.table.isActive && !(isClicked || props.isSelected),
           'border-4 border-secondary p-3': props.table.isActive,
           'w-[120px] bg-[#dc3545]': props.table.capacity === 6,
           'w-[108px] bg-[#6299fe]': props.table.capacity === 4,
-          'border-4 border-yellow-400': isClicked || props.isSelected,
+          'border-4 border-yellow-400 p-[.8rem]': isClicked || props.isSelected,
         },
       )}
       style={{
