@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { AddRounded } from '@mui/icons-material';
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { AddRounded } from "@mui/icons-material";
 import {
   formatNumberWithComma,
   formatTimeString,
   getRelativeSeconds,
-} from '@/utils/functions';
-import { Table } from '@/types';
-import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
-import { stopReceipts, adjustReceipts } from '@/utils/api/backend/receipt';
-import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { useOrderActions } from '@/contexts/order/OrderContext';
-import { Button } from '@/components/common';
-import { OrderHeader, ProductList } from './components';
+} from "@/utils/functions";
+import { Table } from "@/types";
+import { OrderInfo, OrderMenuInfo } from "@/types/backend/order";
+import { stopReceipts, adjustReceipts } from "@/utils/api/backend/receipt";
+import { useTableActions, useTableValues } from "@/contexts/table/TableContext";
+import { useOrderActions } from "@/contexts/order/OrderContext";
+import { Button } from "@/components/common";
+import { OrderHeader, ProductList } from "./components";
 
 export interface Props {
-  mode?: 'order' | 'receipt';
+  mode?: "order" | "receipt";
   table?: Table;
   order?: OrderInfo[];
   onChangeAmount?: (id: number, amount: number) => void;
@@ -34,7 +34,7 @@ export const ReceiptPanel = (props: Props) => {
     filteredOrder.reduce((acc, curr) => {
       const orderTotalPrice = curr.orderMenus.reduce(
         (menuAcc, menu) => menuAcc + menu.menuInfo.menuPrice * menu.quantity,
-        0,
+        0
       );
       return acc + orderTotalPrice;
     }, 0) ?? 0;
@@ -69,14 +69,14 @@ export const ReceiptPanel = (props: Props) => {
     try {
       setIsProcessingPayment(true);
       const receiptIds = Array.from(
-        new Set(filteredOrder.map((o) => o.receipt.receiptInfo.receiptId)),
+        new Set(filteredOrder.map((o) => o.receipt.receiptInfo.receiptId))
       );
       await stopReceipts(receiptIds);
       await adjustReceipts(receiptIds);
       await refreshOrders();
-      toast.success('결제가 완료되었습니다!');
+      toast.success("결제가 완료되었습니다!");
     } catch (e) {
-      toast.error('결제 처리 중 오류가 발생했습니다.');
+      toast.error("결제 처리 중 오류가 발생했습니다.");
     } finally {
       setIsProcessingPayment(false);
     }
@@ -86,7 +86,7 @@ export const ReceiptPanel = (props: Props) => {
     ?.flatMap((orderItem) => orderItem.orderMenus)
     .reduce((acc, menu) => {
       const existingMenu = acc.find(
-        (m) => m.menuInfo.menuId === menu.menuInfo.menuId,
+        (m) => m.menuInfo.menuId === menu.menuInfo.menuId
       );
       if (existingMenu) {
         existingMenu.quantity += menu.quantity;
@@ -126,7 +126,7 @@ export const ReceiptPanel = (props: Props) => {
           isDisabled={isProcessingPayment}
         >
           <span className="text-xl">
-            {isProcessingPayment ? '처리중..' : '결제 처리'}
+            {isProcessingPayment ? "처리중.." : "결제 처리"}
           </span>
         </Button>
       </div>
@@ -147,16 +147,15 @@ export const ReceiptPanel = (props: Props) => {
           isDisabled={props.isProcessing || flattedMenus.length === 0}
         >
           <span className="text-xl">
-            {props.isProcessing ? '처리중입니다..' : '주문 넣기'}
+            {props.isProcessing ? "처리중입니다.." : "주문 넣기"}
           </span>
         </Button>
       </div>
     </footer>
   );
-
   return (
     <section className="flex flex-col w-[22.5rem] border-l border-gray-500">
-      {(props.mode ?? 'receipt') === 'receipt' ? (
+      {(props.mode ?? "receipt") === "receipt" ? (
         <header className="flex flex-row justify-between items-center p-2.5 pl-1.5">
           <Button color="primary-transparent">
             <AddRounded />
@@ -179,13 +178,13 @@ export const ReceiptPanel = (props: Props) => {
           />
         ) : (
           <div className="flex flex-1 items-center justify-center text-lg text-text-secondary">
-            {(props.mode ?? 'receipt') === 'receipt'
-              ? '주문내역이 없습니다'
-              : '주문을 추가해주세요'}
+            {(props.mode ?? "receipt") === "receipt"
+              ? "주문내역이 없습니다"
+              : "주문을 추가해주세요"}
           </div>
         )}
       </div>
-      {(props.mode ?? 'receipt') === 'receipt' ? receiptFooter : orderFooter}
+      {(props.mode ?? "receipt") === "receipt" ? receiptFooter : orderFooter}
     </section>
   );
 };
