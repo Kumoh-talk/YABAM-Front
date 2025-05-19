@@ -1,13 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Store } from '@/types';
-import { OrderInfo, OrderStatus } from '@/types/backend/order';
-import { getOrders } from '@/utils/api/backend/order';
-import { SaleDto } from '@/types/backend/sale';
+import { useCallback, useEffect, useState } from "react";
+import { Store } from "@/types";
+import { OrderInfo, OrderStatus } from "@/types/backend/order";
+import {
+  getOrders,
+  updateOrderMenuQuantity,
+  deleteOrderMenu,
+} from "@/utils/api/backend/order";
+import { SaleDto } from "@/types/backend/sale";
 import {
   updateOrderMenuStatus,
   updateOrderStatus,
-} from '@/utils/api/backend/order';
-import { OrderMenuStatus } from '@/types/backend/order';
+} from "@/utils/api/backend/order";
+import { OrderMenuStatus } from "@/types/backend/order";
 
 export const useOrder = (store: Store, sale: SaleDto | null) => {
   const [orders, setOrders] = useState<OrderInfo[]>([]);
@@ -18,10 +22,10 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
         return;
       }
       const res = await getOrders(sale.saleId, 999, [
-        'ORDERED',
-        'RECEIVED',
-        'COMPLETED',
-        'CANCELED',
+        "ORDERED",
+        "RECEIVED",
+        "COMPLETED",
+        "CANCELED",
       ]);
       setOrders(res.pageContents);
     } catch (e) {
@@ -47,7 +51,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
   // 주문메뉴 상태 변경
   const setOrderMenuStatuses = async (
     orderMenuIds: number[],
-    status: OrderMenuStatus,
+    status: OrderMenuStatus
   ) => {
     try {
       for (const orderMenuId of orderMenuIds) {
@@ -58,10 +62,34 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
       console.error(`주문 메뉴 상태 변경(${status}) 실패:`, error);
     }
   };
+  // 주문 메뉴 수량 변경
+  const setOrderMenuQuantity = async (
+    orderMenuId: number,
+    quantity: number
+  ) => {
+    try {
+      await updateOrderMenuQuantity(orderMenuId, quantity);
+      await refreshOrders();
+    } catch (error) {
+      console.error(`주문 메뉴 수량 변경(${quantity}) 실패:`, error);
+    }
+  };
+  // 주문 메뉴 삭제
+  const deleteOrderMenu = async (orderMenuId: number) => {
+    try {
+      await deleteOrderMenu(orderMenuId);
+      await refreshOrders();
+    } catch (error) {
+      console.error(`주문 메뉴 삭제(${orderMenuId}) 실패:`, error);
+    }
+  };
+
   return {
     orders,
     refreshOrders,
     setOrderStatus,
     setOrderMenuStatuses,
+    setOrderMenuQuantity,
+    deleteOrderMenu,
   };
 };
