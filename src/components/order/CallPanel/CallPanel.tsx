@@ -3,7 +3,6 @@ import { useStoreValues } from "@/contexts/store/StoreContext";
 import { useCallValues } from "@/contexts/call/CallContext";
 
 export const CallPanel = () => {
-  const { sale } = useStoreValues();
   const { calls, handleCompleteCall } = useCallValues();
 
   return (

@@ -1,4 +1,4 @@
-import { GetCallsResponse } from "@/types/backend/call";
+import { CallInfo, GetCallsResponse } from "@/types/backend/call";
 import { api } from "./common";
 
 export const getCalls = async (
@@ -8,11 +8,10 @@ export const getCalls = async (
 ): Promise<GetCallsResponse> => {
   const url =
     `/yabam/api/v1/calls?saleId=${saleId}` +
-    (lastCallId ? `&lastCallId=${lastCallId}` : `&lastCallId=1`) +
+    (lastCallId ? `&lastCallId=${lastCallId}` : "") +
     `&size=${size}`;
   const res = await api<GetCallsResponse>(url, "GET");
   if ("success" in res && res.success === "true") {
-    console.log(res.data);
     return res.data;
   }
   throw new Error("콜 목록 조회 실패");
@@ -20,7 +19,7 @@ export const getCalls = async (
 
 export const completeCall = async (callId: number): Promise<void> => {
   const url = `/yabam/api/v1/call/complete?callId=${callId}`;
-  const res = await api(url, "POST");
+  const res = await api(url, "PATCH");
   if ("success" in res && res.success === "true") {
     return;
   }

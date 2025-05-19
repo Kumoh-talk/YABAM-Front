@@ -5,7 +5,7 @@ import { CallInfo } from "@/types/backend/call";
 export const useCall = (
   saleId?: number,
   lastCallId?: number,
-  interval: number = 3000
+  interval: number = 5000
 ) => {
   const [calls, setCalls] = useState<CallInfo[]>([]);
 

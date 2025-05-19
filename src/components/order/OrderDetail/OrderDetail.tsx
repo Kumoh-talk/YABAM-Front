@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
-import { formatNumberWithComma, formatRelativeTime } from '@/utils/functions';
-import { CloseRounded } from '@mui/icons-material';
-import { Table } from '@/types';
-import { OrderInfo } from '@/types/backend/order';
-import { useTableValues } from '@/contexts/table/TableContext';
-import { useOrderActions } from '@/contexts/order/OrderContext';
-import { Button } from '@/components/common';
-import { ProductItem, CallList } from './components';
+import { useEffect } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import { formatNumberWithComma, formatRelativeTime } from "@/utils/functions";
+import { CloseRounded } from "@mui/icons-material";
+import { Table } from "@/types";
+import { OrderInfo } from "@/types/backend/order";
+import { useTableValues } from "@/contexts/table/TableContext";
+import { useOrderActions } from "@/contexts/order/OrderContext";
+import { Button } from "@/components/common";
+import { ProductItem } from "./components";
+import { useCallValues } from "@/contexts/call/CallContext";
 
 export interface Props {
   order: OrderInfo;
@@ -18,22 +19,24 @@ export interface Props {
 export const OrderDetail = ({ order, onClose }: Props) => {
   const { tables } = useTableValues();
   const { cancelOrder, confirmOrder, completeOrderMenus } = useOrderActions();
+  const { handleCompleteCall } = useCallValues();
+
   useEffect(() => {
-    dayjs.locale('ko');
+    dayjs.locale("ko");
   }, []);
 
   const table = tables.find(
-    (table) => table.id === order.receipt.tableInfo.tableId,
+    (table) => table.id === order.receipt.tableInfo.tableId
   )!;
 
   const readyOrderMenus = order.orderMenus.filter((product) =>
-    ['ORDERED', 'COOKING'].includes(product.orderMenuStatus),
+    ["ORDERED", "COOKING"].includes(product.orderMenuStatus)
   );
   const completedOrderMenus = order.orderMenus.filter(
-    (product) => product.orderMenuStatus === 'COMPLETED',
+    (product) => product.orderMenuStatus === "COMPLETED"
   );
   const canceledOrderMenus = order.orderMenus.filter(
-    (product) => product.orderMenuStatus === 'CANCELED',
+    (product) => product.orderMenuStatus === "CANCELED"
   );
 
   const onClickCompleteAllMenus = async () => {
@@ -69,8 +72,8 @@ export const OrderDetail = ({ order, onClose }: Props) => {
           </h2>
           <span className="leading-none">
             {formatRelativeTime(
-              order.createdAt ?? order.receipt.receiptInfo.startUsageTime!,
-            )}{' '}
+              order.createdAt ?? order.receipt.receiptInfo.startUsageTime!
+            )}{" "}
             주문
           </span>
         </div>
@@ -84,7 +87,6 @@ export const OrderDetail = ({ order, onClose }: Props) => {
       <div className="flex flex-row gap-8 h-max">
         <div className="flex flex-col gap-4">
           <OrderSummary order={order} table={table} />
-          <CallList />
         </div>
         <section className="flex flex-col gap-8 w-0 flex-1">
           <ul className="flex flex-col gap-4">
@@ -93,7 +95,7 @@ export const OrderDetail = ({ order, onClose }: Props) => {
                 key={index}
                 item={orderMenu}
                 orderId={order.orderId}
-                isOrderStarted={order.orderStatus !== 'ORDERED'}
+                isOrderStarted={order.orderStatus !== "ORDERED"}
               />
             ))}
           </ul>
@@ -104,7 +106,7 @@ export const OrderDetail = ({ order, onClose }: Props) => {
                 key={index}
                 item={product}
                 orderId={order.orderId}
-                isOrderStarted={order.orderStatus !== 'ORDERED'}
+                isOrderStarted={order.orderStatus !== "ORDERED"}
               />
             ))}
           </ul>
@@ -115,7 +117,7 @@ export const OrderDetail = ({ order, onClose }: Props) => {
                 key={index}
                 item={product}
                 orderId={order.orderId}
-                isOrderStarted={order.orderStatus !== 'ORDERED'}
+                isOrderStarted={order.orderStatus !== "ORDERED"}
               />
             ))}
           </ul>
@@ -131,14 +133,14 @@ const OrderSummary = ({ order, table }: { order: OrderInfo; table: Table }) => {
       <SummaryLine
         label="주문 일시"
         body={dayjs(order.receipt.receiptInfo.startUsageTime!).format(
-          'YYYY. M. D. H:mm:ss',
+          "YYYY. M. D. H:mm:ss"
         )}
       />
       <SummaryLine
         label="총 주문 금액"
         body={`${formatNumberWithComma(order.totalPrice)}원`}
       />
-      <SummaryLine label="테이블" body={table.number + ''} />
+      <SummaryLine label="테이블" body={table.number + ""} />
     </section>
   );
 };

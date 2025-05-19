@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { useCall } from "@/hooks/useCall";
 import { CallInfo } from "@/types/backend/call";
+import { useStoreValues } from "../store/StoreContext";
 
 export type CallValues = {
   calls: CallInfo[];
@@ -10,12 +11,12 @@ export type CallValues = {
 const CallValuesContext = createContext<CallValues | undefined>(undefined);
 
 export interface Props {
-  saleId?: number;
   children: React.ReactNode;
 }
 
 export const CallProvider = (props: Props) => {
-  const { calls, handleCompleteCall } = useCall(props.saleId);
+  const { sale } = useStoreValues();
+  const { calls, handleCompleteCall } = useCall(sale?.saleId);
 
   return (
     <CallValuesContext.Provider value={{ calls, handleCompleteCall }}>
