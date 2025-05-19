@@ -4,6 +4,7 @@ import {
 } from '@mui/icons-material';
 import { Button } from '@/components/common';
 import { SaleDto } from '@/types/backend/sale';
+import clsx from 'clsx';
 
 export interface Props {
   onChange?: (sale: SaleDto) => void;
@@ -56,7 +57,11 @@ export const SaleSelect = (props: Props) => {
       <span className="flex flex-col text-lg leading-none font-medium">
         <span>{startedTimeStr}</span>
         <span className="w-full text-center text-base leading-none">~</span>
-        <span>{closedTimeStr}</span>
+        <span
+          className={clsx({ 'w-full text-center': closedTimeStr === '영업중' })}
+        >
+          {closedTimeStr}
+        </span>
       </span>
       {currentIndex > 0 && (
         <Button
