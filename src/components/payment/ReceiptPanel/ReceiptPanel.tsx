@@ -123,7 +123,7 @@ export const ReceiptPanel = (props: Props) => {
         <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
       </div>
       <div className="flex flex-row gap-4 p-4 text-white">
-        {/* {!receipt?.stopUsageTime ? (
+        {!receipt?.stopUsageTime ? (
           <Button
             className="flex-1 py-8"
             color="tertiary"
@@ -138,18 +138,18 @@ export const ReceiptPanel = (props: Props) => {
                 : '사용 중이 아님'}
             </span>
           </Button>
-        ) : ( } */}
+        ) : (
           <Button
             className="flex-1 py-8 text-2xl"
             color="primary"
             onClick={onClickPayment}
-            isDisabled={!receipt || isProcessingPayment}
+            isDisabled={isProcessingPayment}
           >
             <span className="text-xl">
               {isProcessingPayment ? '처리중..' : '결제 완료'}
             </span>
           </Button>
-        {/* )} */}
+        )}
       </div>
     </footer>
   );
