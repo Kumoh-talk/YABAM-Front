@@ -40,7 +40,7 @@ export const TableItem = (props: Props) => {
   return (
     <div
       className={clsx(
-        'flex flex-col justify-between absolute h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium text-white',
+        'flex flex-col justify-between absolute h-[112px] rounded-lg shadow-[0_4px_32px_rgba(0,0,0,.08)] select-none font-medium text-white cursor-pointer',
         {
           'border border-gray-500 p-4': !props.table.isActive,
           'border-4 border-secondary p-3': props.table.isActive,
