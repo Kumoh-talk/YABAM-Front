@@ -26,7 +26,10 @@ export interface Props {
   isMoving?: boolean;
   onClickMoveTable?: () => void;
   isSubmittingCustomOrder?: boolean;
-  onSubmitCustomOrder?: (form: { name: string; price: number }) => Promise<boolean>;
+  onSubmitCustomOrder?: (form: {
+    name: string;
+    price: number;
+  }) => Promise<boolean>;
 }
 
 export const ReceiptPanel = (props: Props) => {
@@ -71,7 +74,12 @@ export const ReceiptPanel = (props: Props) => {
 
   const usedTimeString = formatTimeString(usedTime * 1000);
   const usedTimePrice = table ? calcTableCost(usedTime, table.capacity) : 0;
-  const totalPrice = allPrice + usedTimePrice;
+  const customOrderPrice =
+    (props.tableWithReceipt?.receiptInfo.orderInfo.reduce(
+      (accm, order) => accm + order.totalPrice,
+      0,
+    ) ?? allPrice) - allPrice;
+  const totalPrice = allPrice + customOrderPrice + usedTimePrice;
 
   const onClickStopReceipt = async () => {
     if (!receipt) return;
@@ -145,6 +153,12 @@ export const ReceiptPanel = (props: Props) => {
           <span className="flex flex-col gap-1 items-end">
             <span>{formatNumberWithComma(usedTimePrice)}원</span>
             <span className="text-text-secondary">{usedTimeString}</span>
+          </span>
+        </div>
+        <div className="flex flex-row justify-between px-4 py-2">
+          <span>커스텀 주문</span>
+          <span className="flex flex-col gap-1 items-end">
+            <span>{formatNumberWithComma(customOrderPrice)}원</span>
           </span>
         </div>
       </div>
