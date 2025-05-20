@@ -27,7 +27,12 @@ export const HistoryPage = () => {
   const refresh = async () => {
     setIsLoading(true);
     try {
-      const response = await getOrders(sale?.saleId ?? -1, undefined, [
+      if (!sale) {
+        setOrders([]);
+        setIsLoading(false);
+        return;
+      }
+      const response = await getOrders(sale.saleId, undefined, [
         'RECEIVED',
         'COMPLETED',
       ]);
