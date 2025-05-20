@@ -1,36 +1,34 @@
-import { useState, useMemo } from "react";
-import { toast } from "react-toastify";
+import { useState, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import {
   createDirectOrder,
   updateOrderMenuQuantity,
-} from "@/utils/api/backend/order";
-import { useOrderValues } from "@/contexts/order/OrderContext";
-import { useCheckLogin } from "@/hooks";
-import { TableView } from "@/components/common";
-import { ReceiptPanel } from "@/components/payment";
-import { MenuSelectPanel } from "../components/common";
-import { deleteOrderMenu } from "@/utils/api/backend/order";
+} from '@/utils/api/backend/order';
+import { useOrderValues } from '@/contexts/order/OrderContext';
+import { useCheckLogin } from '@/hooks';
+import { TableView } from '@/components/common';
+import { ReceiptPanel } from '@/components/payment';
+import { MenuSelectPanel } from '../components/common';
+import { deleteOrderMenu } from '@/utils/api/backend/order';
 
 export const PaymentPage = () => {
   useCheckLogin(true);
   const { orders } = useOrderValues();
-  const [selectedTableId, setSelectedTableId] = useState<string>("");
+  const [selectedTableId, setSelectedTableId] = useState<string>('');
   const [isOrderPageVisible, setIsOrderPageVisible] = useState(false);
 
   const selectedTableOrders = useMemo(() => {
     const filteredOrders = orders.filter(
       (order) => order.receipt.tableInfo.tableId === selectedTableId,
     );
-    const completedOrders = filteredOrders
-      .map((order) => ({
-        ...order,
-        orderMenus: order.orderMenus.filter(
-          (menu) =>
-            menu.orderMenuStatus === "COMPLETED" ||
-            menu.orderMenuStatus === "COOKING",
-        ),
-      }))
-      .filter((order) => order.orderMenus.length > 0);
+    const completedOrders = filteredOrders.map((order) => ({
+      ...order,
+      orderMenus: order.orderMenus.filter(
+        (menu) =>
+          menu.orderMenuStatus === 'COMPLETED' ||
+          menu.orderMenuStatus === 'COOKING',
+      ),
+    }));
     return completedOrders;
   }, [orders, selectedTableId]);
 
@@ -49,7 +47,7 @@ export const PaymentPage = () => {
         ?.orderMenus.find((menu) => menu.menuInfo.menuId === menuId);
 
       if (!receiptId) {
-        toast.warn("영수증 ID가 존재하지 않습니다.");
+        toast.warn('영수증 ID가 존재하지 않습니다.');
         return;
       }
 
@@ -61,7 +59,7 @@ export const PaymentPage = () => {
         await createDirectOrder(receiptId, [{ menuId, menuQuantity: 1 }]);
       }
     } catch (e) {
-      alert("주문 추가 실패");
+      toast.error('주문 추가 실패');
     }
   };
 
@@ -78,13 +76,13 @@ export const PaymentPage = () => {
         await updateOrderMenuQuantity(menu.orderMenuId, amount + menu.quantity);
       }
     } catch (e) {
-      alert("수량 변경 실패");
+      toast.error('수량 변경 실패');
     }
   };
 
   return (
-    <section className='flex flex-row w-full h-full'>
-      <section className='flex flex-col flex-1 w-0'>
+    <section className="flex flex-row w-full h-full">
+      <section className="flex flex-col flex-1 w-0">
         {isOrderPageVisible ? (
           <MenuSelectPanel
             onClose={() => setIsOrderPageVisible(false)}
