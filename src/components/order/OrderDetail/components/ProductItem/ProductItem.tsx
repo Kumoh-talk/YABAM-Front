@@ -58,61 +58,6 @@ export const ProductItem = ({ item, isOrderStarted }: Props) => {
         </span>
       </div>
       <div className="flex flex-row items-center gap-2">
-        <div className="flex flex-row items-center gap-2 border border-gray-500 rounded-lg">
-          <Button
-            color="white"
-            className="p-1"
-            onClick={() =>
-              setOrderMenuCompletedCount(
-                item.orderMenuId,
-                item.completedCount - 1,
-              )
-            }
-            isDisabled={item.completedCount <= 0}
-          >
-            <RemoveRounded />
-          </Button>
-          {isEditing ? (
-            <input
-              type="number"
-              className="w-16 text-center remove-arrow"
-              value={tempValue}
-              min={0}
-              max={item.quantity}
-              onChange={(e) => setTempValue(parseInt(e.target.value) || 0)}
-              onBlur={handleSubmit}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSubmit();
-                }
-              }}
-              autoFocus
-            />
-          ) : (
-            <span
-              className="w-8 text-center cursor-pointer"
-              onClick={() => {
-                setIsEditing(true);
-                setTempValue(item.completedCount);
-              }}
-            >
-              {item.completedCount}
-            </span>
-          )}
-          <Button
-            color="white"
-            className="p-1"
-            onClick={() =>
-              setOrderMenuCompletedCount(
-                item.orderMenuId,
-                item.completedCount + 1,
-              )
-            }
-            isDisabled={item.completedCount >= item.quantity}
-          >
-            <AddRounded />
-          </Button>
-        </div>
         {isOrderStarted && (
           <div
             className="flex flex-row gap-2"
@@ -127,6 +72,63 @@ export const ProductItem = ({ item, isOrderStarted }: Props) => {
               </Button>
             ) : (
               <>
+                <div className="flex flex-row items-center gap-2 border border-gray-500 rounded-lg">
+                  <Button
+                    color="white"
+                    className="p-1"
+                    onClick={() =>
+                      setOrderMenuCompletedCount(
+                        item.orderMenuId,
+                        item.completedCount - 1,
+                      )
+                    }
+                    isDisabled={item.completedCount <= 0}
+                  >
+                    <RemoveRounded />
+                  </Button>
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      className="w-16 text-center remove-arrow"
+                      value={tempValue}
+                      min={0}
+                      max={item.quantity}
+                      onChange={(e) =>
+                        setTempValue(parseInt(e.target.value) || 0)
+                      }
+                      onBlur={handleSubmit}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSubmit();
+                        }
+                      }}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      className="w-8 text-center cursor-pointer"
+                      onClick={() => {
+                        setIsEditing(true);
+                        setTempValue(item.completedCount);
+                      }}
+                    >
+                      {item.completedCount}
+                    </span>
+                  )}
+                  <Button
+                    color="white"
+                    className="p-1"
+                    onClick={() =>
+                      setOrderMenuCompletedCount(
+                        item.orderMenuId,
+                        item.completedCount + 1,
+                      )
+                    }
+                    isDisabled={item.completedCount >= item.quantity}
+                  >
+                    <AddRounded />
+                  </Button>
+                </div>
                 <Button
                   color="tertiary"
                   onClick={() => cancelOrderMenu(item.orderMenuId)}
