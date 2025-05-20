@@ -44,7 +44,9 @@ export type Actions = {
     quantity: number,
   ) => Promise<void>;
   deleteOrderMenu: (orderMenuId: number) => Promise<void>;
+
   stopReceipt: (receipt: ReceiptInfo) => Promise<void>;
+  removeReceipt: (receiptId: string) => Promise<{}>;
   adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[]) => Promise<void>;
   setRestartReceipt: (receiptIds: string[]) => Promise<void>;
 };
@@ -68,6 +70,7 @@ export const OrderProvider = (props: Props) => {
     setOrderMenuQuantity,
     deleteOrderMenu,
     stopReceipts,
+    removeReceipt,
     updateOrderStatus,
     adjustReceipts,
     setRestartReceipt,
@@ -200,6 +203,7 @@ export const OrderProvider = (props: Props) => {
           revertOrderMenu,
           setOrderMenuQuantity,
           deleteOrderMenu,
+          removeReceipt,
           stopReceipt,
           adjustReceipt,
           setRestartReceipt,

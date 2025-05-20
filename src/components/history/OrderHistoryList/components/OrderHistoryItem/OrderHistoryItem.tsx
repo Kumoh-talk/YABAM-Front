@@ -1,3 +1,4 @@
+import { Button } from '@/components/common';
 import { useTableActions } from '@/contexts/table/TableContext';
 import { OrderInfo } from '@/types/backend/order';
 import { ReceiptInfo } from '@/types/backend/receipt';
@@ -10,6 +11,7 @@ import {
 export interface Props {
   receipt: ReceiptInfo;
   orders: OrderInfo[];
+  onRemoveItem?: (receiptId: string) => void;
 }
 
 export const OrderHistoryItem = (props: Props) => {
@@ -58,6 +60,12 @@ export const OrderHistoryItem = (props: Props) => {
   );
   const totalPrice = menuPrice + tablePrice;
 
+  const onClickRemoveItem = async () => {
+    if (confirm('삭제하면 되돌릴 수 없습니다. 정말로 삭제하시겠습니까?')) {
+      props.onRemoveItem?.(props.receipt.receiptId);
+    }
+  };
+
   return (
     <li className="flex flex-col w-full rounded-lg even:bg-gray-100">
       <li className="flex flex-row gap-4 p-2 font-medium text-base leading-[140%]">
@@ -82,7 +90,9 @@ export const OrderHistoryItem = (props: Props) => {
         <span className="w-[80px] text-right">
           {formatNumberWithComma(totalPrice)}
         </span>
-        <span className="w-[87px]"></span>
+        <span className="w-[87px] flex flex-row justify-center">
+          <Button onClick={onClickRemoveItem}>삭제</Button>
+        </span>
       </li>
     </li>
   );

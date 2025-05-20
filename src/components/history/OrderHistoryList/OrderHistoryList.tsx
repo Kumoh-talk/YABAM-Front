@@ -5,14 +5,15 @@ import { ProgressActivityIcon } from '@/assets/icon/ProgressActivityIcon';
 export interface Props {
   receiptsAndOrders: OrderInfo[][];
   isLoading: boolean;
+  onRemoveItem?: (receiptId: string) => void;
 }
 export const OrderHistoryList = (props: Props) => {
-
   const list = props.receiptsAndOrders.map((orders) => (
     <OrderHistoryItem
       key={orders[0].receipt.receiptInfo.receiptId}
       receipt={orders[0].receipt.receiptInfo}
       orders={orders}
+      onRemoveItem={props.onRemoveItem}
     />
   ));
   return (
