@@ -39,7 +39,7 @@ export const TableItem = (props: Props) => {
     return () => {
       clearInterval(interval);
     };
-  }, [props.startedAt]);
+  }, [props.startedAt, props.endedAt]);
 
   return (
     <div
