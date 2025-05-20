@@ -1,15 +1,16 @@
 import { useState, memo } from 'react';
-import { BlackPlusIcon } from '@/assets/icon/BlackPlusCcon';
-import { Toggle } from '../../common';
+import { ImageInput, Toggle } from '../../common';
 import { Close } from '@mui/icons-material';
 import { useMenuValues, useMenuActions } from '@/contexts/menu/MenuContext';
 import { MenuInfo } from '@/types/backend/menu';
+import { useStoreValues } from '@/contexts/store/StoreContext';
 
 export interface Props {
   item: MenuInfo;
 }
 
 export const ProductItem = memo(({ item }: Props) => {
+  const { store } = useStoreValues();
   const { menus } = useMenuValues();
   const { updateMenuDetail, updateMenuSoldOut, removeMenu, refreshMenus } =
     useMenuActions();
@@ -57,6 +58,17 @@ export const ProductItem = memo(({ item }: Props) => {
     setEditingField(null);
   };
 
+  const handleImageChange = (e: { target: { value: string } }) => {
+    updateMenuDetail(item.menuId, {
+      menuName: item.menuName,
+      menuPrice: item.menuPrice,
+      menuDescription: item.menuDescription,
+      menuImageUrl: e.target.value,
+      menuIsRecommended: item.menuIsRecommended,
+      menuIsSoldOut: item.menuIsSoldOut,
+    });
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleBlur();
@@ -92,18 +104,13 @@ export const ProductItem = memo(({ item }: Props) => {
     <li className="w-full flex justify-between items-center p-2 bg-white rounded-lg even:bg-gray-100">
       <div className="gap-4 flex items-center justify-center">
         <div className="w-20 h-20 flex flex-col justify-center items-center rounded-lg border-1 border-gray-500 overflow-hidden">
-          {item.menuImageUrl ? (
-            <img
-              src={item.menuImageUrl}
-              alt={item.menuName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="flex flex-col gap-1 items-center justify-center">
-              <BlackPlusIcon />
-              <div className="leading-6 text-gray-500">이미지 없음</div>
-            </div>
-          )}
+          <ImageInput
+            className="w-full h-full object-cover"
+            imageProperty="MENU_IMAGE"
+            storeId={store.id}
+            value={item.menuImageUrl}
+            onChange={handleImageChange}
+          />
         </div>
         <div className="flex flex-col gap-2">
           {editingField === 'name' ? (
