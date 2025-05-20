@@ -14,8 +14,7 @@ import {
 } from '@/utils/api/backend/order';
 import {
   createReceipt,
-  getNonAdjestReceipt,
-  restartReceipt,
+  getNonAdjustReceipt,
 } from '@/utils/api/backend/receipt';
 import { useStoreValues } from '@/contexts/store/StoreContext';
 import { useTableActions, useTableValues } from '../table/TableContext';
@@ -140,7 +139,7 @@ export const OrderProvider = (props: Props) => {
 
   const tryAndGetReceiptId = async (tableId: string) => {
     try {
-      const receiptId = (await getNonAdjestReceipt(tableId)).receiptId;
+      const receiptId = (await getNonAdjustReceipt(tableId)).receiptId;
       if (receiptId) {
         return receiptId;
       }

@@ -47,7 +47,7 @@ export const getReceipt = async (receiptId: string) => {
   throw new Error('영수증 조회 실패');
 };
 
-export const getNonAdjestReceipt = async (tableId: string) => {
+export const getNonAdjustReceipt = async (tableId: string) => {
   const res = await api<ReceiptNonAdjustSelectResponse>(
     `/yabam/api/v1/table/${tableId}/receipts/non-adjust`,
     'GET',
