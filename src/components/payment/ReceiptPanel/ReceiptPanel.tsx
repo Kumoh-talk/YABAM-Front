@@ -14,15 +14,17 @@ import { CustomOrderPanel, OrderHeader, ProductList } from './components';
 
 export interface Props {
   mode?: 'order' | 'receipt';
-  table?: Table;
-  order?: OrderInfo[];
   onChangeAmount?: (id: number, amount: number) => void;
-  onSubmitOrder?: (menuInfos: OrderMenuInfo[]) => void;
-  onClickMoveTable?: () => void;
-  isMoving?: boolean;
+  //order
+  table?: Table;
   isProcessing?: boolean;
-  onSubmitCustomOrder?: (form: { name: string; price: number }) => Promise<boolean>;
+  onSubmitOrder?: (menuInfos: OrderMenuInfo[]) => void;
+  //receipt
+  order?: OrderInfo[];
+  isMoving?: boolean;
+  onClickMoveTable?: () => void;
   isSubmittingCustomOrder?: boolean;
+  onSubmitCustomOrder?: (form: { name: string; price: number }) => Promise<boolean>;
 }
 
 export const ReceiptPanel = (props: Props) => {
