@@ -184,6 +184,9 @@ export const PaymentPage = () => {
         )}
       </section>
       <ReceiptPanel
+        tableWithReceipt={tableWithReceipts.find(
+          (table) => table.tableId === selectedTableId,
+        )}
         order={selectedTableOrders}
         onChangeAmount={handleChangeAmount}
         isMoving={moveState.isMoving}

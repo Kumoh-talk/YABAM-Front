@@ -11,6 +11,7 @@ import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { useOrderActions } from '@/contexts/order/OrderContext';
 import { Button } from '@/components/common';
 import { CustomOrderPanel, OrderHeader, ProductList } from './components';
+import { TableWithReceipt } from '@/types/backend/receipt';
 
 export interface Props {
   mode?: 'order' | 'receipt';
@@ -20,6 +21,7 @@ export interface Props {
   isProcessing?: boolean;
   onSubmitOrder?: (menuInfos: OrderMenuInfo[]) => void;
   //receipt
+  tableWithReceipt?: TableWithReceipt;
   order?: OrderInfo[];
   isMoving?: boolean;
   onClickMoveTable?: () => void;
@@ -48,9 +50,8 @@ export const ReceiptPanel = (props: Props) => {
   const [isProcessingRestart, setIsProcessingRestart] = useState(false);
   const [isOpenedCustomOrder, setIsOpenedCustomOrder] = useState(false);
 
-  const receipt = filteredOrder[0]?.receipt.receiptInfo;
-  const tableInfo = filteredOrder[0]?.receipt.tableInfo;
-  const table = tables.find((t) => t.id === tableInfo?.tableId);
+  const receipt = props.tableWithReceipt?.receiptInfo.receiptInfo;
+  const table = tables.find((t) => t.id === props.tableWithReceipt?.tableId);
 
   useEffect(() => {
     const updateTime = () => {
@@ -85,7 +86,7 @@ export const ReceiptPanel = (props: Props) => {
   };
 
   const onClickPayment = async () => {
-    if (!receipt || !tableInfo) return;
+    if (!receipt || !props.tableWithReceipt) return;
     try {
       setIsProcessingPayment(true);
       await adjustReceipt(receipt, props.order!);
