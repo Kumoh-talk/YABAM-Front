@@ -50,10 +50,7 @@ export const getReceipt = async (receiptId: string) => {
 
 export const restartReceipt = async (receiptIds: string[]) => {
   const ids = receiptIds.map((id) => `receiptIds=${id}`).join('&');
-  const res = await api(
-    `/yabam/api/v1/receipts/re-start?${ids}`,
-    'PATCH',
-  );
+  const res = await api(`/yabam/api/v1/receipts/re-start?${ids}`, 'PATCH');
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
@@ -76,4 +73,12 @@ export const adjustReceipts = async (receiptIds: string[]) => {
     return res.data;
   }
   throw new Error('영수증 최종정산 실패');
+};
+
+export const removeReceipt = async (receiptId: string) => {
+  const res = await api<{}>(`/yabam/api/v1/receipts/${receiptId}`, 'DELETE');
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('영수증 삭제 실패');
 };
