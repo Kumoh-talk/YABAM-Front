@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { ImageRounded } from '@mui/icons-material';
+import { ProgressActivityIcon } from '@/assets/icon/ProgressActivityIcon';
 import { InputChangeHandler } from '@/hooks/useInputs';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/api/backend/aws';
 import { uploadStoreImage } from '@/utils/api/backend/store'; // 추가
@@ -14,8 +16,10 @@ export interface Props {
 }
 
 export const ImageInput = (props: Props) => {
+  const [isUploading, setIsUploading] = useState(false);
   const loadImage = async (file: File) => {
     try {
+      setIsUploading(true);
       // Presigned URL 요청
       const presignedUrlData = await getPresignedUrl({
         storeId: props.storeId,
@@ -41,6 +45,8 @@ export const ImageInput = (props: Props) => {
       });
     } catch (err) {
       console.error('이미지 업로드 중 오류 발생:', err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -81,6 +87,11 @@ export const ImageInput = (props: Props) => {
         type="file"
         className="absolute top-0 left-0 w-full h-full select-none opacity-0 cursor-pointer text-[0px]"
       />
+      {isUploading && (
+        <div className="absolute size-full flex justify-center items-center bg-[#0002]">
+          <ProgressActivityIcon className="fill-primary animate-spin size-8" />
+        </div>
+      )}
     </div>
   );
 };
