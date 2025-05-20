@@ -10,7 +10,7 @@ import { OrderInfo, OrderMenuInfo } from '@/types/backend/order';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
 import { useOrderActions } from '@/contexts/order/OrderContext';
 import { Button } from '@/components/common';
-import { OrderHeader, ProductList } from './components';
+import { CustomOrderPanel, OrderHeader, ProductList } from './components';
 
 export interface Props {
   mode?: 'order' | 'receipt';
@@ -21,6 +21,8 @@ export interface Props {
   onClickMoveTable?: () => void;
   isMoving?: boolean;
   isProcessing?: boolean;
+  onSubmitCustomOrder?: (form: { name: string; price: number }) => Promise<boolean>;
+  isSubmittingCustomOrder?: boolean;
 }
 
 export const ReceiptPanel = (props: Props) => {
@@ -42,6 +44,7 @@ export const ReceiptPanel = (props: Props) => {
   const [isProcessingStop, setIsProcessingStop] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [isProcessingRestart, setIsProcessingRestart] = useState(false);
+  const [isOpenedCustomOrder, setIsOpenedCustomOrder] = useState(false);
 
   const receipt = filteredOrder[0]?.receipt.receiptInfo;
   const tableInfo = filteredOrder[0]?.receipt.tableInfo;
@@ -119,8 +122,16 @@ export const ReceiptPanel = (props: Props) => {
       return acc;
     }, [] as OrderMenuInfo[]);
 
-  const receiptFooter = filteredOrder && (
-    <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
+  const receiptFooterCustomOrder = (
+    <CustomOrderPanel
+      onClose={() => setIsOpenedCustomOrder(false)}
+      isSubmitting={props.isSubmittingCustomOrder}
+      onSubmit={props.onSubmitCustomOrder}
+    />
+  );
+
+  const receiptFooterNormal = filteredOrder && (
+    <>
       <div className="flex flex-col">
         <div className="flex flex-row justify-between px-4 py-2">
           <span>구매 금액</span>
@@ -141,13 +152,19 @@ export const ReceiptPanel = (props: Props) => {
       <div className="flex flex-row gap-4 px-4 pt-4 text-white">
         <Button
           className="flex-1 py-8 text-2xl"
-          color="secondary"
+          color={props.isMoving ? 'tertiary' : 'secondary'}
           onClick={props.onClickMoveTable}
-          isDisabled={isProcessingRestart}
         >
           <span className="text-xl">
             {props.isMoving ? '이동 모드 종료' : '테이블 이동'}
           </span>
+        </Button>
+        <Button
+          className="flex-1 py-8 text-2xl"
+          color="primary"
+          onClick={() => setIsOpenedCustomOrder(true)}
+        >
+          <span className="text-xl">커스텀 주문</span>
         </Button>
       </div>
       <div className="flex flex-row gap-4 p-4 text-white">
@@ -191,11 +208,15 @@ export const ReceiptPanel = (props: Props) => {
           </>
         )}
       </div>
-    </footer>
+    </>
   );
 
+  const receiptFooter = isOpenedCustomOrder
+    ? receiptFooterCustomOrder
+    : receiptFooterNormal;
+
   const orderFooter = (
-    <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
+    <>
       <div className="flex flex-row justify-between p-4 items-center">
         <span>총 금액</span>
         <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
@@ -212,7 +233,7 @@ export const ReceiptPanel = (props: Props) => {
           </span>
         </Button>
       </div>
-    </footer>
+    </>
   );
   return (
     <section className="flex flex-col w-[22.5rem] border-l border-gray-500">
@@ -243,7 +264,9 @@ export const ReceiptPanel = (props: Props) => {
           </div>
         )}
       </div>
-      {(props.mode ?? 'receipt') === 'receipt' ? receiptFooter : orderFooter}
+      <footer className="flex flex-col border-t border-t-gray-500 pt-2 text-base leading-none font-medium">
+        {(props.mode ?? 'receipt') === 'receipt' ? receiptFooter : orderFooter}
+      </footer>
     </section>
   );
 };

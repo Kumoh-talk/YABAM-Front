@@ -14,9 +14,10 @@ import { deleteOrderMenu } from '@/utils/api/backend/order';
 export const PaymentPage = () => {
   useCheckLogin(true);
   const { orders, tableWithReceipts } = useOrderValues();
-  const { moveReceiptTable } = useOrderActions();
+  const { moveReceiptTable, requestCustomOrder } = useOrderActions();
   const [selectedTableId, setSelectedTableId] = useState<string>('');
   const [isOrderPageVisible, setIsOrderPageVisible] = useState(false);
+  const [isSubmittingCustomOrder, setIsSubmittingCustomOrder] = useState(false);
 
   const [moveState, setMoveState] = useState({
     isMoving: false,
@@ -143,6 +144,29 @@ export const PaymentPage = () => {
     }
   };
 
+  const onSubmitCustomOrder = async (form: { name: string; price: number }) => {
+    try {
+      setIsSubmittingCustomOrder(true);
+      const table = tableWithReceipts.find(
+        (table) => table.tableId === selectedTableId,
+      );
+
+      const receipt = table?.receiptInfo.receiptInfo;
+      if (!receipt) {
+        toast.warn('영수증 ID가 존재하지 않습니다.');
+        return false;
+      }
+      await requestCustomOrder(receipt.receiptId, form);
+      toast.success('커스텀 주문이 추가되었습니다.');
+      setIsSubmittingCustomOrder(false);
+      return true;
+    } catch (e) {
+      setIsSubmittingCustomOrder(false);
+      toast.error('커스텀 주문 추가 실패');
+      return false;
+    }
+  };
+
   return (
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">
@@ -164,6 +188,8 @@ export const PaymentPage = () => {
         onChangeAmount={handleChangeAmount}
         isMoving={moveState.isMoving}
         onClickMoveTable={onClickMoveTable}
+        onSubmitCustomOrder={onSubmitCustomOrder}
+        isSubmittingCustomOrder={isSubmittingCustomOrder}
       />
     </section>
   );

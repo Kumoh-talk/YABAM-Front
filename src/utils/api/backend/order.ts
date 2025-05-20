@@ -37,6 +37,24 @@ export const createDirectOrder = async (
   throw new Error('직접 주문 추가 실패');
 };
 
+export const createCustomOrder = async (
+  receiptId: string,
+  menu: { name: string; price: number },
+) => {
+  const res = await api<OrderInfo>(
+    `/yabam/api/v1/receipts/${receiptId}/orders/custom`,
+    'POST',
+    {
+      totalPrice: menu.price,
+      description: menu.name,
+    },
+  );
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('커스텀 주문 추가 실패');
+};
+
 export const updateOrderStatus = async (
   orderId: number,
   status: OrderStatus,

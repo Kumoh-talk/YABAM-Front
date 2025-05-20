@@ -8,7 +8,10 @@ import {
   OrderSelectResponse,
   OrderStatus,
 } from '@/types/backend/order';
-import { createDirectOrder } from '@/utils/api/backend/order';
+import {
+  createCustomOrder,
+  createDirectOrder,
+} from '@/utils/api/backend/order';
 import {
   createReceipt,
   getNonAdjestReceipt,
@@ -33,6 +36,10 @@ export type Actions = {
   requestManualOrder: (
     tableId: string,
     menuInfos: OrderMenuInfo[],
+  ) => Promise<OrderInfo>;
+  requestCustomOrder: (
+    receiptId: string,
+    form: { name: string; price: number },
   ) => Promise<OrderInfo>;
   cancelOrder: (orderId: number) => Promise<void>;
   confirmOrder: (orderId: number) => Promise<void>;
@@ -169,6 +176,21 @@ export const OrderProvider = (props: Props) => {
     }
   };
 
+  const requestCustomOrder = async (
+    receiptId: string,
+    form: { name: string; price: number },
+  ) => {
+    try {
+      const res = await createCustomOrder(receiptId, form);
+
+      return res;
+    } catch (e) {
+      console.error(e);
+      toast.error('커스텀 주문 중 에러가 발생했습니다.');
+      throw e;
+    }
+  };
+
   // 주문 단위
   const cancelOrder = (orderId: number) => setOrderStatus(orderId, 'CANCELED');
   const confirmOrder = (orderId: number) => setOrderStatus(orderId, 'RECEIVED');
@@ -223,6 +245,7 @@ export const OrderProvider = (props: Props) => {
           refreshOrders,
           getOrders,
           requestManualOrder,
+          requestCustomOrder,
           cancelOrder,
           confirmOrder,
           revertOrder,
