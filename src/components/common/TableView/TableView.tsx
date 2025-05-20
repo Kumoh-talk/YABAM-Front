@@ -130,6 +130,7 @@ export const TableView = (props: Props) => {
   };
 
   const onPointerDownItem = (id: string, x: number, y: number) => {
+    props.onChangeSelectedTable?.(id);
     if (pointerState.mode === 'idle') {
       setPointerState((prevState) => ({
         ...prevState,
@@ -178,10 +179,6 @@ export const TableView = (props: Props) => {
       capacity,
     });
   };
-
-  useEffect(() => {
-    props.onChangeSelectedTable?.(pointerState.seletedItem);
-  }, [pointerState]);
 
   useEffect(() => {
     window.addEventListener('pointermove', onPointerMove);

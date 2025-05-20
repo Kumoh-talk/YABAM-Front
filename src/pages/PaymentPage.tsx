@@ -4,7 +4,7 @@ import {
   createDirectOrder,
   updateOrderMenuQuantity,
 } from '@/utils/api/backend/order';
-import { useOrderValues } from '@/contexts/order/OrderContext';
+import { useOrderActions, useOrderValues } from '@/contexts/order/OrderContext';
 import { useCheckLogin } from '@/hooks';
 import { TableView } from '@/components/common';
 import { ReceiptPanel } from '@/components/payment';
@@ -13,9 +13,16 @@ import { deleteOrderMenu } from '@/utils/api/backend/order';
 
 export const PaymentPage = () => {
   useCheckLogin(true);
-  const { orders } = useOrderValues();
+  const { orders, tableWithReceipts } = useOrderValues();
+  const { moveReceiptTable } = useOrderActions();
   const [selectedTableId, setSelectedTableId] = useState<string>('');
   const [isOrderPageVisible, setIsOrderPageVisible] = useState(false);
+
+  const [moveState, setMoveState] = useState({
+    isMoving: false,
+    targetTableId: '',
+    receiptId: '',
+  });
 
   const selectedTableOrders = useMemo(() => {
     const filteredOrders = orders.filter(
@@ -80,6 +87,62 @@ export const PaymentPage = () => {
     }
   };
 
+  const onClickMoveTable = () => {
+    setMoveState((prev) => {
+      const newValue = !prev.isMoving;
+      if (newValue) {
+        toast.info('이동할 테이블을 클릭하세요.');
+      }
+      return {
+        isMoving: newValue,
+        targetTableId: '',
+        receiptId: '',
+      };
+    });
+  };
+
+  const onChangeSelectedTable = async (id: string) => {
+    if (!moveState.isMoving) {
+      setSelectedTableId(id);
+      return;
+    }
+
+    const withReceipt = tableWithReceipts.find((table) => table.tableId === id);
+
+    if (moveState.targetTableId === '') {
+      // 출발 테이블
+      if (!withReceipt?.receiptInfo.receiptInfo) {
+        toast.warn('활성화된 테이블을 선택해주세요.');
+        return;
+      }
+      setMoveState((prev) => ({
+        ...prev,
+        targetTableId: id,
+        receiptId: withReceipt.receiptInfo.receiptInfo!.receiptId,
+      }));
+      toast.success(`어디로 이동할지 선택하세요.`);
+      setSelectedTableId(id);
+    } else {
+      // 목적지 테이블
+      if (withReceipt?.receiptInfo.receiptInfo) {
+        toast.warn('빈 테이블을 선택해주세요.');
+        return;
+      }
+      const res = moveReceiptTable(moveState.receiptId, id);
+      if (!res) {
+        toast.error('테이블 이동 실패');
+        return;
+      }
+      setMoveState((prev) => ({
+        ...prev,
+        targetTableId: '',
+        receiptId: '',
+      }));
+      toast.success(`테이블을 이동했습니다.`);
+      setSelectedTableId(id);
+    }
+  };
+
   return (
     <section className="flex flex-row w-full h-full">
       <section className="flex flex-col flex-1 w-0">
@@ -91,7 +154,7 @@ export const PaymentPage = () => {
           />
         ) : (
           <TableView
-            onChangeSelectedTable={setSelectedTableId}
+            onChangeSelectedTable={onChangeSelectedTable}
             onTableDoubleClick={handleTableDoubleClick}
           />
         )}
@@ -99,6 +162,8 @@ export const PaymentPage = () => {
       <ReceiptPanel
         order={selectedTableOrders}
         onChangeAmount={handleChangeAmount}
+        isMoving={moveState.isMoving}
+        onClickMoveTable={onClickMoveTable}
       />
     </section>
   );

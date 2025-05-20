@@ -18,6 +18,8 @@ export interface Props {
   order?: OrderInfo[];
   onChangeAmount?: (id: number, amount: number) => void;
   onSubmitOrder?: (menuInfos: OrderMenuInfo[]) => void;
+  onClickMoveTable?: () => void;
+  isMoving?: boolean;
   isProcessing?: boolean;
 }
 
@@ -136,6 +138,18 @@ export const ReceiptPanel = (props: Props) => {
         <span>결제 금액</span>
         <span className="text-xl">{formatNumberWithComma(totalPrice)}원</span>
       </div>
+      <div className="flex flex-row gap-4 px-4 pt-4 text-white">
+        <Button
+          className="flex-1 py-8 text-2xl"
+          color="secondary"
+          onClick={props.onClickMoveTable}
+          isDisabled={isProcessingRestart}
+        >
+          <span className="text-xl">
+            {props.isMoving ? '이동 모드 종료' : '테이블 이동'}
+          </span>
+        </Button>
+      </div>
       <div className="flex flex-row gap-4 p-4 text-white">
         {!receipt?.stopUsageTime ? (
           <Button
@@ -154,7 +168,7 @@ export const ReceiptPanel = (props: Props) => {
           </Button>
         ) : (
           <>
-          <Button
+            <Button
               className="flex-1 py-8 text-2xl"
               color="secondary"
               onClick={onClickRestart}
@@ -174,7 +188,6 @@ export const ReceiptPanel = (props: Props) => {
                 {isProcessingPayment ? '처리중..' : '결제 완료'}
               </span>
             </Button>
-            
           </>
         )}
       </div>

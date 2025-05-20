@@ -51,6 +51,7 @@ export type Actions = {
   removeReceipt: (receiptId: string) => Promise<{}>;
   adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[]) => Promise<void>;
   setRestartReceipt: (receiptIds: string[]) => Promise<void>;
+  moveReceiptTable: (receiptId: string, tableId: string) => Promise<boolean>;
 };
 
 const OrderValuesContext = createContext<Values | undefined>(undefined);
@@ -77,10 +78,8 @@ export const OrderProvider = (props: Props) => {
   } = useOrder(store, sale);
   const { tables } = useTableValues();
   const { setTableActive } = useTableActions();
-  const { tableWithReceipts, refreshTableWithReceipts } = useReceipt(
-    store,
-    sale,
-  );
+  const { tableWithReceipts, refreshTableWithReceipts, moveReceiptTable } =
+    useReceipt(store, sale);
 
   const navigate = useNavigate();
   const lastOrderIdRef = useRef<number | null>(null);
@@ -234,6 +233,7 @@ export const OrderProvider = (props: Props) => {
           stopReceipt,
           adjustReceipt,
           setRestartReceipt,
+          moveReceiptTable,
         }}
       >
         {props.children}

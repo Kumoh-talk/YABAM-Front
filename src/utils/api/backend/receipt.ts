@@ -92,3 +92,14 @@ export const removeReceipt = async (receiptId: string) => {
   }
   throw new Error('영수증 삭제 실패');
 };
+
+export const moveReceiptTable = async (receiptId: string, tableId: string) => {
+  const res = await api(
+    `/yabam/api/v1/receipt/table?receiptId=${receiptId}&tableId=${tableId}`,
+    'PATCH',
+  );
+  if ('success' in res && res.success === 'true') {
+    return res.data;
+  }
+  throw new Error('영수증 테이블 이동 실패');
+};
