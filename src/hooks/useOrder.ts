@@ -33,12 +33,6 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     }
   }, [store, sale]);
 
-  useEffect(() => {
-    const interval = setInterval(refreshOrders, 1000);
-    refreshOrders();
-    return () => clearInterval(interval);
-  }, [refreshOrders]);
-
   // 주문 상태 변경
   const setOrderStatus = async (orderId: number, status: OrderStatus) => {
     try {
