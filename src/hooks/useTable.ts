@@ -125,7 +125,7 @@ export const useTable = () => {
       };
       return newTables;
     });
-  }
+  };
 
   const getAvailableNum = () => {
     const maxNum = Math.max(...[{ number: 1 }, ...tables].map((t) => t.number));

@@ -51,9 +51,14 @@ export const updateStore = async (storeId: number, dto: StoreUpdateDto) => {
   throw new Error('점포 수정 실패');
 };
 
-export const uploadStoreImage = async (storeId: number, detailImageUrl: string) => {
+export const uploadStoreImage = async (
+  storeId: number,
+  detailImageUrl: string,
+) => {
   const res = await api(
-    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(detailImageUrl)}`,
+    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(
+      detailImageUrl,
+    )}`,
     'POST',
   );
 
@@ -63,9 +68,14 @@ export const uploadStoreImage = async (storeId: number, detailImageUrl: string) 
   throw new Error('가게 상세 이미지 업로드 실패');
 };
 
-export const deleteStoreImage = async (storeId: number, detailImageUrl: string) => {
+export const deleteStoreImage = async (
+  storeId: number,
+  detailImageUrl: string,
+) => {
   const res = await api(
-    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(detailImageUrl)}`,
+    `/yabam/api/v1/store/image?storeId=${storeId}&detailImageUrl=${encodeURIComponent(
+      detailImageUrl,
+    )}`,
     'DELETE',
   );
 

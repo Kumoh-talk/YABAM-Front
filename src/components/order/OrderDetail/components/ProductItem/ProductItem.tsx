@@ -1,5 +1,11 @@
 import clsx from 'clsx';
-import { CheckRounded, CloseRounded, ReplayRounded, AddRounded, RemoveRounded } from '@mui/icons-material';
+import {
+  CheckRounded,
+  CloseRounded,
+  ReplayRounded,
+  AddRounded,
+  RemoveRounded,
+} from '@mui/icons-material';
 import { Button } from '@/components/common';
 import { OrderMenuInfo } from '@/types/backend/order';
 import { formatNumberWithComma } from '@/utils/functions';
@@ -12,8 +18,13 @@ export interface Props {
   orderId: number;
 }
 
-export const ProductItem = ({ item, isOrderStarted, }: Props) => {
-  const { cancelOrderMenu, completeOrderMenus, revertOrderMenu, setOrderMenuCompletedCount } = useOrderActions();
+export const ProductItem = ({ item, isOrderStarted }: Props) => {
+  const {
+    cancelOrderMenu,
+    completeOrderMenus,
+    revertOrderMenu,
+    setOrderMenuCompletedCount,
+  } = useOrderActions();
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(item.completedCount);
 
@@ -51,7 +62,12 @@ export const ProductItem = ({ item, isOrderStarted, }: Props) => {
           <Button
             color="white"
             className="p-1"
-            onClick={() => setOrderMenuCompletedCount(item.orderMenuId, item.completedCount - 1)}
+            onClick={() =>
+              setOrderMenuCompletedCount(
+                item.orderMenuId,
+                item.completedCount - 1,
+              )
+            }
             isDisabled={item.completedCount <= 0}
           >
             <RemoveRounded />
@@ -71,11 +87,10 @@ export const ProductItem = ({ item, isOrderStarted, }: Props) => {
                 }
               }}
               autoFocus
-              
             />
           ) : (
-            <span 
-              className="w-8 text-center cursor-pointer" 
+            <span
+              className="w-8 text-center cursor-pointer"
               onClick={() => {
                 setIsEditing(true);
                 setTempValue(item.completedCount);
@@ -87,7 +102,12 @@ export const ProductItem = ({ item, isOrderStarted, }: Props) => {
           <Button
             color="white"
             className="p-1"
-            onClick={() => setOrderMenuCompletedCount(item.orderMenuId, item.completedCount + 1)}
+            onClick={() =>
+              setOrderMenuCompletedCount(
+                item.orderMenuId,
+                item.completedCount + 1,
+              )
+            }
             isDisabled={item.completedCount >= item.quantity}
           >
             <AddRounded />
@@ -113,10 +133,12 @@ export const ProductItem = ({ item, isOrderStarted, }: Props) => {
                 >
                   <CloseRounded />
                 </Button>
-                <Button onClick={() => {
-                  completeOrderMenus([item.orderMenuId]);
-                  setOrderMenuCompletedCount(item.orderMenuId, item.quantity);
-                }}>
+                <Button
+                  onClick={() => {
+                    completeOrderMenus([item.orderMenuId]);
+                    setOrderMenuCompletedCount(item.orderMenuId, item.quantity);
+                  }}
+                >
                   <CheckRounded />
                 </Button>
               </>

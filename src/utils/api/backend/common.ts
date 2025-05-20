@@ -19,7 +19,9 @@ export const getHeaders = () => {
 export const api = async <T>(
   path: string,
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
-  body?: Record<string, string | number | boolean> | Array<Record<string, string | number | boolean>>
+  body?:
+    | Record<string, string | number | boolean>
+    | Array<Record<string, string | number | boolean>>,
 ): Promise<ApiResponse<T> | ApiError> => {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URI}${path}`, {

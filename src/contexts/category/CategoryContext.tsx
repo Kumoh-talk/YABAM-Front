@@ -26,11 +26,22 @@ export interface Props {
 }
 
 export const CategoryProvider = (props: Props) => {
-  const { categories, category, create, updateName, updateOrder, remove, refresh, update, isRefreshing } =
-    useCategory();
+  const {
+    categories,
+    category,
+    create,
+    updateName,
+    updateOrder,
+    remove,
+    refresh,
+    update,
+    isRefreshing,
+  } = useCategory();
 
   return (
-    <CategoryValuesContext.Provider value={{ categories, category, isRefreshing }}>
+    <CategoryValuesContext.Provider
+      value={{ categories, category, isRefreshing }}
+    >
       <CategoryActionsContext.Provider
         value={{
           createCategory: create,
@@ -58,7 +69,9 @@ export const useCategoryValues = () => {
 export const useCategoryActions = () => {
   const context = useContext(CategoryActionsContext);
   if (context === undefined) {
-    throw new Error('useCategoryActions must be used within a CategoryProvider');
+    throw new Error(
+      'useCategoryActions must be used within a CategoryProvider',
+    );
   }
   return context;
 };

@@ -1,10 +1,10 @@
-import { Button } from "@/components/common";
-import { formatRelativeTime } from "@/utils/functions";
-import clsx from "clsx";
-import { Table } from "@/types";
-import { OrderInfo, OrderStatus } from "@/types/backend/order";
-import { CheckRounded, CloseRounded } from "@mui/icons-material";
-import { useOrderActions } from "@/contexts/order/OrderContext";
+import { Button } from '@/components/common';
+import { formatRelativeTime } from '@/utils/functions';
+import clsx from 'clsx';
+import { Table } from '@/types';
+import { OrderInfo, OrderStatus } from '@/types/backend/order';
+import { CheckRounded, CloseRounded } from '@mui/icons-material';
+import { useOrderActions } from '@/contexts/order/OrderContext';
 
 export interface Props {
   order: OrderInfo;
@@ -18,9 +18,9 @@ export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
   return (
     <li
       className={clsx(
-        "flex flex-col gap-3 p-4 text-sm leading-none border-b border-gray-500 cursor-pointer",
-        { "opacity-50": order.orderStatus === "COMPLETED" },
-        { "border-l-4 border-l-primary": isOpened }
+        'flex flex-col gap-3 p-4 text-sm leading-none border-b border-gray-500 cursor-pointer',
+        { 'opacity-50': order.orderStatus === 'COMPLETED' },
+        { 'border-l-4 border-l-primary': isOpened },
       )}
       onClick={() => onClick?.(order.orderId)}
     >
@@ -31,7 +31,7 @@ export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
         </div>
         <span>
           {formatRelativeTime(
-            order.createdAt ?? order.receipt.receiptInfo.startUsageTime!
+            order.createdAt ?? order.receipt.receiptInfo.startUsageTime!,
           )}
         </span>
       </div>
@@ -42,7 +42,7 @@ export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
           </li>
         ))}
       </ul>
-      {order.orderStatus === "ORDERED" && (
+      {order.orderStatus === 'ORDERED' && (
         <div
           className="flex flex-row self-end gap-2"
           onClick={(e) => e.stopPropagation()}
@@ -55,7 +55,7 @@ export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
           </Button>
         </div>
       )}
-      {order.orderStatus === "COMPLETED" && (
+      {order.orderStatus === 'COMPLETED' && (
         <div className="flex flex-row self-end gap-2"></div>
       )}
     </li>
@@ -64,16 +64,16 @@ export const OrderItem = ({ order, table, isOpened, onClick }: Props) => {
 
 const StatusTag = ({ status }: { status: OrderStatus }) => {
   const color = {
-    ORDERED: "bg-secondary text-text-dark-primary",
-    RECEIVED: "bg-primary text-text-dark-primary",
-    COMPLETED: "bg-gray-300 text-text-primary",
-    CANCELED: "bg-gray-300 text-text-primary",
+    ORDERED: 'bg-secondary text-text-dark-primary',
+    RECEIVED: 'bg-primary text-text-dark-primary',
+    COMPLETED: 'bg-gray-300 text-text-primary',
+    CANCELED: 'bg-gray-300 text-text-primary',
   }[status];
   const text = {
-    ORDERED: "대기",
-    RECEIVED: "진행중",
-    COMPLETED: "완료됨",
-    CANCELED: "취소됨",
+    ORDERED: '대기',
+    RECEIVED: '진행중',
+    COMPLETED: '완료됨',
+    CANCELED: '취소됨',
   }[status];
 
   return (

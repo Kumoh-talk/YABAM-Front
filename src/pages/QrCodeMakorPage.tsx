@@ -30,10 +30,16 @@ const QrCodeMakorPage = () => {
       const zip = new JSZip();
 
       for (const table of tables) {
-        const url = `${import.meta.env.VITE_USER_BASE_URI}/validate-table?tableid=${table.tableId}&storeid=${store.id}`;
+        const url = `${
+          import.meta.env.VITE_USER_BASE_URI
+        }/validate-table?tableid=${table.tableId}&storeid=${store.id}`;
         const qrCodeDataUrl = await QRCode.toDataURL(url);
 
-        zip.file(`${table.tableNumber}번 테이블.png`, qrCodeDataUrl.split(',')[1], { base64: true });
+        zip.file(
+          `${table.tableNumber}번 테이블.png`,
+          qrCodeDataUrl.split(',')[1],
+          { base64: true },
+        );
       }
 
       const zipBlob = await zip.generateAsync({ type: 'blob' });

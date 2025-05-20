@@ -41,9 +41,7 @@ export const OrderPage = () => {
             onClose={() => setCurrentOrderId(-1)}
           />
         ) : (
-          <TableView
-            onChangeSelectedTable={setSelectedTableId}
-          />
+          <TableView onChangeSelectedTable={setSelectedTableId} />
         )}
       </section>
       <OrderQueuePanel

@@ -32,7 +32,11 @@ export const ManualOrderPanel = (props: Props) => {
       setCart(
         cart.map((item) =>
           item.menuId === menuId
-            ? { ...item, quantity: item.quantity + 1, completedCount: item.completedCount }
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+                completedCount: item.completedCount,
+              }
             : item,
         ),
       );
@@ -95,7 +99,7 @@ export const ManualOrderPanel = (props: Props) => {
     orderStatus: 'ORDERED',
     totalPrice,
     createdAt: new Date().toISOString(),
-    completedCount:0,
+    completedCount: 0,
     receipt: {
       receiptInfo: {
         receiptId: '',

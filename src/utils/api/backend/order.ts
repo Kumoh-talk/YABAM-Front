@@ -4,8 +4,8 @@ import {
   OrderInfo,
   OrderMenuStatus,
   OrderMenuInfo,
-} from "@/types/backend/order";
-import { api } from "./common";
+} from '@/types/backend/order';
+import { api } from './common';
 
 export const getOrders = async (
   saleId: number,
@@ -97,15 +97,14 @@ export const deleteOrderMenu = async (
 
 export const updateOrderMenuCompletedCount = async (
   orderMenuId: number,
-  completedCount: number
+  completedCount: number,
 ): Promise<OrderMenuInfo> => {
   const res = await api<OrderMenuInfo>(
     `/yabam/api/v1/order-menus/${orderMenuId}/completed-count?patchCompletedCount=${completedCount}`,
-    "PATCH"
+    'PATCH',
   );
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
-  throw new Error("주문 메뉴 완료 수량 업데이트 실패");
+  throw new Error('주문 메뉴 완료 수량 업데이트 실패');
 };
-

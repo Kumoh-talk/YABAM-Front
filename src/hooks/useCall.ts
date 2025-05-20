@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { getCalls, completeCall } from "@/utils/api/backend/call";
-import { CallInfo } from "@/types/backend/call";
+import { useEffect, useState } from 'react';
+import { getCalls, completeCall } from '@/utils/api/backend/call';
+import { CallInfo } from '@/types/backend/call';
 
 export const useCall = (
   saleId?: number,
   lastCallId?: number,
-  interval: number = 5000
+  interval: number = 5000,
 ) => {
   const [calls, setCalls] = useState<CallInfo[]>([]);
 

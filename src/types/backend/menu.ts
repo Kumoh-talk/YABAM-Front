@@ -72,4 +72,4 @@ export type MenuByCategoryResponse = {
   menuIsRecommended: boolean;
   menuCategoryId: number;
   menuOrder: number;
-}[]; 
+}[];

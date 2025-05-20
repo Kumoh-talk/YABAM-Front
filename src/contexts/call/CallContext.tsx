@@ -1,7 +1,7 @@
-import React, { createContext, useContext } from "react";
-import { useCall } from "@/hooks/useCall";
-import { CallInfo } from "@/types/backend/call";
-import { useStoreValues } from "../store/StoreContext";
+import React, { createContext, useContext } from 'react';
+import { useCall } from '@/hooks/useCall';
+import { CallInfo } from '@/types/backend/call';
+import { useStoreValues } from '../store/StoreContext';
 
 export type CallValues = {
   calls: CallInfo[];
@@ -28,7 +28,7 @@ export const CallProvider = (props: Props) => {
 export const useCallValues = () => {
   const context = useContext(CallValuesContext);
   if (context === undefined) {
-    throw new Error("useCallValues must be used within a CallProvider");
+    throw new Error('useCallValues must be used within a CallProvider');
   }
   return context;
 };

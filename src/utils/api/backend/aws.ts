@@ -1,6 +1,6 @@
 import {
-    PresignedUrlRequestDto,
-    PresignedUrlResponseDto
+  PresignedUrlRequestDto,
+  PresignedUrlResponseDto,
 } from '@/types/backend/aws';
 import { api } from './common';
 

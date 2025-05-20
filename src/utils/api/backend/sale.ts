@@ -1,4 +1,8 @@
-import { SaleCloseResponse, SaleOpenResponse, SaleSelectResponse } from '@/types/backend/sale';
+import {
+  SaleCloseResponse,
+  SaleOpenResponse,
+  SaleSelectResponse,
+} from '@/types/backend/sale';
 import { api } from './common';
 
 export const getSales = async (storeId: number) => {

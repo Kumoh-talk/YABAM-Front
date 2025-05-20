@@ -51,10 +51,12 @@ export const useMenu = () => {
 
     try {
       await updateMenuSoldOut(store.id, menuId, isSoldOut);
-      setMenus(prev =>
-        prev.map(menu =>
-          menu.menuInfo.menuId === menuId ? { ...menu, menuIsSoldOut: isSoldOut } : menu
-        )
+      setMenus((prev) =>
+        prev.map((menu) =>
+          menu.menuInfo.menuId === menuId
+            ? { ...menu, menuIsSoldOut: isSoldOut }
+            : menu,
+        ),
       );
     } catch (e) {
       console.error(e);
@@ -77,10 +79,10 @@ export const useMenu = () => {
 
     try {
       await updateMenuDetail(store.id, menuId, detail);
-      setMenus(prev =>
-        prev.map(menu =>
-          menu.menuInfo.menuId === menuId ? { ...menu, ...detail } : menu
-        )
+      setMenus((prev) =>
+        prev.map((menu) =>
+          menu.menuInfo.menuId === menuId ? { ...menu, ...detail } : menu,
+        ),
       );
       await refresh();
     } catch (e) {
@@ -93,7 +95,9 @@ export const useMenu = () => {
 
     try {
       await deleteMenu(store.id, menuId);
-      setMenus(prev => prev.filter(menu => menu.menuInfo.menuId !== menuId));
+      setMenus((prev) =>
+        prev.filter((menu) => menu.menuInfo.menuId !== menuId),
+      );
     } catch (e) {
       console.error(e);
     }

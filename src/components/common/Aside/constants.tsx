@@ -2,7 +2,7 @@ import {
   HomeRounded,
   ReceiptLongRounded,
   StoreRounded,
-  QrCode2Rounded
+  QrCode2Rounded,
 } from '@mui/icons-material';
 import { Props as AsideItemProps } from './components/AsideItem/AsideItem';
 

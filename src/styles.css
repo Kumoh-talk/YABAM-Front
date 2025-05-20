@@ -32,7 +32,7 @@
 }
 
 //input 누르면 화살표 뜨는거 제거
-.remove-arrow {                  
+.remove-arrow {
   -moz-appearance: textfield;
 }
 .remove-arrow::-webkit-outer-spin-button,

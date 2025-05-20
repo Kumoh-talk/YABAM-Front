@@ -9,10 +9,14 @@ import {
   updateOrderMenuCompletedCount,
 } from '@/utils/api/backend/order';
 import { SaleDto } from '@/types/backend/sale';
-import {
-} from '@/utils/api/backend/order';
+import {} from '@/utils/api/backend/order';
 import { OrderMenuStatus } from '@/types/backend/order';
-import { adjustReceipts, stopReceipts, restartReceipt, removeReceipt } from '@/utils/api/backend/receipt';
+import {
+  adjustReceipts,
+  stopReceipts,
+  restartReceipt,
+  removeReceipt,
+} from '@/utils/api/backend/receipt';
 
 export const useOrder = (store: Store, sale: SaleDto | null) => {
   const [orders, setOrders] = useState<OrderInfo[]>([]);
@@ -87,7 +91,10 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
       console.error(`영수증 재시작 실패:`, error);
     }
   };
-  const setOrderMenuCompletedCount = async (orderMenuId: number, completedCount: number) => {
+  const setOrderMenuCompletedCount = async (
+    orderMenuId: number,
+    completedCount: number,
+  ) => {
     try {
       await updateOrderMenuCompletedCount(orderMenuId, completedCount);
       await refreshOrders();
