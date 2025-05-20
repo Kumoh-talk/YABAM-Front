@@ -1,10 +1,9 @@
 import {
   ReceiptCreateResponse,
   ReceiptNonAdjustSelectResponse,
-  ReceiptInfo,
+  ReceiptSelectResponse,
 } from '@/types/backend/receipt';
 import { api } from './common';
-
 
 export const createReceipt = async (storeId: number, tableId: string) => {
   const res = await api<ReceiptCreateResponse>(
@@ -29,16 +28,16 @@ export const getNonAdjestReceipt = async (tableId: string) => {
 };
 
 export const getReceipts = async (saleId: number, isAdjust: boolean) => {
-  const res = await api<ReceiptCreateResponse>(
+  const res = await api<ReceiptSelectResponse>(
     isAdjust
       ? `/yabam/api/v1/sales/${saleId}/receipts`
       : `/yabam/api/v1/sales/${saleId}/non-adjust-receipts`,
-    'POST',
+    'GET',
   );
   if ('success' in res && res.success === 'true') {
     return res.data;
   }
-  throw new Error('영수증 생성 실패');
+  throw new Error('영수증 목록 조회 실패');
 };
 
 export const getReceipt = async (receiptId: string) => {

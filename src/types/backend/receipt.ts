@@ -16,3 +16,11 @@ export type ReceiptCreateResponse = {
 export type ReceiptNonAdjustSelectResponse = {
   receiptId: string;
 };
+
+export type ReceiptSelectResponse = {
+  pageSize: number;
+  pageNum: number;
+  totalPage: number;
+  pageSort: string;
+  pageContents: ReceiptInfo[];
+};
