@@ -13,6 +13,7 @@ export type Actions = {
   updateTable: (table: Table) => void;
   removeTable: (id: string) => void;
   moveTable: (id: string, x: number, y: number) => void;
+  setTableActive: (id: string, isActive: boolean) => void;
   getAvailableNum: () => number;
 };
 
@@ -31,6 +32,7 @@ export const TableProvider = (props: Props) => {
     updateTable,
     removeTable,
     moveTable,
+    setTableActive,
     getAvailableNum,
   } = useTable();
 
@@ -49,6 +51,7 @@ export const TableProvider = (props: Props) => {
           updateTable,
           removeTable,
           moveTable,
+          setTableActive,
           getAvailableNum,
         }}
       >

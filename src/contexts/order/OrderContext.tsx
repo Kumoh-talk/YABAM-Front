@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useOrder } from '@/hooks';
+import { useOrder, useReceipt } from '@/hooks';
 import {
   OrderInfo,
   OrderMenuInfo,
@@ -15,11 +15,12 @@ import {
   restartReceipt,
 } from '@/utils/api/backend/receipt';
 import { useStoreValues } from '@/contexts/store/StoreContext';
-import { useTableActions } from '../table/TableContext';
-import { ReceiptInfo } from '@/types/backend/receipt';
+import { useTableActions, useTableValues } from '../table/TableContext';
+import { ReceiptInfo, TableWithReceipt } from '@/types/backend/receipt';
 
 export type Values = {
   orders: OrderInfo[];
+  tableWithReceipts: TableWithReceipt[];
 };
 
 export type Actions = {
@@ -45,6 +46,7 @@ export type Actions = {
   ) => Promise<void>;
   deleteOrderMenu: (orderMenuId: number) => Promise<void>;
 
+  refreshTableWithReceipts: () => Promise<void>;
   stopReceipt: (receipt: ReceiptInfo) => Promise<void>;
   removeReceipt: (receiptId: string) => Promise<{}>;
   adjustReceipt: (receipt: ReceiptInfo, orders: OrderInfo[]) => Promise<void>;
@@ -60,7 +62,6 @@ export interface Props {
 
 export const OrderProvider = (props: Props) => {
   const { store, sale } = useStoreValues();
-  const { refreshTable } = useTableActions();
   const {
     orders,
     refreshOrders,
@@ -71,18 +72,44 @@ export const OrderProvider = (props: Props) => {
     deleteOrderMenu,
     stopReceipts,
     removeReceipt,
-    updateOrderStatus,
     adjustReceipts,
     setRestartReceipt,
   } = useOrder(store, sale);
+  const { tables } = useTableValues();
+  const { setTableActive } = useTableActions();
+  const { tableWithReceipts, refreshTableWithReceipts } = useReceipt(
+    store,
+    sale,
+  );
 
   const navigate = useNavigate();
   const lastOrderIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     const interval = setInterval(refreshOrders, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [refreshOrders]);
+
+  useEffect(() => {
+    const interval = setInterval(refreshTableWithReceipts, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [refreshTableWithReceipts]);
+
+  useEffect(() => {
+    tables.forEach((table) => {
+      const tableWithReceipt = tableWithReceipts.find(
+        (receipt) => receipt.tableId === table.id,
+      );
+      if (tableWithReceipt) {
+        const receipt = tableWithReceipt.receiptInfo;
+        setTableActive(table.id, !!receipt.receiptInfo);
+      }
+    });
+  }, [JSON.stringify(tables), JSON.stringify(tableWithReceipts)]);
 
   useEffect(() => {
     const ordered = orders.filter((order) => order.orderStatus === 'ORDERED');
@@ -99,7 +126,6 @@ export const OrderProvider = (props: Props) => {
         lastOrderIdRef.current = latestOrderId;
       }
     }
-    refreshTable();
   }, [orders, navigate]);
 
   const tryAndGetReceiptId = async (tableId: string) => {
@@ -158,7 +184,7 @@ export const OrderProvider = (props: Props) => {
     try {
       await stopReceipts([receipt.receiptId]);
       await refreshOrders();
-      await refreshTable();
+      await refreshTableWithReceipts();
     } catch (error) {
       console.error(`테이블 사용 종료(${receipt.receiptId}) 실패:`, error);
     }
@@ -170,7 +196,6 @@ export const OrderProvider = (props: Props) => {
       if (!receipt.stopUsageTime) {
         await stopReceipts([receipt.receiptId]);
       }
-      // TODO: received 상태인 order 완료 처리하기
       const receivedOrders = orders.filter(
         (order) => order.orderStatus === 'RECEIVED',
       );
@@ -182,14 +207,14 @@ export const OrderProvider = (props: Props) => {
       }
       await adjustReceipts([receipt.receiptId]);
       await refreshOrders();
-      await refreshTable();
+      await refreshTableWithReceipts();
     } catch (error) {
       console.error(`테이블 결제(${receipt.receiptId}) 실패:`, error);
     }
   };
 
   return (
-    <OrderValuesContext.Provider value={{ orders }}>
+    <OrderValuesContext.Provider value={{ orders, tableWithReceipts }}>
       <OrderActionsContext.Provider
         value={{
           refreshOrders,
@@ -203,6 +228,8 @@ export const OrderProvider = (props: Props) => {
           revertOrderMenu,
           setOrderMenuQuantity,
           deleteOrderMenu,
+
+          refreshTableWithReceipts,
           removeReceipt,
           stopReceipt,
           adjustReceipt,

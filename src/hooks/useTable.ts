@@ -113,6 +113,20 @@ export const useTable = () => {
     });
   };
 
+  const setTableActive = (id: string, isActive: boolean) => {
+    if (store.id === -1) return;
+    setTables((prev) => {
+      const index = prev.findIndex((t) => t.id === id);
+      if (index === -1) return prev;
+      const newTables = [...prev];
+      newTables[index] = {
+        ...newTables[index],
+        isActive,
+      };
+      return newTables;
+    });
+  }
+
   const getAvailableNum = () => {
     const maxNum = Math.max(...[{ number: 1 }, ...tables].map((t) => t.number));
     const availableNum = Array.from({ length: maxNum }, (_, i) => i + 1).filter(
@@ -128,6 +142,7 @@ export const useTable = () => {
     updateTable,
     removeTable,
     moveTable,
+    setTableActive,
     getAvailableNum,
   };
 };

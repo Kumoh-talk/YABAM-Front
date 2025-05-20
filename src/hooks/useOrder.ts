@@ -29,7 +29,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     } catch (e) {
       console.error(e);
     }
-  }, [store, sale]);
+  }, [store.id, sale?.saleId]);
 
   // 주문 상태 변경
   const setOrderStatus = async (orderId: number, status: OrderStatus) => {

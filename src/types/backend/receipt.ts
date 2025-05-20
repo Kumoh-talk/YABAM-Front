@@ -1,3 +1,4 @@
+import { OrderInfo } from './order';
 import { TableInfo } from './table';
 
 export type ReceiptInfo = {
@@ -6,6 +7,16 @@ export type ReceiptInfo = {
   startUsageTime: string | null;
   stopUsageTime: string | null;
   occupancyFee: number | null;
+};
+
+export type TableWithReceipt = {
+  tableId: string;
+  tableNumber: number;
+  isActive: boolean;
+  receiptInfo: {
+    receiptInfo: ReceiptInfo | null;
+    orderInfo: Omit<OrderInfo, 'receipt' | 'orderMenus'>[];
+  };
 };
 
 export type ReceiptCreateResponse = {
@@ -23,4 +34,8 @@ export type ReceiptSelectResponse = {
   totalPage: number;
   pageSort: string;
   pageContents: ReceiptInfo[];
+};
+
+export type ReceiptsNonAdjustSelectResponse = {
+  tableWithReceipts: TableWithReceipt[];
 };

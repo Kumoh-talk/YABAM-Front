@@ -5,8 +5,7 @@ import {
   getRelativeSeconds,
 } from '@/utils/functions';
 import clsx from 'clsx';
-import { useEffect, useState, useMemo } from 'react';
-import { OrderMenuInfo } from '@/types/backend/order';
+import { useEffect, useState } from 'react';
 
 export interface Props {
   table: Table;
@@ -19,7 +18,6 @@ export interface Props {
   isEditable?: boolean;
   onPointerDown?: (id: string, x: number, y: number) => void;
   onDoubleClick?: (id: string) => void;
-  orderMenus?: OrderMenuInfo[];
 }
 
 export const TableItem = (props: Props) => {

@@ -93,7 +93,6 @@ export const PaymentPage = () => {
           <TableView
             onChangeSelectedTable={setSelectedTableId}
             onTableDoubleClick={handleTableDoubleClick}
-            orders={orders}
           />
         )}
       </section>

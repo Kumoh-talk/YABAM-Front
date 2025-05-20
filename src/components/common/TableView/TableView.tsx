@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTableActions, useTableValues } from '@/contexts/table/TableContext';
-import { getTableTotalPrice } from '@/utils/functions';
-import { OrderInfo } from '@/types/backend/order';
+import { useOrderValues } from '@/contexts/order/OrderContext';
+import { getRelativeSeconds } from '@/utils/functions';
 import { Button } from '..';
 import { TableItem } from './components';
 
@@ -11,7 +11,6 @@ export interface Props {
   isEditable?: boolean;
   onChangeSelectedTable?: (id: string) => void;
   onTableDoubleClick?: (id: string) => void;
-  orders?: OrderInfo[];
 }
 
 export const TableView = (props: Props) => {
@@ -26,8 +25,8 @@ export const TableView = (props: Props) => {
   };
   const bodyRef = useRef<HTMLDivElement>(null);
 
-  const orders = props.orders ?? [];
   const { tables } = useTableValues();
+  const { tableWithReceipts } = useOrderValues();
   const {
     createTable,
     moveTable,
@@ -204,11 +203,24 @@ export const TableView = (props: Props) => {
         ? pointerState.itemPos.ty
         : item.pos.y;
 
-    const { orderMenus, price, startTime } = getTableTotalPrice(
-      item,
-      orders,
-      calcTableCost,
+    const withReceipt = tableWithReceipts.find(
+      (table) => table.tableId === item.id,
     );
+
+    const startTime =
+      withReceipt?.receiptInfo.receiptInfo?.startUsageTime || undefined;
+    const stopTime = withReceipt?.receiptInfo.receiptInfo?.stopUsageTime;
+    const price =
+      (withReceipt?.receiptInfo.orderInfo.reduce(
+        (accm, order) => order.totalPrice + accm,
+        0,
+      ) ?? 0) +
+      (startTime
+        ? calcTableCost(
+            getRelativeSeconds(startTime, stopTime ?? new Date()),
+            item.capacity,
+          )
+        : 0);
 
     return (
       <TableItem
@@ -221,9 +233,8 @@ export const TableView = (props: Props) => {
         isSelected={pointerState.seletedItem === item.id}
         isEditable={props.isEditable}
         startedAt={startTime}
-        endedAt={orders[0]?.receipt.receiptInfo.stopUsageTime}
+        endedAt={stopTime}
         price={price}
-        orderMenus={orderMenus}
       />
     );
   });
