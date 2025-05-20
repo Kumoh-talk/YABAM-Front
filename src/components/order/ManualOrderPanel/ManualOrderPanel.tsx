@@ -11,6 +11,7 @@ import { ReceiptPanel } from '@/components/payment';
 export type ManualOrderCartItem = {
   menuId: number;
   quantity: number;
+  completedCount: number;
 };
 
 export interface Props {
@@ -31,12 +32,12 @@ export const ManualOrderPanel = (props: Props) => {
       setCart(
         cart.map((item) =>
           item.menuId === menuId
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + 1, completedCount: item.completedCount }
             : item,
         ),
       );
     } else {
-      setCart([...cart, { menuId, quantity: 1 }]);
+      setCart([...cart, { menuId, quantity: 1, completedCount: 0 }]);
     }
   };
 
@@ -94,6 +95,7 @@ export const ManualOrderPanel = (props: Props) => {
     orderStatus: 'ORDERED',
     totalPrice,
     createdAt: new Date().toISOString(),
+    completedCount:0,
     receipt: {
       receiptInfo: {
         receiptId: '',

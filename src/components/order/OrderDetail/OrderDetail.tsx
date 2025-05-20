@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { formatNumberWithComma, formatRelativeTime } from "@/utils/functions";
@@ -18,7 +18,7 @@ export interface Props {
 
 export const OrderDetail = ({ order, onClose }: Props) => {
   const { tables } = useTableValues();
-  const { cancelOrder, confirmOrder, completeOrderMenus } = useOrderActions();
+  const { cancelOrder, confirmOrder, completeOrderMenus, setOrderMenuCompletedCount } = useOrderActions();
   const { handleCompleteCall } = useCallValues();
 
   useEffect(() => {
@@ -42,6 +42,7 @@ export const OrderDetail = ({ order, onClose }: Props) => {
   const onClickCompleteAllMenus = async () => {
     await completeOrderMenus(order.orderMenus.map((menu) => menu.orderMenuId));
   };
+
 
   const controls = {
     ORDERED: (

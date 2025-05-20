@@ -16,6 +16,7 @@ export type OrderInfo = {
   orderStatus: OrderStatus;
   totalPrice: number;
   createdAt: string;
+  completedCount: number;
   receipt: {
     receiptInfo: ReceiptInfo;
     tableInfo: TableInfo;
@@ -27,6 +28,7 @@ export type OrderMenuInfo = {
   orderMenuId: number;
   orderMenuStatus: OrderMenuStatus;
   quantity: number;
+  completedCount: number;
   menuInfo: MenuInfo;
 };
 

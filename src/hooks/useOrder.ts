@@ -6,8 +6,11 @@ import {
   updateOrderMenuQuantity,
   updateOrderMenuStatus,
   updateOrderStatus,
+  updateOrderMenuCompletedCount,
 } from '@/utils/api/backend/order';
 import { SaleDto } from '@/types/backend/sale';
+import {
+} from '@/utils/api/backend/order';
 import { OrderMenuStatus } from '@/types/backend/order';
 import { adjustReceipts, stopReceipts, restartReceipt, removeReceipt } from '@/utils/api/backend/receipt';
 
@@ -84,6 +87,14 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
       console.error(`영수증 재시작 실패:`, error);
     }
   };
+  const setOrderMenuCompletedCount = async (orderMenuId: number, completedCount: number) => {
+    try {
+      await updateOrderMenuCompletedCount(orderMenuId, completedCount);
+      await refreshOrders();
+    } catch (error) {
+      console.error(`주문 메뉴 완료 수량 업데이트 실패:`, error);
+    }
+  };
 
   return {
     orders,
@@ -98,5 +109,6 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
     updateOrderStatus,
     adjustReceipts,
     setRestartReceipt,
+    setOrderMenuCompletedCount,
   };
 };

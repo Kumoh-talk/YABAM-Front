@@ -45,7 +45,10 @@ export type Actions = {
     quantity: number,
   ) => Promise<void>;
   deleteOrderMenu: (orderMenuId: number) => Promise<void>;
-
+  setOrderMenuCompletedCount: (
+    orderMenuId: number,
+    completedCount: number,
+  ) => Promise<void>;
   refreshTableWithReceipts: () => Promise<void>;
   stopReceipt: (receipt: ReceiptInfo) => Promise<void>;
   removeReceipt: (receiptId: string) => Promise<{}>;
@@ -75,6 +78,7 @@ export const OrderProvider = (props: Props) => {
     removeReceipt,
     adjustReceipts,
     setRestartReceipt,
+    setOrderMenuCompletedCount,
   } = useOrder(store, sale);
   const { tables } = useTableValues();
   const { setTableActive } = useTableActions();
@@ -227,7 +231,7 @@ export const OrderProvider = (props: Props) => {
           revertOrderMenu,
           setOrderMenuQuantity,
           deleteOrderMenu,
-
+          setOrderMenuCompletedCount,
           refreshTableWithReceipts,
           removeReceipt,
           stopReceipt,
