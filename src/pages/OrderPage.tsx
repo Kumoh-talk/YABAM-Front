@@ -42,7 +42,6 @@ export const OrderPage = () => {
           />
         ) : (
           <TableView
-            orders={orders}
             onChangeSelectedTable={setSelectedTableId}
           />
         )}
