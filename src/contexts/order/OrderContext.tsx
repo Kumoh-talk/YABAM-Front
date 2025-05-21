@@ -95,14 +95,14 @@ export const OrderProvider = (props: Props) => {
   const lastOrderIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(refreshOrders, 1000);
+    const interval = setInterval(refreshOrders, 5000);
     return () => {
       clearInterval(interval);
     };
   }, [refreshOrders]);
 
   useEffect(() => {
-    const interval = setInterval(refreshTableWithReceipts, 1000);
+    const interval = setInterval(refreshTableWithReceipts, 5000);
     return () => {
       clearInterval(interval);
     };
