@@ -26,7 +26,7 @@ export const useOrder = (store: Store, sale: SaleDto | null) => {
       if (store.id === -1 || !sale) {
         return;
       }
-      const res = await getOrders(sale.saleId, 1500, [
+      const res = await getOrders(sale.saleId, 200, [
         'ORDERED',
         'RECEIVED',
         'COMPLETED',
