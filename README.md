@@ -1,54 +1,30 @@
-# React + TypeScript + Vite
+![YABAM 배너](./docs/banner.png)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# YABAM-POS
 
-Currently, two official plugins are available:
+대학교 축제 주막을 위한 테이블 오더 및 POS 시스템 중 점주용 POS 프론트엔드 저장소입니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<br/>
 
-## Expanding the ESLint configuration
+![주문 받기](./docs/order2.png)
+![정산하기](./docs/payment1.png)
+![매장 정보 관리](./docs/manage-store.png)
+![주문 내역 관리](./docs/history.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 기술 스택
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+[![개발 스택1](https://skillicons.dev/icons?i=html,css,ts,react,vite,tailwind,cloudflare,git,figma)](https://skillicons.dev)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 개발 기간
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**2025. 4. 12.** ~ **2025. 5. 21.** (40 Days)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 참여 인원
+
+<div align=center>
+<h3 align="center">YABAM Project</h3>
+
+|<a href="https://github.com/Kumoh-talk/YABAM-Front/graphs/contributors"><img src="https://contrib.rocks/image?repo=Kumoh-talk/YABAM-Front" /></a>|<a href="https://github.com/Kumoh-talk/YABAM-User/graphs/contributors"><img src="https://contrib.rocks/image?repo=Kumoh-talk/YABAM-User" /></a>|<a href="https://github.com/Kumoh-talk/YABAM-Festival-Backend/graphs/contributors"><img src="https://contrib.rocks/image?repo=Kumoh-talk/YABAM-Festival-Backend" /></a>|
+|-|-|-|
+|<h4 align="center">POS Frontend</h4>|<h4 align="center">Customer Frontend</h4>|<h4 align="center">Backend</h4>|
+</div>
